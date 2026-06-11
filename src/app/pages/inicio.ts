@@ -2,10 +2,9 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../shared/icon';
 import { Icon3d } from '../shared/icon3d';
-import { ANUNCIOS, INDICADORES, MATERIALES, SEGMENTOS_GP, USUARIA } from '../data/mock';
+import { ANUNCIOS, INDICADORES, MATERIALES, PEDIDO_PERSONAL, SEGMENTOS_GP, USUARIA } from '../data/mock';
 
 const ACCESOS = [
-  { label: 'Realizar Pedido', icon: 'bag', route: '/externa/mis-pedidos' },
   { label: 'Reportes', icon: 'chart', route: '/externa/reportes' },
   { label: 'Incorpora y Gana', icon: 'gift', route: '/incorpora-y-gana' },
   { label: 'PAR+', icon: 'plane', route: '/externa/par' },
@@ -20,16 +19,40 @@ const ACCESOS = [
   imports: [RouterLink, Icon, Icon3d],
   template: `
     <div class="page">
-      <!-- Saludo -->
+      <!-- Saludo + pedido personal de la campaña -->
       <header class="hero">
         <div>
           <h1 class="page-title">¡Hola, {{ nombreCorto }}! 👋</h1>
           <p class="muted">Así va tu negocio en la campaña {{ usuaria.campana }} · semana {{ usuaria.semana }}.</p>
         </div>
-        <button class="btn btn--primary">
-          <app-icon name="cart" [size]="18" />
-          Realizar Pedido
-        </button>
+
+        @if (pedido.estado === 'pendiente') {
+          <aside class="task card">
+            <app-icon3d name="bag" [size]="46" />
+            <div class="task__body">
+              <div class="task__head">
+                <strong>Tu pedido personal · {{ usuaria.campana }}</strong>
+                <span class="badge badge--warning">Pendiente</span>
+              </div>
+              <p>
+                Pásalo al N1 Gana Más (\${{ pedido.metaN1 }}) antes del cierre ({{ pedido.cierre }})
+                para mantener tu calificación y premios.
+              </p>
+              <div class="progress">
+                <div class="progress__fill" [style.width.%]="(pedido.ventaActual / pedido.metaN1) * 100"></div>
+              </div>
+            </div>
+            <a class="btn btn--primary task__cta" routerLink="/externa/mis-pedidos">Realizar pedido</a>
+          </aside>
+        } @else {
+          <aside class="task task--done card">
+            <span class="task__check">✓</span>
+            <div class="task__body">
+              <strong>Pedido personal {{ usuaria.campana }} calificado</strong>
+              <p>Ya estás activa al N1 Gana Más esta campaña.</p>
+            </div>
+          </aside>
+        }
       </header>
 
       <!-- Accesos rápidos -->
@@ -112,13 +135,38 @@ const ACCESOS = [
     `
       .hero {
         display: flex;
-        align-items: flex-end;
+        align-items: center;
         justify-content: space-between;
-        gap: 16px;
+        gap: 24px;
         margin-bottom: 24px;
         flex-wrap: wrap;
       }
       .hero p { margin: 6px 0 0; }
+
+      /* Tarjeta de pedido personal (CTA contextual de la campaña) */
+      .task {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 14px 18px;
+        max-width: 560px;
+      }
+      .task__body { min-width: 0; flex: 1; }
+      .task__head { display: flex; align-items: center; gap: 8px; font-size: 14px; }
+      .task__body p { margin: 3px 0 8px; font-size: 12.5px; color: var(--ink-2); line-height: 1.4; }
+      .task__cta { padding: 9px 16px; font-size: 13px; white-space: nowrap; }
+      .task--done { border-color: var(--success); background: var(--success-bg); }
+      .task__check {
+        display: grid;
+        place-items: center;
+        width: 38px;
+        height: 38px;
+        border-radius: 99px;
+        background: var(--success);
+        color: #fff;
+        font-size: 18px;
+        font-weight: 800;
+      }
 
       .see-all {
         display: inline-flex;
@@ -134,7 +182,7 @@ const ACCESOS = [
       /* Accesos rápidos */
       .quick {
         display: grid;
-        grid-template-columns: repeat(7, 1fr);
+        grid-template-columns: repeat(6, 1fr);
         gap: 12px;
         margin-bottom: 36px;
       }
@@ -295,5 +343,6 @@ export class InicioPage {
   protected readonly segmentos = SEGMENTOS_GP;
   protected readonly anuncios = ANUNCIOS;
   protected readonly materiales = MATERIALES;
+  protected readonly pedido = PEDIDO_PERSONAL;
   protected readonly nombreCorto = USUARIA.nombre.split(' ')[0];
 }

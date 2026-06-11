@@ -16,7 +16,7 @@ const CATS: Cat[] = [
   { label: 'Cuadrante A', icon: 'chart', route: '/cuadrante' },
   { label: 'Grupo Personal', icon: 'users', route: '/grupo-personal' },
   { label: 'Herramientas', icon: 'sparkles', route: '/herramientas' },
-  { label: 'Pedidos', icon: 'cart', route: '/externa/mis-pedidos' },
+  { label: 'Mis Pedidos', icon: 'cart', route: '/externa/mis-pedidos' },
   { label: 'Reportes', icon: 'file', route: '/externa/reportes' },
   { label: 'Cursos', icon: 'cap', route: '/externa/cursos' },
   { label: 'Incorporar', icon: 'heart-plus', route: '/externa/incorporacion' },
@@ -29,8 +29,8 @@ interface MenuLink {
 }
 
 const MENU_LINKS: MenuLink[] = [
-  { label: 'Realizar Pedido', route: '/externa/mis-pedidos', bold: true },
   { label: 'Mi Campaña', route: '/mi-campana', bold: true },
+  { label: 'Mis Pedidos', route: '/externa/mis-pedidos' },
   { label: 'Status de Pedidos', route: '/externa/status-pedidos' },
   { label: 'Reporte PAR+', route: '/externa/par' },
   { label: 'Reportes', route: '/externa/reportes' },

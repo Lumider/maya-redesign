@@ -13,6 +13,17 @@ export const USUARIA = {
   carrito: 22,
 };
 
+/**
+ * Pedido personal de la campaña: requisito de calificación de la directora
+ * (activa N1 Gana Más). Baja frecuencia (1 por campaña), alta importancia.
+ */
+export const PEDIDO_PERSONAL = {
+  estado: 'pendiente' as 'pendiente' | 'calificado',
+  ventaActual: 0,
+  metaN1: 400,
+  cierre: 'semana S4',
+};
+
 export interface Indicador {
   label: string;
   valor: string;
