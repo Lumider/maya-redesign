@@ -45,8 +45,15 @@ const MENU_LINKS: MenuLink[] = [
   template: `
     <header class="hdr">
       <div class="hdr__inner">
-        <a class="brand" routerLink="/inicio">
-          <span class="brand__logo">YANBAL</span>
+        <a class="brand" routerLink="/inicio" aria-label="Yanbal Maya — inicio">
+          <!-- Logotipo Yanbal (desktop) -->
+          <svg class="brand__logo" viewBox="21 53 321 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M64.02 53.7839H74.3706L52.104 85.7722V106.221H43.4543L43.5948 85.7722L21.3333 53.7839H31.9698L47.9949 77.3816L64.02 53.7839ZM99.1909 53.3334L125.215 106.216H115.286L110.465 95.806H86.6377L81.8162 106.216H72.173L98.1925 53.3334H99.1909ZM106.636 87.5638L98.624 70.4115H98.4835L90.4709 87.5638H106.636ZM168.891 53.7839H177.54V106.667H176.406L145.706 73.4805V106.216H137.056V53.3334H138.19L168.891 86.5196V53.7839ZM235.329 91.3854C235.329 100.227 228.877 106.216 218.1 106.216H199.024V53.7839H217.176C226.89 53.7839 233.698 58.8777 233.698 67.7188C233.698 73.0352 230.864 76.7827 226.609 78.9558C232.068 81.129 235.329 85.3959 235.329 91.3907V91.3854ZM207.323 61.5703V75.2031H216.825C221.436 75.2031 224.697 73.4063 224.697 68.3867C224.697 63.3672 221.436 61.5703 216.825 61.5703H207.323ZM217.462 98.4245C223.277 98.4245 226.398 96.1029 226.398 90.8607C226.398 85.6185 223.277 83.2969 217.462 83.2969H207.323V98.4298H217.462V98.4245ZM270.214 53.3334H271.207L297.232 106.216H287.303L282.481 95.806H258.659L253.838 106.216H244.194L270.214 53.3334ZM278.653 87.5638L270.64 70.4115H270.5L262.487 87.5638H278.653ZM319.709 97.6771H341.333L338.213 106.216H311.054V53.7839H319.704V97.6824L319.709 97.6771Z" fill="currentColor"/>
+          </svg>
+          <!-- Isotipo Yanbal (móvil) -->
+          <svg class="brand__iso" viewBox="51 52.5 58 55" fill="none" xmlns="http://www.w3.org/2000/svg">
+            <path d="M51.4287 53.3195H62.8272L84.409 83.7679V107.143H75.1397L75.2902 86.1511L51.4287 53.3195ZM87.7479 81.4608C87.2909 79.6163 87.065 77.614 87.065 75.6171C87.065 63.7773 94.5869 52.8571 106.292 52.8571C106.975 52.8571 108.19 52.9332 108.572 53.0094L87.7532 81.4608H87.7479Z" fill="currentColor"/>
+          </svg>
           <span class="brand__sub">maya</span>
         </a>
 
@@ -132,18 +139,26 @@ const MENU_LINKS: MenuLink[] = [
         padding: 14px 40px 10px;
       }
 
-      .brand { display: flex; align-items: baseline; gap: 7px; flex-shrink: 0; }
+      .brand { display: flex; align-items: flex-end; gap: 8px; flex-shrink: 0; }
       .brand__logo {
+        height: 19px;
+        width: auto;
         color: var(--brand-500);
-        font-weight: 800;
-        font-size: 19px;
-        letter-spacing: 0.18em;
+        transition: color 0.15s ease;
+      }
+      .brand:hover .brand__logo, .brand:hover .brand__iso { color: var(--brand-600); }
+      .brand__iso {
+        display: none;
+        height: 26px;
+        width: auto;
+        color: var(--brand-500);
       }
       .brand__sub {
         color: var(--ink-2);
         font-weight: 700;
         font-size: 13px;
         letter-spacing: 0.04em;
+        line-height: 1;
       }
 
       /* Píldora de búsqueda */
@@ -294,6 +309,9 @@ const MENU_LINKS: MenuLink[] = [
       /* ----- Responsive ----- */
       @media (max-width: 980px) {
         .hdr__inner { padding: 12px 16px 8px; gap: 10px; }
+        .brand__logo { display: none; }
+        .brand__iso { display: block; }
+        .brand__sub { display: none; }
         .searchpill__seg { display: none; }
         .searchpill__div { display: none; }
         .searchpill__seg--muted { display: block; }
