@@ -1,22 +1,23 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../shared/icon';
+import { Icon3d } from '../shared/icon3d';
 import { ANUNCIOS, INDICADORES, MATERIALES, SEGMENTOS_GP, USUARIA } from '../data/mock';
 
 const ACCESOS = [
-  { label: 'Realizar Pedido', icon: 'cart', route: '/externa/mis-pedidos' },
+  { label: 'Realizar Pedido', icon: 'bag', route: '/externa/mis-pedidos' },
   { label: 'Reportes', icon: 'chart', route: '/externa/reportes' },
   { label: 'Incorpora y Gana', icon: 'gift', route: '/incorpora-y-gana' },
   { label: 'PAR+', icon: 'plane', route: '/externa/par' },
-  { label: 'Elige Crecer', icon: 'trending', route: '/cuadrante' },
-  { label: 'Incorporar', icon: 'heart-plus', route: '/externa/incorporacion' },
+  { label: 'Elige Crecer', icon: 'rocket', route: '/cuadrante' },
+  { label: 'Incorporar', icon: 'heart', route: '/externa/incorporacion' },
   { label: 'Mis Cursos', icon: 'cap', route: '/externa/cursos' },
 ];
 
 @Component({
   selector: 'app-inicio',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, Icon],
+  imports: [RouterLink, Icon, Icon3d],
   template: `
     <div class="page">
       <!-- Saludo -->
@@ -35,7 +36,7 @@ const ACCESOS = [
       <div class="quick">
         @for (a of accesos; track a.label) {
           <a class="quick__item card card--hover" [routerLink]="a.route">
-            <span class="quick__icon"><app-icon [name]="a.icon" [size]="22" /></span>
+            <app-icon3d class="quick__art" [name]="a.icon" [size]="64" />
             <span>{{ a.label }}</span>
           </a>
         }
@@ -141,21 +142,18 @@ const ACCESOS = [
         display: flex;
         flex-direction: column;
         align-items: center;
-        gap: 10px;
-        padding: 16px 8px;
+        gap: 8px;
+        padding: 14px 8px 14px;
         font-size: 12.5px;
-        font-weight: 600;
+        font-weight: 700;
         text-align: center;
-        color: var(--ink-2);
+        color: var(--ink);
       }
-      .quick__icon {
-        display: grid;
-        place-items: center;
-        width: 46px;
-        height: 46px;
-        border-radius: 14px;
-        background: var(--brand-50);
-        color: var(--brand-600);
+      .quick__art {
+        transition: transform 0.25s cubic-bezier(0.22, 1, 0.36, 1);
+      }
+      .quick__item:hover .quick__art {
+        transform: translateY(-4px) scale(1.07) rotate(-2deg);
       }
 
       /* Stats */
