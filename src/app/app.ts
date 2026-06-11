@@ -140,18 +140,19 @@ const MENU_LINKS: MenuLink[] = [
       }
 
       .brand { display: flex; align-items: flex-end; gap: 8px; flex-shrink: 0; }
+      /* Color oficial del logotipo Yanbal (FrYDA Foundations) — no se tematiza */
       .brand__logo {
         height: 19px;
         width: auto;
-        color: var(--brand-500);
-        transition: color 0.15s ease;
+        color: #1c1f28;
+        transition: opacity 0.15s ease;
       }
-      .brand:hover .brand__logo, .brand:hover .brand__iso { color: var(--brand-600); }
+      .brand:hover .brand__logo, .brand:hover .brand__iso { opacity: 0.75; }
       .brand__iso {
         display: none;
         height: 26px;
         width: auto;
-        color: var(--brand-500);
+        color: #1c1f28;
       }
       .brand__sub {
         color: var(--ink-2);
