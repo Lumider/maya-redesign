@@ -3,6 +3,7 @@ import { Routes } from '@angular/router';
 export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'inicio' },
   { path: 'inicio', loadComponent: () => import('./pages/inicio').then((m) => m.InicioPage) },
+  { path: 'mi-plan', loadComponent: () => import('./pages/mi-plan').then((m) => m.MiPlanPage) },
   { path: 'mi-campana', loadComponent: () => import('./pages/mi-campana').then((m) => m.MiCampanaPage) },
   {
     path: 'incorpora-y-gana',

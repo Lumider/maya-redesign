@@ -101,6 +101,9 @@ import { ChangeDetectionStrategy, Component, input } from '@angular/core';
         @case ('arrow-left') {
           <path d="M20 12H4" /><path d="m10 6-6 6 6 6" />
         }
+        @case ('target') {
+          <circle cx="12" cy="12" r="8.5" /><circle cx="12" cy="12" r="4.5" /><circle cx="12" cy="12" r="0.6" />
+        }
       }
     </svg>
   `,

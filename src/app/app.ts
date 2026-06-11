@@ -11,6 +11,7 @@ interface Cat {
 
 const CATS: Cat[] = [
   { label: 'Inicio', icon: 'home', route: '/inicio' },
+  { label: 'Mi Plan', icon: 'target', route: '/mi-plan' },
   { label: 'Mi Campaña', icon: 'star', route: '/mi-campana' },
   { label: 'Incorpora y Gana', icon: 'gift', route: '/incorpora-y-gana' },
   { label: 'Cuadrante A', icon: 'chart', route: '/cuadrante' },
@@ -29,6 +30,7 @@ interface MenuLink {
 }
 
 const MENU_LINKS: MenuLink[] = [
+  { label: 'Mi Plan', route: '/mi-plan', bold: true },
   { label: 'Mi Campaña', route: '/mi-campana', bold: true },
   { label: 'Mis Pedidos', route: '/externa/mis-pedidos' },
   { label: 'Status de Pedidos', route: '/externa/status-pedidos' },

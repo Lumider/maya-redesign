@@ -24,6 +24,11 @@ const ACCESOS = [
         <div>
           <h1 class="page-title">¡Hola, {{ nombreCorto }}! 👋</h1>
           <p class="muted">Así va tu negocio en la campaña {{ usuaria.campana }} · semana {{ usuaria.semana }}.</p>
+          <a class="planlink" routerLink="/mi-plan">
+            <span class="planlink__dot"></span>
+            Tu plan {{ usuaria.campana }} va por debajo del ritmo — ver acciones de la semana
+            <app-icon name="arrow-right" [size]="14" />
+          </a>
         </div>
 
         @if (pedido.estado === 'pendiente') {
@@ -142,6 +147,28 @@ const ACCESOS = [
         flex-wrap: wrap;
       }
       .hero p { margin: 6px 0 0; }
+      .planlink {
+        display: inline-flex;
+        align-items: center;
+        gap: 7px;
+        margin-top: 10px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--brand-600);
+        background: var(--brand-50);
+        border: 1px solid var(--brand-100);
+        border-radius: 99px;
+        padding: 7px 14px;
+        transition: background 0.15s ease;
+      }
+      .planlink:hover { background: var(--brand-100); }
+      .planlink__dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 99px;
+        background: var(--warning);
+        box-shadow: 0 0 0 3px var(--warning-bg);
+      }
 
       /* Tarjeta de pedido personal (CTA contextual de la campaña) */
       .task {

@@ -169,6 +169,107 @@ export const CAMPANA = {
   },
 };
 
+/**
+ * Plan de campaña (Business Plan digital): se planifica en la semana 1
+ * siguiendo el marco Sueño → Ganancia → Venta → Activas → Acciones;
+ * las semanas 2-4 Maya acompaña con ritmo esperado y acciones concretas.
+ */
+export const PLAN_CAMPANA = {
+  campana: 'C6',
+  semanaActual: 3,
+  totalSemanas: 4,
+  estado: 'en-riesgo' as 'en-ritmo' | 'en-riesgo' | 'cumplido',
+  sueno: 'Remodelar la cocina de mi casa',
+  gananciaObjetivo: 19100,
+  gananciaProyectada: 15900,
+  metas: [
+    {
+      id: 'venta',
+      label: 'Venta GP',
+      detalle: 'MRM para Cuadrante A y tu ganancia (10% de venta neta)',
+      actual: 158420,
+      objetivo: 280000,
+      esperadoHoy: 0.7,
+      dinero: true,
+    },
+    {
+      id: 'activas',
+      label: 'Activas GP',
+      detalle: 'Retenidas 25/49 · Reactivadas 5/12',
+      actual: 31,
+      objetivo: 65,
+      esperadoHoy: 0.72,
+      dinero: false,
+    },
+    {
+      id: 'pped',
+      label: 'Primeros pedidos',
+      detalle: 'Requisito de Cuadrante A',
+      actual: 0,
+      objetivo: 4,
+      esperadoHoy: 0.6,
+      dinero: false,
+    },
+    {
+      id: 'personal',
+      label: 'Pedido personal N1',
+      detalle: 'Tu calificación y premios Ganamás',
+      actual: 0,
+      objetivo: 400,
+      esperadoHoy: 0.6,
+      dinero: true,
+    },
+  ],
+  semanas: [
+    { n: 1, plan: 56000, logrado: 61200 },
+    { n: 2, plan: 70000, logrado: 59800 },
+    { n: 3, plan: 84000, logrado: 37420 },
+    { n: 4, plan: 70000, logrado: 0 },
+  ],
+  acciones: [
+    {
+      id: 'a1',
+      texto: 'Llama a 5 por reactivar: Renata O., Yamila R., Dalia R., Emma G. y Carmen P.',
+      impacto: 'Reactivadas +5 · ~$14,000 de venta',
+      meta: 'activas',
+      link: '/grupo-personal',
+      hecho: false,
+    },
+    {
+      id: 'a2',
+      texto: 'Asegura el primer pedido de Karen N. y Natalia F. antes del cierre',
+      impacto: 'PPED +2 de 4',
+      meta: 'pped',
+      link: '/grupo-personal',
+      hecho: false,
+    },
+    {
+      id: 'a3',
+      texto: 'Pasa tu pedido personal al N1 Gana Más ($400)',
+      impacto: 'Mantienes calificación y premios',
+      meta: 'personal',
+      link: '/externa/mis-pedidos',
+      hecho: false,
+    },
+    {
+      id: 'a4',
+      texto: 'Comparte el catálogo C6 y el Product Book con tus 30 activas',
+      impacto: 'Empuja la venta de la semana',
+      meta: 'venta',
+      link: '/herramientas',
+      hecho: true,
+    },
+    {
+      id: 'a5',
+      texto: 'Reconoce a Tatiana A. y Silvana P. por sus ventas de la semana',
+      impacto: 'Retención: el reconocimiento sostiene la actividad',
+      meta: 'activas',
+      link: '/grupo-personal',
+      hecho: true,
+    },
+  ],
+};
+
 /** Niveles de Estrella PAR+ 2026. Son excluyentes: se logra una de las 6. */
 export const PAR_ESTRELLAS = [
   { n: 1, hito: 'Bono PAR+' },
