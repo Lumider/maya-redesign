@@ -360,12 +360,12 @@ import { CAMPANA } from '../data/mock';
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background: linear-gradient(120deg, #fde8dc, #fff3ea);
+        background: linear-gradient(120deg, #ffe1e8, #fff5f7);
       }
       .celebrate-emoji { font-size: 42px; }
 
       /* PAR+ */
-      .side { position: sticky; top: 76px; }
+      .side { position: sticky; top: 150px; }
       .par { overflow: hidden; }
       .par__cover {
         height: 110px;

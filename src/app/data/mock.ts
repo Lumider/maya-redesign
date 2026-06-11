@@ -62,7 +62,7 @@ export const ANUNCIOS: Anuncio[] = [
     titulo: 'Product Book',
     texto: 'Tu nueva herramienta de inspiración, capacitación y venta.',
     cta: 'Míralo aquí',
-    gradiente: 'linear-gradient(120deg, #b6450f, #e8590c 55%, #f47b3f)',
+    gradiente: 'linear-gradient(120deg, #d70466, #e31c5f 55%, #ff385c)',
     emoji: '📖',
   },
   {
@@ -89,7 +89,7 @@ export interface Material {
 }
 
 export const MATERIALES: Material[] = [
-  { titulo: 'Carrera de Liderazgo', tag: 'Nuevo', gradiente: 'linear-gradient(160deg, #e8590c, #b6450f)', emoji: '🚀' },
+  { titulo: 'Carrera de Liderazgo', tag: 'Nuevo', gradiente: 'linear-gradient(160deg, #e31c5f, #a30c44)', emoji: '🚀' },
   { titulo: 'Ganamás C6', tag: 'Actual', gradiente: 'linear-gradient(160deg, #ddd0c0, #b8a68e)', emoji: '🏆' },
   { titulo: 'Catálogo C6', tag: 'Actual', gradiente: 'linear-gradient(160deg, #2f4858, #33658a)', emoji: '💄' },
   { titulo: 'Entrenos C6', tag: 'Actual', gradiente: 'linear-gradient(160deg, #7a5c3e, #a98253)', emoji: '🧖🏽‍♀️' },
@@ -185,7 +185,7 @@ export const SUBCATEGORIAS = [
 ];
 
 export const HERRAMIENTAS: Herramienta[] = [
-  { titulo: 'Product Book C6', categoria: 'Productos', subcategoria: 'Lanzamiento', gradiente: 'linear-gradient(150deg, #e8590c, #b6450f)', emoji: '📖' },
+  { titulo: 'Product Book C6', categoria: 'Productos', subcategoria: 'Lanzamiento', gradiente: 'linear-gradient(150deg, #e31c5f, #a30c44)', emoji: '📖' },
   { titulo: 'Invitación Lanzamiento', categoria: 'Productos', subcategoria: 'Lanzamiento', gradiente: 'linear-gradient(150deg, #5b8c5a, #2f5233)', emoji: '💌' },
   { titulo: 'Presentación de Producto', categoria: 'Productos', subcategoria: 'Lanzamiento', gradiente: 'linear-gradient(150deg, #ded6cb, #b8aa95)', emoji: '🎤' },
   { titulo: 'Ohm Black · Postal', categoria: 'Productos', subcategoria: 'Perfumería', gradiente: 'linear-gradient(150deg, #1e293b, #0f172a)', emoji: '🌑' },
