@@ -371,7 +371,7 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background: linear-gradient(120deg, #fbe5da, #fef4ef);
+        background: linear-gradient(120deg, #ffe2d3, #fff3ed);
       }
       .celebrate-emoji { font-size: 42px; }
 
