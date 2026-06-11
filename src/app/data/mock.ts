@@ -37,8 +37,8 @@ export const INDICADORES: Indicador[] = [
   { label: 'Activas GP', valor: '31', icon: 'users', tone: 'success', detalle: 'Meta campañal: 65' },
   { label: 'Primeros pedidos', valor: '0', icon: 'box', tone: 'warning', detalle: 'Meta: 4' },
   { label: 'Deuda actual', valor: '$3,180', icon: 'alert', tone: 'danger', detalle: 'Vence el 18 jun' },
-  { label: 'Cuadrante', valor: 'D', icon: 'chart', tone: 'danger', detalle: 'A 9% del cuadrante A' },
-  { label: 'Índice de morosidad', valor: '4.2%', icon: 'wallet', tone: 'warning', detalle: 'IM saludable: < 3%' },
+  { label: 'Cuadrante', valor: 'D', icon: 'chart', tone: 'danger', detalle: 'Riesgo · sin MRM ni PPED' },
+  { label: 'Índice de morosidad', valor: '4.2%', icon: 'wallet', tone: 'warning', detalle: 'Meta PAR+: 3.00%' },
   { label: 'Crédito Yanbal', valor: '$10,820', icon: 'wallet', tone: 'info', detalle: 'de $14,000 disponibles' },
 ];
 
@@ -52,7 +52,7 @@ export interface SegmentoGP {
 export const SEGMENTOS_GP: SegmentoGP[] = [
   { label: 'Reactivar', count: 42, tone: 'warning', hint: 'Sin pedido en 2+ campañas' },
   { label: 'Deuda', count: 4, tone: 'danger', hint: 'Con saldo vencido' },
-  { label: 'Retener', count: 29, tone: 'info', hint: 'En riesgo de inactividad' },
+  { label: 'Retener', count: 29, tone: 'info', hint: 'Repitentes: la base del negocio' },
   { label: 'Inicio Ganador', count: 5, tone: 'violet', hint: 'En programa de inicio' },
   { label: 'Sin 1er Pedido', count: 11, tone: 'warning', hint: 'Incorporadas sin pedido' },
   { label: 'Activas', count: 30, tone: 'success', hint: 'Con pedido esta campaña' },
@@ -156,14 +156,28 @@ export const CAMPANA = {
   productivas: { valor: 14, meta: 5 },
   par: {
     sueno: '¡Viaje a Punta Cana!',
-    nivel: 'Sueño PAR+ Estrella 3',
+    nivel: 'PAR+ 2026 · Estrella 3',
     estrellaActual: 0,
     ventaC6: 703044,
     metaSueno: 1324211,
-    requisitos: ['Promedio IM anual: 3%', 'Formación: 1'],
+    requisitos: [
+      'IM de Grupo Familiar: 3.00%',
+      'Formación: 1 Nueva Directora',
+      'Cuadrante A en 1 de las últimas 3 campañas',
+    ],
     cumpliendo: false,
   },
 };
+
+/** Niveles de Estrella PAR+ 2026. Son excluyentes: se logra una de las 6. */
+export const PAR_ESTRELLAS = [
+  { n: 1, hito: 'Bono PAR+' },
+  { n: 2, hito: 'Bono PAR+ mayor' },
+  { n: 3, hito: 'Viaje a Punta Cana' },
+  { n: 4, hito: 'Viaje a Jamaica' },
+  { n: 5, hito: 'Cumbre Mundial · Tokio' },
+  { n: 6, hito: 'Tokio con acompañante' },
+];
 
 export interface Participante {
   nombre: string;

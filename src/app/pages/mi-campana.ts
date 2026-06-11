@@ -2,7 +2,7 @@ import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/c
 import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../shared/icon';
-import { CAMPANA } from '../data/mock';
+import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
 
 @Component({
   selector: 'app-mi-campana',
@@ -28,7 +28,7 @@ import { CAMPANA } from '../data/mock';
           <!-- Meta de venta -->
           <section class="card pad">
             <div class="row-between">
-              <h3 class="card-title">🎯 Meta de venta {{ tab() }}</h3>
+              <h3 class="card-title">🎯 Meta de venta {{ tab() }} <span class="muted-light">(MRM)</span></h3>
               <button class="btn btn--ghost btn--sm">Detalle de meta</button>
             </div>
             <div class="meta">
@@ -94,7 +94,7 @@ import { CAMPANA } from '../data/mock';
               </div>
               <div class="alert alert--warning">
                 <app-icon name="alert" [size]="16" />
-                Realiza una venta personal y califica a un premio.
+                Pasa tu pedido personal al N1 Gana Más y califica a un premio.
               </div>
             </div>
           </section>
@@ -106,15 +106,16 @@ import { CAMPANA } from '../data/mock';
               <a class="see-all" routerLink="/cuadrante">Ver detalle <app-icon name="arrow-right" [size]="14" /></a>
             </div>
             <p class="muted">
-              Para subir a Cuadrante A y ganar un bono de <strong>\${{ data.cuadrante.bono | number }}</strong>, necesitas:
+              Para subir a Cuadrante A y ganar el Bono de Desempeño de
+              <strong>\${{ data.cuadrante.bono | number }}</strong>, necesitas:
             </p>
             <div class="duo">
               <div class="duo__col">
-                <div class="tiny">Venta requerida: \${{ data.cuadrante.ventaRequerida | number }}</div>
+                <div class="tiny">MRM (venta requerida): \${{ data.cuadrante.ventaRequerida | number }}</div>
                 <div class="pill pill--danger">Te falta \${{ data.cuadrante.faltaVenta | number }} para lograrlo</div>
               </div>
               <div class="duo__col">
-                <div class="tiny">PPED requeridos: {{ data.cuadrante.ppedRequeridos }}</div>
+                <div class="tiny">Primeros pedidos (PPED) requeridos: {{ data.cuadrante.ppedRequeridos }}</div>
                 <div class="pill pill--danger">Necesitas {{ data.cuadrante.ppedFaltantes }} PPED más para calificar</div>
               </div>
             </div>
@@ -219,6 +220,16 @@ import { CAMPANA } from '../data/mock';
                   <li>{{ r }}</li>
                 }
               </ul>
+
+              <div class="tiny" style="margin-top:14px">Niveles de Estrella 2026 (excluyentes):</div>
+              <div class="par__trail">
+                @for (e of estrellas; track e.n) {
+                  <div class="par__star" [class.par__star--target]="e.n === 3" [title]="e.hito">
+                    <span>{{ e.n }}⭐</span>
+                    <small>{{ e.hito }}</small>
+                  </div>
+                }
+              </div>
 
               <a class="btn btn--ghost par__cta" routerLink="/externa/par">Ir a Reporte PAR+</a>
             </div>
@@ -379,6 +390,23 @@ import { CAMPANA } from '../data/mock';
       .par__stats { display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--ink-2); margin-bottom: 12px; }
       .par__stats strong { color: var(--ink); }
       .par__req { margin: 6px 0 0; padding-left: 18px; font-size: 13px; color: var(--ink-2); }
+      .par__trail { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+      .par__star {
+        display: flex;
+        align-items: baseline;
+        gap: 8px;
+        font-size: 12px;
+        color: var(--ink-3);
+        padding: 4px 8px;
+        border-radius: 8px;
+      }
+      .par__star span { font-weight: 700; white-space: nowrap; }
+      .par__star small { font-size: 12px; }
+      .par__star--target {
+        background: var(--brand-50);
+        color: var(--brand-700);
+        border: 1px solid var(--brand-200);
+      }
       .par__cta { width: 100%; justify-content: center; margin-top: 16px; }
 
       @media (max-width: 1000px) {
@@ -393,6 +421,7 @@ import { CAMPANA } from '../data/mock';
 })
 export class MiCampanaPage {
   protected readonly data = CAMPANA;
+  protected readonly estrellas = PAR_ESTRELLAS;
   protected readonly tab = signal(CAMPANA.actual);
   protected readonly avanceMeta = computed(() => this.pct(this.data.ventaActual, this.data.meta));
 

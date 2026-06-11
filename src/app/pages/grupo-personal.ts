@@ -50,6 +50,10 @@ const ESTADO_FILTRO: Record<Exclude<Filtro, 'Todas'>, Consultora['estado']> = {
             <button class="chip" [class.chip--active]="filtro() === f" (click)="filtro.set(f)">{{ f }}</button>
           }
         </div>
+        <p class="legend tiny">
+          <strong>CNS</strong> Consultora · <strong>CEM</strong> Emprendedora · <strong>CES</strong> CEM Senior ·
+          <strong>ASP</strong> Aspirante — tu Grupo Personal nunca incluye Directoras.
+        </p>
       </div>
 
       @if (vista() === 'estructura') {
@@ -149,6 +153,8 @@ const ESTADO_FILTRO: Record<Exclude<Filtro, 'Todas'>, Consultora['estado']> = {
         width: 100%;
       }
       .filters { display: flex; gap: 8px; flex-wrap: wrap; }
+      .legend { margin: 0; }
+      .legend strong { color: var(--ink-2); }
 
       .list { display: flex; flex-direction: column; gap: 10px; }
       .row {

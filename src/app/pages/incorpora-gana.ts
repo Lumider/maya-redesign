@@ -14,7 +14,8 @@ import { PARTICIPANTES } from '../data/mock';
 
       <div class="banner">
         <div>
-          <strong>Entérate cómo ganar con el Incorpora y Gana</strong>
+          <strong>Gana por cada nueva consultora activa al N1 Gana Más — hasta 3 campañas por persona.</strong>
+          <span class="banner__detail">El pago llega una semana después del recaudo completo, en la campaña siguiente.</span>
           <a class="banner__link">Conoce aquí <app-icon name="arrow-right" [size]="14" /></a>
         </div>
         <span class="banner__emoji">👭</span>
@@ -45,7 +46,10 @@ import { PARTICIPANTES } from '../data/mock';
 
         <div class="alert alert--info">
           <app-icon name="alert" [size]="16" />
-          <span><strong>¡Empieza a ganar!</strong> Motiva a que pase su Primer Pedido, lo pague y gana por incorporar.</span>
+          <span>
+            <strong>¡Empieza a ganar!</strong> Motiva a que pase su Primer Pedido al N1 Gana Más, lo recaude
+            y gana por incorporar — válido hasta 3 campañas por persona.
+          </span>
         </div>
 
         <div class="table-wrap">
@@ -104,6 +108,7 @@ import { PARTICIPANTES } from '../data/mock';
         color: #1e3a8a;
       }
       .banner strong { display: block; font-size: 15px; }
+      .banner__detail { display: block; font-size: 13px; opacity: 0.85; margin-top: 2px; }
       .banner__link {
         display: inline-flex;
         align-items: center;

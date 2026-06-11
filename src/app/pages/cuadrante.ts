@@ -32,8 +32,8 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
           <div class="bars">
             <div class="bar">
               <div class="bar__head">
-                <span>Venta</span>
-                <span class="tiny">Objetivo: \${{ data.cuadrante.ventaRequerida | number }} · faltan \${{ data.cuadrante.faltaVenta | number }}</span>
+                <span>Venta · MRM</span>
+                <span class="tiny">MRM: \${{ data.cuadrante.ventaRequerida | number }} · faltan \${{ data.cuadrante.faltaVenta | number }}</span>
               </div>
               <div class="progress">
                 <div class="progress__fill" [style.width.%]="pct(data.ventaActual, data.cuadrante.ventaRequerida)"></div>
@@ -43,7 +43,7 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
 
             <div class="bar">
               <div class="bar__head">
-                <span>PPED</span>
+                <span>Primeros pedidos · PPED</span>
                 <span class="tiny">Objetivo: {{ data.cuadrante.ppedRequeridos }} · faltan {{ data.cuadrante.ppedFaltantes }}</span>
               </div>
               <div class="pped">
@@ -56,7 +56,7 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
 
           <div class="alert alert--warning">
             <app-icon name="alert" [size]="16" />
-            Sube a Cuadrante A esta campaña y gana un bono de \${{ data.cuadrante.bono | number }}.
+            Sube a Cuadrante A esta campaña y gana el Bono de Desempeño de \${{ data.cuadrante.bono | number }}.
           </div>
         </section>
 
@@ -66,23 +66,23 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
           <div class="matrix">
             <div class="matrix__cell matrix__cell--c">
               <span class="badge badge--warning">C · Recuperación</span>
-              <p>Cumple PPED · No cumple venta</p>
+              <p>Cumple PPED · No cumple MRM</p>
             </div>
             <div class="matrix__cell matrix__cell--a">
               <span class="badge badge--success">A · Crecimiento</span>
-              <p>Cumple objetivos</p>
+              <p>Cumple MRM + PPED · Negocio sano</p>
             </div>
             <div class="matrix__cell matrix__cell--d matrix__cell--here">
               <span class="badge badge--danger">D · Riesgo</span>
-              <p>No cumple PPED · No cumple venta</p>
+              <p>No cumple MRM ni PPED</p>
               <span class="here">Estás aquí</span>
             </div>
             <div class="matrix__cell matrix__cell--b">
-              <span class="badge badge--brand">B · Potencial</span>
-              <p>No cumple PPED · Cumple venta</p>
+              <span class="badge badge--brand">B · Potencial Riesgo</span>
+              <p>Cumple MRM · No cumple PPED</p>
             </div>
             <div class="matrix__axis matrix__axis--y">PPED →</div>
-            <div class="matrix__axis matrix__axis--x">Venta →</div>
+            <div class="matrix__axis matrix__axis--x">Venta (MRM) →</div>
           </div>
         </section>
       </div>
@@ -92,6 +92,9 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
         <div class="row-between">
           <h3 class="card-title">En este año</h3>
           <span class="muted">Alcanzaste <strong>{{ vecesA }} de 6</strong> veces el cuadrante A</span>
+        </div>
+        <div class="medals tiny">
+          Medalla de Excelencia GP: 🥉 Bronce 9/13 · 🥈 Plata 11/13 · 🥇 Oro 13/13 campañas en A — llevas {{ vecesA }}.
         </div>
         <div class="history">
           @for (h of historia; track h.campana) {
@@ -197,6 +200,12 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
       .matrix__axis--y { left: 0; top: 50%; transform: rotate(-90deg) translateX(50%); transform-origin: left; }
 
       /* Historial */
+      .medals {
+        margin-top: 8px;
+        background: var(--sand);
+        border-radius: var(--radius-s);
+        padding: 8px 12px;
+      }
       .history { display: flex; gap: 8px; overflow-x: auto; margin-top: 14px; padding-bottom: 4px; }
       .history__item { text-align: center; flex: 0 0 52px; }
       .history__box {
