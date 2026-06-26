@@ -1,59 +1,59 @@
-# MayaRedesign
+# Maya Redesign
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 22.0.1.
+Rediseño de la app **Maya** (Yanbal). Aplicación construida con [Angular](https://angular.dev) 22.
 
-## Development server
+## Requisitos
 
-To start a local development server, run:
+- **Node.js** `>= 22.22.3` (recomendado: `24.16.0`, fijado en [`.nvmrc`](.nvmrc)).
+- **npm** (incluido con Node).
 
-```bash
-ng serve
-```
-
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
-
-## Code scaffolding
-
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+Si usas [nvm](https://github.com/nvm-sh/nvm), basta con ejecutar en la raíz del proyecto:
 
 ```bash
-ng generate component component-name
+nvm use   # toma la versión de .nvmrc (24.16.0)
 ```
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+> ⚠️ Angular 22 **no compila** con versiones de Node menores a 22.22.3. El campo `engines` en `package.json` y el `.nvmrc` están para evitar ese error.
+
+## Instalación
 
 ```bash
-ng generate --help
+npm install
 ```
 
-## Building
-
-To build the project run:
+## Servidor de desarrollo
 
 ```bash
-ng build
+npm start        # equivale a: ng serve
 ```
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+Abre el navegador en `http://localhost:4200/`. La aplicación se recarga automáticamente al modificar el código fuente.
 
-## Running unit tests
+### Rutas principales
 
-To execute unit tests with the [Vitest](https://vitest.dev/) test runner, use the following command:
+`inicio`, `mi-campana`, `mi-plan`, `cuadrante`, `grupo-personal`, `incorpora-gana`, `herramientas`, `externa`.
+
+## Build de producción
 
 ```bash
-ng test
+npm run build    # equivale a: ng build (configuración production)
 ```
 
-## Running end-to-end tests
+Los artefactos se generan en `dist/maya-redesign/browser/`. Al ser una SPA, el hosting debe configurar un *fallback* a `index.html` para que funcione el routing del lado del cliente.
 
-For end-to-end (e2e) testing, run:
+## Generar código (scaffolding)
 
 ```bash
-ng e2e
+ng generate component nombre-componente
+ng generate --help    # lista completa de schematics
 ```
 
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
+## Tests
 
-## Additional Resources
+```bash
+npm test         # tests unitarios con Vitest (ng test)
+```
 
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+## Recursos
+
+- [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli)
