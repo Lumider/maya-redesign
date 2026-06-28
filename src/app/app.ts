@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Icon } from './shared/icon';
+import { Loader } from './shared/loader';
 import { ThemeService } from './shared/theme';
 import { USUARIA } from './data/mock';
 
@@ -44,8 +45,12 @@ const MENU_LINKS: MenuLink[] = [
 @Component({
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, Icon],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, Icon, Loader],
   template: `
+    @if (!entered()) {
+      <app-loader (done)="entered.set(true)" />
+    }
+
     <header class="hdr">
       <div class="hdr__inner">
         <a class="brand" routerLink="/inicio" aria-label="Yanbal Maya — inicio">
@@ -341,5 +346,6 @@ export class App {
   protected readonly menuLinks = MENU_LINKS;
   protected readonly usuaria = USUARIA;
   protected readonly menuOpen = signal(false);
+  protected readonly entered = signal(false);
   protected readonly theme = inject(ThemeService);
 }
