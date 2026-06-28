@@ -298,19 +298,21 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
         color: #fff;
       }
       .card--activas .card-title, .card--activas h3 { color: #fff; }
-      .card--activas .badge--neutral { background: rgba(255, 255, 255, 0.18); color: #fff; }
+      .card--activas .badge--neutral { background: rgba(0, 0, 0, 0.28); color: #fff; }
       .trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+      /* Tarjetas blancas fijas (blanco sobre el naranja en ambos temas):
+         el texto debe ser oscuro fijo, no tokens que se aclaran en oscuro. */
       .trio__item {
         background: rgba(255, 255, 255, 0.95);
         border-radius: var(--radius-s);
         padding: 12px 14px;
-        color: var(--ink);
+        color: #222222;
         transition: transform 0.15s ease;
       }
       .trio__item:hover { transform: translateY(-2px); }
-      .trio__label { font-size: 12px; font-weight: 600; color: var(--ink-2); }
+      .trio__label { font-size: 12px; font-weight: 600; color: #5f5f5f; }
       .trio__value { font-size: 19px; font-weight: 800; margin: 2px 0 8px; }
-      .trio__value span { font-size: 13px; font-weight: 600; color: var(--ink-3); }
+      .trio__value span { font-size: 13px; font-weight: 600; color: #6e6e6e; }
 
       .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 10px 0; }
       .duo__item {
