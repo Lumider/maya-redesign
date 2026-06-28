@@ -189,7 +189,7 @@ const ACCESOS = [
         width: 38px;
         height: 38px;
         border-radius: 99px;
-        background: var(--success);
+        background: var(--fill-success);
         color: #fff;
         font-size: 18px;
         font-weight: 800;
@@ -337,7 +337,7 @@ const ACCESOS = [
         bottom: 10px;
         right: 10px;
         background: var(--ink);
-        color: #fff;
+        color: var(--on-ink);
         font-size: 10.5px;
         font-weight: 700;
         letter-spacing: 0.05em;
@@ -345,7 +345,7 @@ const ACCESOS = [
         border-radius: 99px;
         padding: 3px 9px;
       }
-      .material__tag--new { background: var(--brand-500); }
+      .material__tag--new { background: var(--fill-brand); color: #fff; }
       .material__title {
         font-size: 13px;
         font-weight: 600;

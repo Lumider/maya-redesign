@@ -17,7 +17,7 @@ import { PLAN_CAMPANA } from '../data/mock';
     <div class="page">
       <header class="head">
         <div>
-          <nav class="crumbs"><a routerLink="/inicio">Inicio</a> / Mi Plan</nav>
+          <nav class="crumbs" aria-label="Ruta de navegación"><a routerLink="/inicio">Inicio</a> / Mi Plan</nav>
           <h1 class="page-title">Mi Plan · {{ plan.campana }}</h1>
         </div>
         <div class="tabs">
@@ -200,7 +200,7 @@ import { PLAN_CAMPANA } from '../data/mock';
       .crumbs a:hover { color: var(--brand-600); }
       .tabs { display: inline-flex; background: var(--sand); border-radius: 99px; padding: 4px; }
       .tabs__tab { border: 0; background: none; border-radius: 99px; padding: 8px 20px; font-size: 13.5px; font-weight: 700; color: var(--ink-2); }
-      .tabs__tab--active { background: var(--ink); color: #fff; }
+      .tabs__tab--active { background: var(--ink); color: var(--on-ink); }
 
       /* Estado */
       .status {
@@ -286,7 +286,7 @@ import { PLAN_CAMPANA } from '../data/mock';
         transition: all 0.15s ease;
       }
       .todo__check:hover { border-color: var(--brand-500); }
-      .todo__check--on { background: var(--success); border-color: var(--success); }
+      .todo__check--on { background: var(--fill-success); border-color: var(--fill-success); }
       .todo__body { flex: 1; min-width: 0; }
       .todo__text { font-size: 14px; font-weight: 600; }
       .todo__item--done .todo__text { text-decoration: line-through; color: var(--ink-3); }

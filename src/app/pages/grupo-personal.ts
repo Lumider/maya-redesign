@@ -40,6 +40,7 @@ const ESTADO_FILTRO: Record<Exclude<Filtro, 'Todas'>, Consultora['estado']> = {
           <app-icon name="search" [size]="18" />
           <input
             type="search"
+            aria-label="Buscar por nombre"
             placeholder="Buscar por nombre…"
             [value]="busqueda()"
             (input)="busqueda.set(asValue($event))"
@@ -129,7 +130,7 @@ const ESTADO_FILTRO: Record<Exclude<Filtro, 'Todas'>, Consultora['estado']> = {
         font-weight: 700;
         color: var(--ink-2);
       }
-      .tabs__tab--active { background: var(--ink); color: #fff; }
+      .tabs__tab--active { background: var(--ink); color: var(--on-ink); }
 
       .toolbar { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
       .search {

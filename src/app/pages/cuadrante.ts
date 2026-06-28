@@ -12,7 +12,7 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
     <div class="page">
       <header class="head">
         <div>
-          <nav class="crumbs"><a routerLink="/inicio">Inicio</a> / Cuadrante A</nav>
+          <nav class="crumbs" aria-label="Ruta de navegación"><a routerLink="/inicio">Inicio</a> / Cuadrante A</nav>
           <h1 class="page-title">Cuadrante A</h1>
         </div>
         <div class="tabs">
@@ -25,7 +25,7 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
         <!-- Avance de la campaña -->
         <section class="card pad">
           <div class="row-between">
-            <h3 class="card-title">En esta campaña</h3>
+            <h2 class="card-title">En esta campaña</h2>
             <span class="badge badge--danger">Estás en cuadrante {{ data.cuadrante.actual }}</span>
           </div>
 
@@ -62,7 +62,7 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
 
         <!-- Matriz de cuadrantes -->
         <section class="card pad">
-          <h3 class="card-title">¿Dónde estás hoy?</h3>
+          <h2 class="card-title">¿Dónde estás hoy?</h2>
           <div class="matrix">
             <div class="matrix__cell matrix__cell--c">
               <span class="badge badge--warning">C · Recuperación</span>
@@ -90,13 +90,13 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
       <!-- Historial -->
       <section class="card pad" style="margin-top: 16px">
         <div class="row-between">
-          <h3 class="card-title">En este año</h3>
+          <h2 class="card-title">En este año</h2>
           <span class="muted">Alcanzaste <strong>{{ vecesA }} de 6</strong> veces el cuadrante A</span>
         </div>
         <div class="medals tiny">
           Medalla de Excelencia GP: 🥉 Bronce 9/13 · 🥈 Plata 11/13 · 🥇 Oro 13/13 campañas en A — llevas {{ vecesA }}.
         </div>
-        <div class="history">
+        <div class="history" tabindex="0" role="region" aria-label="Historial de cuadrantes por campaña">
           @for (h of historia; track h.campana) {
             <div class="history__item">
               <div class="tiny">{{ h.campana }}</div>
@@ -128,7 +128,7 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
 
       .tabs { display: inline-flex; background: var(--sand); border-radius: 99px; padding: 4px; }
       .tabs__tab { border: 0; background: none; border-radius: 99px; padding: 8px 20px; font-size: 13.5px; font-weight: 700; color: var(--ink-2); }
-      .tabs__tab--active { background: var(--ink); color: #fff; }
+      .tabs__tab--active { background: var(--ink); color: var(--on-ink); }
 
       .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
       .pad { padding: 20px; }
@@ -179,7 +179,7 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
         position: absolute;
         top: 10px;
         right: 10px;
-        background: var(--danger);
+        background: var(--fill-danger);
         color: #fff;
         border-radius: 99px;
         font-size: 10.5px;

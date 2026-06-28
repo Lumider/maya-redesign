@@ -111,7 +111,7 @@ const MENU_LINKS: MenuLink[] = [
       </div>
 
       <!-- Barra de categorías -->
-      <nav class="cats">
+      <nav class="cats" aria-label="Categorías">
         <div class="cats__inner">
           @for (c of cats; track c.label) {
             <a class="cat" [routerLink]="c.route" routerLinkActive="cat--active" (click)="menuOpen.set(false)">
@@ -199,7 +199,7 @@ const MENU_LINKS: MenuLink[] = [
         width: 32px;
         height: 32px;
         border-radius: 99px;
-        background: var(--brand-grad);
+        background: var(--brand-grad-strong);
         color: #fff;
         margin-left: 14px;
       }
@@ -228,7 +228,7 @@ const MENU_LINKS: MenuLink[] = [
         position: absolute;
         top: 0;
         right: -2px;
-        background: var(--brand-500);
+        background: var(--fill-brand);
         color: #fff;
         font-size: 10px;
         font-weight: 700;
@@ -257,7 +257,7 @@ const MENU_LINKS: MenuLink[] = [
         display: grid;
         place-items: center;
         background: var(--ink);
-        color: #fff;
+        color: var(--on-ink);
         font-weight: 700;
         font-size: 11.5px;
       }
@@ -310,10 +310,9 @@ const MENU_LINKS: MenuLink[] = [
         font-size: 12px;
         font-weight: 600;
         white-space: nowrap;
-        opacity: 0.8;
-        transition: color 0.15s ease, border-color 0.15s ease, opacity 0.15s ease;
+        transition: color 0.15s ease, border-color 0.15s ease;
       }
-      .cat:hover { color: var(--ink); border-bottom-color: var(--line-strong); opacity: 1; }
+      .cat:hover { color: var(--ink); border-bottom-color: var(--line-strong); }
       .cat--active {
         color: var(--ink);
         border-bottom-color: var(--ink);

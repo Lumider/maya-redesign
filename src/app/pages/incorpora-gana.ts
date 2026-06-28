@@ -9,7 +9,7 @@ import { PARTICIPANTES } from '../data/mock';
   imports: [RouterLink, Icon],
   template: `
     <div class="page">
-      <nav class="crumbs"><a routerLink="/inicio">Inicio</a> / <a routerLink="/mi-campana">Mi Campaña</a> / Incorpora y Gana</nav>
+      <nav class="crumbs" aria-label="Ruta de navegación"><a routerLink="/inicio">Inicio</a> / <a routerLink="/mi-campana">Mi Campaña</a> / Incorpora y Gana</nav>
       <h1 class="page-title">Seguimiento del Incorpora y Gana</h1>
 
       <div class="banner">
@@ -52,7 +52,7 @@ import { PARTICIPANTES } from '../data/mock';
           </span>
         </div>
 
-        <div class="table-wrap">
+        <div class="table-wrap" tabindex="0" role="region" aria-label="Detalle de ganancia por campaña">
           <table>
             <thead>
               <tr>
@@ -156,7 +156,7 @@ import { PARTICIPANTES } from '../data/mock';
         border-radius: 99px;
         display: grid;
         place-items: center;
-        background: linear-gradient(135deg, var(--brand-300), var(--brand-500));
+        background: linear-gradient(135deg, #c2410c, #9a3412);
         color: #fff;
         font-weight: 700;
         font-size: 13px;

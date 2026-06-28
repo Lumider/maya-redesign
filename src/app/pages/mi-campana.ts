@@ -12,7 +12,7 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
     <div class="page">
       <header class="head">
         <div>
-          <nav class="crumbs"><a routerLink="/inicio">Inicio</a> / Mi Campaña</nav>
+          <nav class="crumbs" aria-label="Ruta de navegación"><a routerLink="/inicio">Inicio</a> / Mi Campaña</nav>
           <h1 class="page-title">Mi Campaña</h1>
         </div>
         <div class="tabs">
@@ -28,7 +28,7 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
           <!-- Meta de venta -->
           <section class="card pad">
             <div class="row-between">
-              <h3 class="card-title">🎯 Meta de venta {{ tab() }} <span class="muted-light">(MRM)</span></h3>
+              <h2 class="card-title">🎯 Meta de venta {{ tab() }} <span class="muted-light">(MRM)</span></h2>
               <button class="btn btn--ghost btn--sm">Detalle de meta</button>
             </div>
             <div class="meta">
@@ -52,7 +52,7 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
           <!-- Activas -->
           <section class="card pad card--activas">
             <div class="row-between">
-              <h3 class="card-title">👩🏽‍🤝‍👩🏻 Activas GP: {{ data.activas.total }} <span class="muted-light">/ meta {{ data.activas.meta }}</span></h3>
+              <h2 class="card-title">👩🏽‍🤝‍👩🏻 Activas GP: {{ data.activas.total }} <span class="muted-light">/ meta {{ data.activas.meta }}</span></h2>
               <span class="badge badge--neutral">{{ data.activas.estatus }}</span>
             </div>
             <div class="trio">
@@ -76,7 +76,7 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
 
           <!-- Premios -->
           <section class="card pad">
-            <h3 class="card-title">🎁 Premios Ganamás</h3>
+            <h2 class="card-title">🎁 Premios Ganamás</h2>
             <div class="duo">
               <div class="duo__item">
                 <span>Premios calificados (Retener)</span>
@@ -102,7 +102,7 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
           <!-- Cuadrante -->
           <section class="card pad">
             <div class="row-between">
-              <h3 class="card-title">📊 Cuadrante actual: <span class="q-badge">{{ data.cuadrante.actual }}</span></h3>
+              <h2 class="card-title">📊 Cuadrante actual: <span class="q-badge">{{ data.cuadrante.actual }}</span></h2>
               <a class="see-all" routerLink="/cuadrante">Ver detalle <app-icon name="arrow-right" [size]="14" /></a>
             </div>
             <p class="muted">
@@ -124,7 +124,7 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
           <!-- Morosidad -->
           <section class="card pad">
             <div class="row-between">
-              <h3 class="card-title">🟠 Morosidad y deuda</h3>
+              <h2 class="card-title">🟠 Morosidad y deuda</h2>
               <button class="btn btn--ghost btn--sm">Contactar deudoras ({{ data.morosidad.deudoras }})</button>
             </div>
             <div class="meta">
@@ -150,7 +150,7 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
 
           <!-- Crédito -->
           <section class="card pad">
-            <h3 class="card-title">💳 Crédito</h3>
+            <h2 class="card-title">💳 Crédito</h2>
             <div class="meta">
               <div>
                 <div class="tiny">Mi crédito</div>
@@ -174,7 +174,7 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
           <!-- Productivas -->
           <section class="card pad card--celebrate">
             <div>
-              <h3 class="card-title">Consultoras Productivas: {{ data.productivas.valor }}</h3>
+              <h2 class="card-title">Consultoras Productivas: {{ data.productivas.valor }}</h2>
               <span class="badge badge--success">Meta: {{ data.productivas.meta }} · ¡Lo lograste! 🎉</span>
             </div>
             <div class="celebrate-emoji">💪🏽</div>
@@ -187,7 +187,7 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
             <div class="par__cover">🌴</div>
             <div class="par__body">
               <div class="tiny">{{ data.par.nivel }}</div>
-              <h3>{{ data.par.sueno }}</h3>
+              <h2>{{ data.par.sueno }}</h2>
 
               <div class="par__stats">
                 <div class="row-between">
@@ -268,7 +268,7 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
         color: var(--ink-2);
         transition: all 0.15s ease;
       }
-      .tabs__tab--active { background: var(--ink); color: #fff; box-shadow: var(--shadow-s); }
+      .tabs__tab--active { background: var(--ink); color: var(--on-ink); box-shadow: var(--shadow-s); }
 
       .grid {
         display: grid;
@@ -291,8 +291,9 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
 
       .btn--sm { padding: 7px 14px; font-size: 13px; }
 
+      /* Naranjas fijos (no dependen del tema) para garantizar texto blanco AA en claro y oscuro */
       .card--activas {
-        background: linear-gradient(135deg, var(--brand-500), var(--brand-700));
+        background: linear-gradient(135deg, #c2410c, #92330b);
         border: 0;
         color: #fff;
       }
@@ -345,7 +346,7 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
         border-radius: 8px;
         padding: 8px 12px;
       }
-      .pill--danger { background: var(--danger-bg); color: #b01c30; }
+      .pill--danger { background: var(--danger-bg); color: var(--danger); }
 
       .see-all { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 700; color: var(--brand-600); }
 
@@ -371,7 +372,7 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
         display: flex;
         align-items: center;
         justify-content: space-between;
-        background: linear-gradient(120deg, #ffe2d3, #fff3ed);
+        background: linear-gradient(120deg, var(--brand-100), var(--brand-50));
       }
       .celebrate-emoji { font-size: 42px; }
 

@@ -22,6 +22,7 @@ const CATEGORIAS = [
         <app-icon name="search" [size]="18" />
         <input
           type="search"
+          aria-label="Buscar material"
           placeholder="Buscar material…"
           [value]="busqueda()"
           (input)="busqueda.set(asValue($event))"
