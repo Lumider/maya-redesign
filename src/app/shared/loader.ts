@@ -56,6 +56,7 @@ const DEFAULT_IMAGES = [
               [style.transform]="cardTransform(i)"
               [style.opacity]="cardOpacity(i)"
               [style.zIndex]="cardZ(i)"
+              [style.transitionDelay]="cardDelay(i)"
             >
               <img [src]="src" alt="" loading="eager" decoding="async" />
             </div>
@@ -211,6 +212,8 @@ export class Loader implements OnInit, OnDestroy {
 
   protected readonly progress = signal(0);
   protected readonly leaving = signal(false);
+  /** Las imágenes colapsan a scale(0) justo antes del recorte del overlay. */
+  protected readonly collapsing = signal(false);
   /** Selección aleatoria de `count` imágenes del pool (fija durante esta carga). */
   protected readonly deck = signal<string[]>([]);
 
@@ -291,6 +294,10 @@ export class Loader implements OnInit, OnDestroy {
     if (this.reduced) {
       return d === 0 ? 'translate(-0px,0) scale(1)' : 'scale(0.96)';
     }
+    // Salida: cada carta colapsa hacia su propio centro
+    if (this.collapsing()) {
+      return 'scale(0)';
+    }
     if (d < 0) {
       // Aún no revelada: aparece desde pequeño
       return `translate(0, 16px) scale(0.55) rotate(${this.rot[i] ?? 0}deg)`;
@@ -319,17 +326,27 @@ export class Loader implements OnInit, OnDestroy {
     return 40 - Math.abs(d);
   }
 
+  /** Ligero stagger al colapsar (las de atrás desaparecen un instante después). */
+  protected cardDelay(i: number): string {
+    if (!this.collapsing()) return '0s';
+    const d = Math.max(0, this.top() - i);
+    return `${Math.min(d, 4) * 0.04}s`;
+  }
+
   private finish(): void {
     if (this.timer) clearInterval(this.timer);
-    // Secuencia: contador en 100 → breve pausa → dispara el recorte de salida
+    // Secuencia: contador en 100 → breve pausa → colapsan las imágenes →
+    // (solapando) recorte del overlay hacia arriba → marca loaded + desmonta/emite
     setTimeout(() => {
-      this.leaving.set(true);
-      // Al terminar la transición del clip-path: marca loaded y desmonta/emite
+      this.collapsing.set(true);
       setTimeout(() => {
-        this.doc.documentElement.classList.add('loaded');
-        this.done.emit();
-      }, 820);
-    }, 280);
+        this.leaving.set(true);
+        setTimeout(() => {
+          this.doc.documentElement.classList.add('loaded');
+          this.done.emit();
+        }, 820);
+      }, 300);
+    }, 260);
   }
 
   protected pad(n: number): string {
