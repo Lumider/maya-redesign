@@ -93,9 +93,16 @@ const DEFAULT_IMAGES = [
         color: #f6f3f0;
         font-family: var(--font-display, 'Plus Jakarta Sans', system-ui, sans-serif);
         overflow: hidden;
-        transition: opacity 0.6s ease, transform 0.7s cubic-bezier(0.7, 0, 0.3, 1);
+        /* Salida: el panel se recorta de abajo hacia arriba revelando el home */
+        clip-path: inset(0% 0% 0% 0%);
+        contain: layout paint style;
+        transition: clip-path 0.78s cubic-bezier(0.4, 0, 0.2, 1);
       }
-      .ld--out { opacity: 0; transform: scale(1.05); pointer-events: none; }
+      .ld--out {
+        clip-path: inset(0% 0% 100% 0%);
+        pointer-events: none;
+        will-change: clip-path;
+      }
 
       .ld__top { display: flex; align-items: center; gap: 10px; padding: 22px 26px; }
       .ld__iso { height: 26px; width: auto; color: #f6f3f0; }
@@ -180,8 +187,8 @@ const DEFAULT_IMAGES = [
       .ld__hint { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; color: #8c8378; }
 
       @media (prefers-reduced-motion: reduce) {
-        .ld { transition: opacity 0.3s ease; }
-        .ld--out { transform: none; }
+        .ld { clip-path: none; transition: opacity 0.3s ease; }
+        .ld--out { clip-path: none; opacity: 0; }
         .ld__card { transition: opacity 0.3s ease; }
       }
     `,
@@ -314,11 +321,15 @@ export class Loader implements OnInit, OnDestroy {
 
   private finish(): void {
     if (this.timer) clearInterval(this.timer);
-    this.doc.documentElement.classList.add('loaded');
+    // Secuencia: contador en 100 → breve pausa → dispara el recorte de salida
     setTimeout(() => {
       this.leaving.set(true);
-      setTimeout(() => this.done.emit(), 700);
-    }, 260);
+      // Al terminar la transición del clip-path: marca loaded y desmonta/emite
+      setTimeout(() => {
+        this.doc.documentElement.classList.add('loaded');
+        this.done.emit();
+      }, 820);
+    }, 280);
   }
 
   protected pad(n: number): string {
