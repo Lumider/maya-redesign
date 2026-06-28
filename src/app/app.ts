@@ -1,6 +1,7 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Icon } from './shared/icon';
+import { ThemeService } from './shared/theme';
 import { USUARIA } from './data/mock';
 
 interface Cat {
@@ -70,6 +71,14 @@ const MENU_LINKS: MenuLink[] = [
 
         <div class="hdr__right">
           <a class="hdr__link" routerLink="/externa/mis-pedidos">Realizar Pedido</a>
+          <button
+            class="hdr__iconbtn"
+            (click)="theme.toggle()"
+            [attr.aria-label]="theme.theme() === 'dark' ? 'Activar modo claro' : 'Activar modo oscuro'"
+            [attr.aria-pressed]="theme.theme() === 'dark'"
+          >
+            <app-icon [name]="theme.theme() === 'dark' ? 'sun' : 'moon'" [size]="18" />
+          </button>
           <button class="hdr__iconbtn" aria-label="Carrito">
             <app-icon name="cart" [size]="18" />
             <span class="count">{{ usuaria.carrito }}</span>
@@ -156,6 +165,9 @@ const MENU_LINKS: MenuLink[] = [
         width: auto;
         color: #1c1f28;
       }
+      /* En modo oscuro el logotipo (originalmente casi negro) se aclara */
+      :host-context([data-theme='dark']) .brand__logo,
+      :host-context([data-theme='dark']) .brand__iso { color: #f6f3f0; }
       .brand__sub {
         color: var(--ink-2);
         font-weight: 700;
@@ -330,4 +342,5 @@ export class App {
   protected readonly menuLinks = MENU_LINKS;
   protected readonly usuaria = USUARIA;
   protected readonly menuOpen = signal(false);
+  protected readonly theme = inject(ThemeService);
 }

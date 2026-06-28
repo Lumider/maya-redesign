@@ -52,6 +52,65 @@
   --font-display: 'Plus Jakarta Sans', system-ui, -apple-system, sans-serif;
 }
 
+/* ==========================================================================
+   Modo oscuro — versión Yanbal (near-black cálido + naranja de acento)
+   Solo se redefinen tokens; los componentes no cambian.
+   ========================================================================== */
+[data-theme='dark'] {
+  /* La rampa naranja se mantiene vívida; ajustamos solo los extremos usados
+     como fondos suaves (tints) y como texto sobre tint. */
+  --brand-50: rgba(255, 124, 60, 0.08);
+  --brand-100: rgba(255, 124, 60, 0.16);
+  --brand-200: rgba(255, 124, 60, 0.26);
+  --brand-600: #ff7a44; /* acento sólido más luminoso para contraste en oscuro */
+  --brand-700: #ff9c6b; /* texto naranja sobre tint */
+  --brand-grad: linear-gradient(to right, #ff7a3d, #f2632a);
+
+  /* Neutros */
+  --bg: #131110;
+  --sand: #262320;
+  --surface: #1c1a18;
+  --line: #2c2926;
+  --line-strong: #403b37;
+  --ink: #f6f3f0;
+  --ink-2: #ada69f;
+  --ink-3: #756e67;
+
+  /* Estado — colores más claros + fondos translúcidos */
+  --success: #34d399;
+  --success-bg: rgba(52, 211, 153, 0.14);
+  --warning: #fbbf24;
+  --warning-bg: rgba(251, 191, 36, 0.14);
+  --danger: #f87171;
+  --danger-bg: rgba(248, 113, 113, 0.14);
+  --info: #60a5fa;
+  --info-bg: rgba(96, 165, 250, 0.14);
+  --teal: #2dd4bf;
+  --teal-bg: rgba(45, 212, 191, 0.14);
+  --violet: #a78bfa;
+  --violet-bg: rgba(167, 139, 250, 0.16);
+
+  /* Sombras más marcadas para que se perciban sobre fondo oscuro */
+  --shadow-s: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow: 0 6px 16px rgba(0, 0, 0, 0.5);
+  --shadow-l: 0 8px 28px rgba(0, 0, 0, 0.65);
+}
+
+/* Brillo sutil de marca en la parte superior, al estilo de la referencia */
+[data-theme='dark'] body {
+  background:
+    radial-gradient(1200px 480px at 50% -260px, rgba(220, 88, 42, 0.16), transparent 70%),
+    var(--bg);
+  background-attachment: fixed;
+}
+
+/* Textos de alertas que estaban fijados para fondo claro */
+[data-theme='dark'] .alert--warning { color: var(--warning); }
+[data-theme='dark'] .alert--info { color: var(--info); }
+
+/* Scrollbar en oscuro */
+[data-theme='dark'] ::-webkit-scrollbar-thumb { background: #3a3633; }
+
 * { box-sizing: border-box; }
 
 html { scroll-behavior: smooth; }
