@@ -31,7 +31,11 @@ import { PLAN_CAMPANA } from '../data/mock';
       </header>
 
       <!-- Estado de la campaña -->
-      <section class="status card" [class.status--risk]="plan.estado === 'en-riesgo'">
+      <section
+        class="status card"
+        [class.status--risk]="plan.estado === 'en-riesgo'"
+        [class.status--ok]="plan.estado !== 'en-riesgo'"
+      >
         <div class="status__week">
           <div class="status__weeknum">S{{ plan.semanaActual }}</div>
           <div class="tiny">de {{ plan.totalSemanas }} semanas</div>
@@ -48,6 +52,17 @@ import { PLAN_CAMPANA } from '../data/mock';
             <strong>\${{ plan.gananciaObjetivo | number }}</strong> esta campaña.
             Al ritmo actual proyectas <strong>\${{ plan.gananciaProyectada | number }}</strong>.
           </p>
+          <div
+            class="progress status__bar"
+            [class.progress--success]="plan.estado !== 'en-riesgo'"
+            role="progressbar"
+            [attr.aria-valuenow]="pct(plan.gananciaProyectada, plan.gananciaObjetivo)"
+            aria-valuemin="0"
+            aria-valuemax="100"
+            [attr.aria-label]="'Ganancia proyectada: ' + pct(plan.gananciaProyectada, plan.gananciaObjetivo) + '% del objetivo'"
+          >
+            <div class="progress__fill" [style.width.%]="pct(plan.gananciaProyectada, plan.gananciaObjetivo)"></div>
+          </div>
         </div>
         <div class="status__gain">
           <div class="tiny">Ganancia proyectada</div>
@@ -211,7 +226,10 @@ import { PLAN_CAMPANA } from '../data/mock';
         margin-bottom: 28px;
         flex-wrap: wrap;
       }
+      /* El banner adopta el color del estado: ámbar si va en riesgo, verde si va en ritmo */
       .status--risk { border-color: var(--warning); background: linear-gradient(120deg, var(--warning-bg), var(--surface)); }
+      .status--ok { border-color: var(--success); background: linear-gradient(120deg, var(--success-bg), var(--surface)); }
+      .status__bar { max-width: 460px; margin-top: 12px; }
       .status__week { text-align: center; }
       .status__weeknum {
         font-size: 28px;
