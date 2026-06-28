@@ -80,14 +80,14 @@ export const ANUNCIOS: Anuncio[] = [
     titulo: 'Yanbal Business',
     texto: 'Empieza a construir tu camino hoy y descubre lo que puedes lograr.',
     cta: 'Síguenos en Instagram',
-    gradiente: 'linear-gradient(120deg, #8a6a52, #c2a184 60%, #e3cdb4)',
+    gradiente: 'linear-gradient(120deg, #5e4632, #7a5c3e 60%, #8a6a52)',
     emoji: '📱',
   },
   {
     titulo: 'Viaje PAR+',
     texto: 'Hay un lugar reservado para ti, junto a las mejores.',
     cta: 'Mira tu progreso',
-    gradiente: 'linear-gradient(120deg, #0e7490, #06b6d4 60%, #67e8f9)',
+    gradiente: 'linear-gradient(120deg, #0c5566, #0e7490 60%, #1287a8)',
     emoji: '🌴',
   },
 ];

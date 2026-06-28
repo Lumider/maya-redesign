@@ -300,10 +300,20 @@ const ACCESOS = [
         cursor: pointer;
         transition: transform 0.2s ease, box-shadow 0.2s ease;
       }
+      /* Scrim: oscurece donde va el texto (izquierda) y se desvanece hacia el
+         color vibrante (derecha) para garantizar contraste AA del texto blanco. */
+      .banner::before {
+        content: '';
+        position: absolute;
+        inset: 0;
+        background: linear-gradient(90deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.3) 60%, rgba(0, 0, 0, 0.05) 100%);
+        pointer-events: none;
+      }
+      .banner > * { position: relative; z-index: 1; }
       .banner:hover { transform: translateY(-3px); box-shadow: var(--shadow-l); }
       .banner h3 { font-size: 21px; color: #fff; }
-      .banner p { font-size: 13px; opacity: 0.92; margin: 6px 0 14px; max-width: 30ch; }
-      .banner__cta { font-size: 13px; font-weight: 700; border-bottom: 1.5px solid rgba(255,255,255,.6); padding-bottom: 2px; }
+      .banner p { font-size: 13px; margin: 6px 0 14px; max-width: 30ch; }
+      .banner__cta { font-size: 13px; font-weight: 700; border-bottom: 1.5px solid rgba(255,255,255,.7); padding-bottom: 2px; }
       .banner__emoji {
         position: absolute;
         right: 14px;
