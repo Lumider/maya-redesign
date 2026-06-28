@@ -11,9 +11,11 @@ import {
   signal,
 } from '@angular/core';
 
+// Pool completo de imágenes; en cada carga se eligen `count` al azar.
 const DEFAULT_IMAGES = [
   'loader/01.jpg', 'loader/02.jpg', 'loader/03.jpg', 'loader/04.jpg',
-  'loader/05.jpg', 'loader/06.jpg', 'loader/07.jpg',
+  'loader/05.jpg', 'loader/06.jpg', 'loader/07.jpg', 'loader/08.jpg',
+  'loader/09.jpg', 'loader/10.jpg', 'loader/11.jpg', 'loader/12.jpg',
 ];
 
 /**
@@ -48,7 +50,7 @@ const DEFAULT_IMAGES = [
       <div class="ld__stage">
         <!-- Pila de imágenes (baraja) que aparecen desde pequeño con profundidad -->
         <div class="ld__deck" aria-hidden="true">
-          @for (src of images(); track src; let i = $index) {
+          @for (src of deck(); track src; let i = $index) {
             <div
               class="ld__card"
               [style.transform]="cardTransform(i)"
@@ -158,8 +160,10 @@ const DEFAULT_IMAGES = [
   ],
 })
 export class Loader implements OnInit, OnDestroy {
-  /** URLs de las imágenes de la baraja (se precargan para el contador). */
+  /** Pool de URLs disponibles; se eligen `count` al azar en cada carga. */
   readonly images = input<string[]>(DEFAULT_IMAGES);
+  /** Cuántas imágenes mostrar (seleccionadas aleatoriamente del pool). */
+  readonly count = input(7);
   /** Texto del wordmark central. */
   readonly word = input('maya');
   /** Tiempo mínimo visible (ms) — evita parpadeos si carga al instante. */
@@ -172,10 +176,12 @@ export class Loader implements OnInit, OnDestroy {
 
   protected readonly progress = signal(0);
   protected readonly leaving = signal(false);
+  /** Selección aleatoria de `count` imágenes del pool (fija durante esta carga). */
+  protected readonly deck = signal<string[]>([]);
 
   /** Índice de la carta "al frente"; avanza con el progreso. */
   protected readonly top = computed(() => {
-    const n = this.images().length;
+    const n = this.deck().length;
     return Math.round((this.progress() / 100) * (n - 1));
   });
 
@@ -192,7 +198,15 @@ export class Loader implements OnInit, OnDestroy {
   private timer?: ReturnType<typeof setInterval>;
 
   ngOnInit(): void {
-    const imgs = this.images();
+    // Baraja aleatoria del pool y toma las primeras `count` (Fisher-Yates)
+    const pool = [...this.images()];
+    for (let k = pool.length - 1; k > 0; k--) {
+      const j = Math.floor(Math.random() * (k + 1));
+      [pool[k], pool[j]] = [pool[j], pool[k]];
+    }
+    const imgs = pool.slice(0, Math.min(this.count(), pool.length));
+    this.deck.set(imgs);
+
     imgs.forEach((_, i) => {
       this.rot[i] = ((i * 37) % 13) - 6; // -6..6 grados
       this.offX[i] = ((i * 53) % 28) - 14; // -14..14 px
