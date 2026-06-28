@@ -104,8 +104,8 @@ import { PARTICIPANTES } from '../data/mock';
         margin: 18px 0 28px;
         border-radius: var(--radius-l);
         padding: 20px 24px;
-        background: linear-gradient(120deg, #dbe7ff, #eef3ff);
-        color: #1e3a8a;
+        background: linear-gradient(120deg, var(--info-bg), var(--surface));
+        color: var(--info);
       }
       .banner strong { display: block; font-size: 15px; }
       .banner__detail { display: block; font-size: 13px; opacity: 0.85; margin-top: 2px; }

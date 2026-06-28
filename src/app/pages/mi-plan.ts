@@ -211,7 +211,7 @@ import { PLAN_CAMPANA } from '../data/mock';
         margin-bottom: 28px;
         flex-wrap: wrap;
       }
-      .status--risk { border-color: #f1c27d; background: linear-gradient(120deg, #fffaf2, #fff); }
+      .status--risk { border-color: var(--warning); background: linear-gradient(120deg, var(--warning-bg), var(--surface)); }
       .status__week { text-align: center; }
       .status__weeknum {
         font-size: 28px;
