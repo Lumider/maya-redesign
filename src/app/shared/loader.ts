@@ -150,11 +150,12 @@ const DEFAULT_IMAGES = [
         transform-box: fill-box;
         transform-origin: center bottom;
         opacity: 0;
-        animation: ld-letter-in 0.5s cubic-bezier(0.4, 0, 0.2, 1) both;
-        animation-delay: calc(var(--i, 0) * 0.1s);
+        /* Stagger marcado para que se lea claramente letra por letra (M→a→y→a) */
+        animation: ld-letter-in 0.42s cubic-bezier(0.4, 0, 0.2, 1) both;
+        animation-delay: calc(var(--i, 0) * 0.24s);
       }
       @keyframes ld-letter-in {
-        from { opacity: 0; transform: translateY(14%) scale(0.9); }
+        from { opacity: 0; transform: translateY(24%) scale(0.86); }
         to { opacity: 1; transform: translateY(0) scale(1); }
       }
       @media (max-width: 720px) {
