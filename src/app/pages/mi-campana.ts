@@ -297,7 +297,9 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
         border: 0;
         color: #fff;
       }
-      .card--activas .card-title, .card--activas h3 { color: #fff; }
+      .card--activas .card-title, .card--activas h2 { color: #fff; }
+      /* El "/ meta N" usa var(--ink-3) (gris) que no contrasta sobre el naranja */
+      .card--activas .muted-light { color: rgba(255, 255, 255, 0.9); }
       .card--activas .badge--neutral { background: rgba(0, 0, 0, 0.28); color: #fff; }
       .trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
       /* Tarjetas blancas fijas (blanco sobre el naranja en ambos temas):
