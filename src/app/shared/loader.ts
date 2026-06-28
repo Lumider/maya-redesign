@@ -13,8 +13,7 @@ import {
 
 const DEFAULT_IMAGES = [
   'loader/01.jpg', 'loader/02.jpg', 'loader/03.jpg', 'loader/04.jpg',
-  'loader/05.jpg', 'loader/06.jpg', 'loader/07.jpg', 'loader/08.jpg',
-  'loader/09.jpg', 'loader/10.jpg', 'loader/11.jpg', 'loader/12.jpg',
+  'loader/05.jpg', 'loader/06.jpg', 'loader/07.jpg',
 ];
 
 /**
