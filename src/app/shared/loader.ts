@@ -359,7 +359,7 @@ export class Loader implements OnInit, OnDestroy {
     // letra → 3) recorte del overlay hacia arriba → marca loaded + desmonta/emite
     setTimeout(() => {
       this.collapsing.set(true); // 1) las imágenes encogen (su momento visible)
-      setTimeout(() => this.wordOut.set(true), 360); // 2) luego sale el wordmark
+      setTimeout(() => this.wordOut.set(true), 120); // 2) el wordmark sale casi a la vez
       setTimeout(() => {
         // 3) tras la salida del wordmark (~1.14s), recorte del overlay
         this.leaving.set(true);
@@ -367,7 +367,7 @@ export class Loader implements OnInit, OnDestroy {
           this.doc.documentElement.classList.add('loaded');
           this.done.emit();
         }, 820);
-      }, 1500);
+      }, 1320);
     }, 260);
   }
 
