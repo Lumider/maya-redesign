@@ -169,8 +169,8 @@ const DEFAULT_IMAGES = [
       /* Salida = espejo de la entrada, en orden inverso (la "a" final sale primero) */
       .ld__word--out .ld__ltr {
         /* 'both' mantiene cada letra visible durante su delay (el estado base es opacity:0) */
-        animation: ld-letter-out 0.42s cubic-bezier(0.4, 0, 0.2, 1) both;
-        animation-delay: calc((3 - var(--i, 0)) * 0.24s);
+        animation: ld-letter-out 0.32s cubic-bezier(0.4, 0, 0.2, 1) both;
+        animation-delay: calc((3 - var(--i, 0)) * 0.13s);
       }
       @keyframes ld-letter-out {
         from { opacity: 1; transform: translateY(0) scale(1); }
@@ -367,7 +367,7 @@ export class Loader implements OnInit, OnDestroy {
           this.doc.documentElement.classList.add('loaded');
           this.done.emit();
         }, 820);
-      }, 1320);
+      }, 1000);
     }, 260);
   }
 
