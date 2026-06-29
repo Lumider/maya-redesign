@@ -72,7 +72,7 @@ const DEFAULT_IMAGES = [
             <path class="ld__ltr" style="--i: 0" d="M0.641667 71.9693C-0.179667 71.9693 -0.179667 71.0453 0.641667 71.0453H1.155C5.56967 70.9427 8.547 69.7107 8.64967 45.3787C8.64967 33.6747 8.75233 15.9133 8.75233 10.0613C8.75233 8.008 8.34167 6.05733 7.315 5.03067C5.67233 3.08 3.51633 1.64266 0.949667 1.64266H0.539C-0.179667 1.64266 -0.179667 0.821335 0.539 0.821335C12.243 0.821335 15.631 0 16.3497 0C16.9657 0 17.2737 0.205331 17.479 0.821335C18.3003 2.25867 19.943 5.13333 21.5857 7.7L43.351 41.7853L62.447 10.472C64.1923 7.59733 65.7323 4.82533 66.6563 3.18267C67.8883 1.12933 68.915 0.20533 70.147 0.20533C71.8923 0.20533 79.5923 0.821335 83.9043 0.821335C84.7257 0.821335 84.7257 1.74533 83.9043 1.74533H82.5697C77.539 1.74533 77.1283 2.464 77.1283 26.488V46.508C77.1283 70.532 77.6417 71.0453 82.6723 71.0453H83.9043C84.7257 71.0453 84.7257 71.9693 83.9043 71.9693C81.0297 71.9693 72.2003 71.6613 70.763 71.6613C69.223 71.6613 61.831 71.9693 58.9563 71.9693C58.135 71.9693 58.135 71.0453 58.9563 71.0453H60.907C66.2457 71.0453 66.8617 70.532 66.8617 45.3787V8.932C66.8617 7.7 66.759 7.18666 66.3483 7.18666C65.9377 7.18666 65.3217 8.21333 63.5763 11.088L40.0657 49.3827C39.2443 50.7173 38.9363 51.2307 38.5257 51.2307H37.807C37.499 51.2307 37.2937 50.82 36.883 50.204L10.087 8.11066L9.98433 45.3787C9.88167 69.8133 16.1443 71.0453 21.175 71.0453H22.6123C23.331 71.0453 23.331 71.9693 22.6123 71.9693C19.635 72.072 10.1897 71.6613 8.64967 71.6613C7.10967 71.6613 3.51633 71.9693 0.641667 71.9693Z" fill="currentColor"/>
           </svg>
         </h1>
-        <span class="ld__count" aria-hidden="true">{{ pad(progress()) }}</span>
+        <span class="ld__count" [class.ld__count--out]="collapsing()" aria-hidden="true">{{ pad(progress()) }}</span>
       </div>
 
       <div class="ld__bottom">
@@ -194,6 +194,12 @@ const DEFAULT_IMAGES = [
         font-variant-numeric: tabular-nums;
         color: var(--brand-400, #ff6f3c);
       }
+      /* Salida del contador: se funde y sube (keyframe, junto con el colapso) */
+      .ld__count--out { animation: ld-count-out 0.45s cubic-bezier(0.4, 0, 0.2, 1) forwards; }
+      @keyframes ld-count-out {
+        from { opacity: 1; transform: translateY(0); }
+        to { opacity: 0; transform: translateY(-14px); }
+      }
 
       .ld__bottom { display: flex; justify-content: center; padding: 0 26px 40px; }
       .ld__hint { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; color: #8c8378; }
@@ -202,6 +208,7 @@ const DEFAULT_IMAGES = [
         .ld { clip-path: none; transition: opacity 0.3s ease; }
         .ld--out { clip-path: none; opacity: 0; }
         .ld__card { transition: opacity 0.3s ease; }
+        .ld__count--out { animation: none; }
       }
     `,
   ],
