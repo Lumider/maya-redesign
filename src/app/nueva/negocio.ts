@@ -4,13 +4,14 @@ import { RouterLink } from '@angular/router';
 import { Icon } from '../shared/icon';
 import { Ring } from '../shared/ring';
 import { Reveal } from '../shared/reveal';
+import { Anchor } from '../shared/anchor';
 import { CAMPANA, CUADRANTE_HISTORIA, INDICADORES } from '../data/mock';
 
 /** Mi negocio (mide): indicadores, cuadrante, MRM/PPED, deuda/crédito, reportes. */
 @Component({
   selector: 'app-negocio',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DecimalPipe, RouterLink, Icon, Ring, Reveal],
+  imports: [DecimalPipe, RouterLink, Icon, Ring, Reveal, Anchor],
   template: `
     <div class="v2">
       <header class="v2-head" appReveal>
@@ -18,9 +19,9 @@ import { CAMPANA, CUADRANTE_HISTORIA, INDICADORES } from '../data/mock';
         <h1 class="v2-title">Mi negocio</h1>
         <p class="v2-sub">Cómo está la salud de tu negocio esta campaña.</p>
         <nav class="anchors" aria-label="Secciones">
-          <a class="anchor" href="#cuadrante">Cuadrante</a>
-          <a class="anchor" href="#indicadores">Indicadores</a>
-          <a class="anchor" href="#deuda">Morosidad y deuda</a>
+          <a class="anchor" appAnchor="cuadrante">Cuadrante</a>
+          <a class="anchor" appAnchor="indicadores">Indicadores</a>
+          <a class="anchor" appAnchor="deuda">Morosidad y deuda</a>
           <a class="anchor anchor--ext">Reportes</a>
         </nav>
       </header>

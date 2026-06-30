@@ -3,6 +3,7 @@ import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../shared/icon';
 import { Reveal } from '../shared/reveal';
+import { Anchor } from '../shared/anchor';
 import {
   CONSULTORAS,
   CREDITOS_PENDIENTES,
@@ -17,7 +18,7 @@ import {
 @Component({
   selector: 'app-equipo',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DecimalPipe, RouterLink, Icon, Reveal],
+  imports: [DecimalPipe, RouterLink, Icon, Reveal, Anchor],
   template: `
     <div class="v2">
       <header class="v2-head" appReveal>
@@ -25,10 +26,10 @@ import {
         <h1 class="v2-title">Mi equipo</h1>
         <p class="v2-sub">Tu grupo personal y tus directoras — a quién trabajar esta semana.</p>
         <nav class="anchors" aria-label="Secciones">
-          <a class="anchor" href="#trabajar">Por trabajar</a>
-          <a class="anchor" href="#creditos">Créditos ({{ pendientes().length }})</a>
-          <a class="anchor" href="#consultoras">Consultoras</a>
-          <a class="anchor" href="#directoras">Mis directoras</a>
+          <a class="anchor" appAnchor="trabajar">Por trabajar</a>
+          <a class="anchor" appAnchor="creditos">Créditos ({{ pendientes().length }})</a>
+          <a class="anchor" appAnchor="consultoras">Consultoras</a>
+          <a class="anchor" appAnchor="directoras">Mis directoras</a>
         </nav>
       </header>
 

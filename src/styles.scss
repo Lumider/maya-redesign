@@ -354,6 +354,9 @@ button { font-family: inherit; cursor: pointer; }
 }
 .anchor:hover { border-color: var(--ink); color: var(--ink); }
 .anchor--ext::after { content: ' ↗'; color: var(--brand-600); }
+.anchor[appAnchor] { cursor: pointer; }
+/* El header es sticky: deja margen al hacer scroll a una sección anclada */
+.v2 [id] { scroll-margin-top: 150px; }
 
 /* Encabezado de sección dentro de vista */
 .v2-h { font-size: 18px; font-weight: 800; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }

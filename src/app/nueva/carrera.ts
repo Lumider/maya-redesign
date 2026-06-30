@@ -3,13 +3,14 @@ import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../shared/icon';
 import { Reveal } from '../shared/reveal';
+import { Anchor } from '../shared/anchor';
 import { CAMPANA, PAR_ESTRELLAS, RECONOCIMIENTOS } from '../data/mock';
 
 /** Mi carrera (aspira): PAR+ Sueño, reconocimientos/medallas, ascensos y autos. */
 @Component({
   selector: 'app-carrera',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DecimalPipe, RouterLink, Icon, Reveal],
+  imports: [DecimalPipe, RouterLink, Icon, Reveal, Anchor],
   template: `
     <div class="v2">
       <header class="v2-head" appReveal>
@@ -17,9 +18,9 @@ import { CAMPANA, PAR_ESTRELLAS, RECONOCIMIENTOS } from '../data/mock';
         <h1 class="v2-title">Mi carrera</h1>
         <p class="v2-sub">A dónde vas: tu sueño PAR+, tus reconocimientos y tu siguiente estatus.</p>
         <nav class="anchors" aria-label="Secciones">
-          <a class="anchor" href="#sueno">Sueño PAR+</a>
-          <a class="anchor" href="#recon">Reconocimientos</a>
-          <a class="anchor" href="#ascensos">Ascensos y autos</a>
+          <a class="anchor" appAnchor="sueno">Sueño PAR+</a>
+          <a class="anchor" appAnchor="recon">Reconocimientos</a>
+          <a class="anchor" appAnchor="ascensos">Ascensos y autos</a>
         </nav>
       </header>
 

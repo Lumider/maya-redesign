@@ -4,13 +4,14 @@ import { RouterLink } from '@angular/router';
 import { Icon } from '../shared/icon';
 import { Ring } from '../shared/ring';
 import { Reveal } from '../shared/reveal';
+import { Anchor } from '../shared/anchor';
 import { CAMPANA, PLAN_CAMPANA } from '../data/mock';
 
 /** Mi campaña (ejecuta): plan/sueño, metas, acciones, venta MRM, activas, ritmo. */
 @Component({
   selector: 'app-campana-n',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DecimalPipe, RouterLink, Icon, Ring, Reveal],
+  imports: [DecimalPipe, RouterLink, Icon, Ring, Reveal, Anchor],
   template: `
     <div class="v2">
       <header class="v2-head" appReveal>
@@ -24,10 +25,10 @@ import { CAMPANA, PLAN_CAMPANA } from '../data/mock';
           </div>
         </div>
         <nav class="anchors" aria-label="Secciones">
-          <a class="anchor" href="#plan">Mi plan</a>
-          <a class="anchor" href="#acciones">Acciones</a>
-          <a class="anchor" href="#venta">Venta y activas</a>
-          <a class="anchor" href="#ritmo">Ritmo</a>
+          <a class="anchor" appAnchor="plan">Mi plan</a>
+          <a class="anchor" appAnchor="acciones">Acciones</a>
+          <a class="anchor" appAnchor="venta">Venta y activas</a>
+          <a class="anchor" appAnchor="ritmo">Ritmo</a>
           <a class="anchor anchor--ext">Mis pedidos</a>
         </nav>
       </header>

@@ -3,6 +3,7 @@ import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../shared/icon';
 import { Reveal } from '../shared/reveal';
+import { Anchor } from '../shared/anchor';
 import { CAMPANA, CREDITOS_PENDIENTES, PLAN_CAMPANA, SEGMENTOS_GP, USUARIA } from '../data/mock';
 
 /**
@@ -12,7 +13,7 @@ import { CAMPANA, CREDITOS_PENDIENTES, PLAN_CAMPANA, SEGMENTOS_GP, USUARIA } fro
 @Component({
   selector: 'app-inicio-n',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DecimalPipe, RouterLink, Icon, Reveal],
+  imports: [DecimalPipe, RouterLink, Icon, Reveal, Anchor],
   template: `
     <div class="v2">
       <header class="v2-head" appReveal>
@@ -24,9 +25,9 @@ import { CAMPANA, CREDITOS_PENDIENTES, PLAN_CAMPANA, SEGMENTOS_GP, USUARIA } fro
           <div class="hero3__item"><span class="sem sem--bad"></span><div><div class="hero3__v">D</div><div class="tiny">Cuadrante actual</div></div></div>
         </div>
         <nav class="anchors" aria-label="Secciones de Inicio">
-          <a class="anchor" href="#qhacer">Qué hacer</a>
-          <a class="anchor" href="#areas">Mis 4 áreas</a>
-          <a class="anchor" href="#novedades">Novedades</a>
+          <a class="anchor" appAnchor="qhacer">Qué hacer</a>
+          <a class="anchor" appAnchor="areas">Mis 4 áreas</a>
+          <a class="anchor" appAnchor="novedades">Novedades</a>
         </nav>
       </header>
 
