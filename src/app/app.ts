@@ -422,10 +422,12 @@ export class App implements OnInit {
 
   ngOnInit(): void {
     // Sincroniza la ruta con la versión persistida al cargar (sin recarga brusca).
-    const url = this.router.url;
-    if (this.version.nueva() && !url.startsWith('/n/')) {
+    // Usamos location.pathname (fiable durante el bootstrap con rutas lazy, donde
+    // router.url aún puede ser '/'), así un deep-link a /n/<vista> se respeta.
+    const onNew = typeof location !== 'undefined' && location.pathname.includes('/n/');
+    if (this.version.nueva() && !onNew) {
       this.router.navigateByUrl('/n/inicio');
-    } else if (!this.version.nueva() && url.startsWith('/n/')) {
+    } else if (!this.version.nueva() && onNew) {
       this.router.navigateByUrl('/inicio');
     }
   }
