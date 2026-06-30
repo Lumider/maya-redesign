@@ -16,5 +16,14 @@ export const routes: Routes = [
   { path: 'cuadrante', loadComponent: () => import('./pages/cuadrante').then((m) => m.CuadrantePage) },
   { path: 'herramientas', loadComponent: () => import('./pages/herramientas').then((m) => m.HerramientasPage) },
   { path: 'externa/:slug', loadComponent: () => import('./pages/externa').then((m) => m.ExternaPage) },
+
+  // Vista nueva (beta) — rutas paralelas; la versión actual queda intacta
+  { path: 'n/inicio', loadComponent: () => import('./nueva/inicio-n').then((m) => m.InicioN) },
+  { path: 'n/negocio', loadComponent: () => import('./nueva/negocio').then((m) => m.Negocio) },
+  { path: 'n/campana', loadComponent: () => import('./nueva/campana-n').then((m) => m.CampanaN) },
+  { path: 'n/equipo', loadComponent: () => import('./nueva/equipo').then((m) => m.Equipo) },
+  { path: 'n/carrera', loadComponent: () => import('./nueva/carrera').then((m) => m.Carrera) },
+  { path: 'n/herramientas', loadComponent: () => import('./pages/herramientas').then((m) => m.HerramientasPage) },
+
   { path: '**', redirectTo: 'inicio' },
 ];

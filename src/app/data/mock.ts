@@ -325,6 +325,48 @@ export const HERRAMIENTAS: Herramienta[] = [
   { titulo: 'Guía de Incorporación', categoria: 'Negocio', subcategoria: 'Lanzamiento', gradiente: 'linear-gradient(150deg, #1d4ed8, #3b82f6)', emoji: '🤝' },
 ];
 
+/**
+ * Créditos solicitados por consultoras del GP que la Directora debe aprobar.
+ * Un crédito sin aprobar bloquea el pedido de esa consultora; aprobarlo impacta el IM.
+ */
+export interface CreditoPendiente {
+  nombre: string;
+  iniciales: string;
+  codigo: string;
+  montoSolicitado: number;
+  impactoIM: number; // puntos porcentuales que sumaría al IM si se aprueba
+}
+
+export const CREDITOS_PENDIENTES: CreditoPendiente[] = [
+  { nombre: 'Karen Núñez Ibarra', iniciales: 'KN', codigo: '2202014155', montoSolicitado: 480, impactoIM: 0.3 },
+  { nombre: 'Renata Olivares Cano', iniciales: 'RO', codigo: '2201911687', montoSolicitado: 1200, impactoIM: 0.8 },
+  { nombre: 'Natalia Fuentes Gil', iniciales: 'NF', codigo: '2202051190', montoSolicitado: 650, impactoIM: 0.4 },
+];
+
+/** Genealogía: directoras hijas que esta líder (SSE) ha formado. */
+export interface Directora {
+  nombre: string;
+  iniciales: string;
+  estatus: 'JNR' | 'SNR' | 'SSE';
+  cuadrante: 'A' | 'B' | 'C' | 'D';
+  ventaGP: number;
+}
+
+export const DIRECTORAS: Directora[] = [
+  { nombre: 'Lucía Herrera', iniciales: 'LH', estatus: 'SNR', cuadrante: 'A', ventaGP: 212400 },
+  { nombre: 'Paola Vásquez', iniciales: 'PV', estatus: 'JNR', cuadrante: 'A', ventaGP: 168900 },
+  { nombre: 'Andrea Quispe', iniciales: 'AQ', estatus: 'JNR', cuadrante: 'C', ventaGP: 98300 },
+  { nombre: 'Rosa Maldonado', iniciales: 'RM', estatus: 'JNR', cuadrante: 'D', ventaGP: 64100 },
+  { nombre: 'Verónica Ríos', iniciales: 'VR', estatus: 'SNR', cuadrante: 'A', ventaGP: 245700 },
+];
+
+/** Reconocimientos / medallas anuales (PAR+). */
+export const RECONOCIMIENTOS = {
+  excelenciaGP: { medalla: 'Oro' as 'Oro' | 'Plata' | 'Bronce' | '—', cumplidas: 11, de: 13 },
+  liderazgo: { medalla: 'Plata' as 'Oro' | 'Plata' | 'Bronce' | '—', hijasEnA: 60, meta: 60 },
+  liderPoderosa: false,
+};
+
 export const CUADRANTE_HISTORIA = [
   { campana: 'C1', valor: 'A' },
   { campana: 'C2', valor: 'A' },

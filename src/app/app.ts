@@ -1,8 +1,9 @@
-import { ChangeDetectionStrategy, Component, inject, signal } from '@angular/core';
-import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { ChangeDetectionStrategy, Component, OnInit, inject, signal } from '@angular/core';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Icon } from './shared/icon';
 import { Loader } from './shared/loader';
 import { ThemeService } from './shared/theme';
+import { VersionService } from './shared/version';
 import { USUARIA } from './data/mock';
 
 interface Cat {
@@ -10,6 +11,15 @@ interface Cat {
   icon: string;
   route: string;
 }
+
+/** Navegación de la vista nueva (beta): 5 áreas + Herramientas (apoyo, en menú). */
+const NEW_CATS: Cat[] = [
+  { label: 'Inicio', icon: 'home', route: '/n/inicio' },
+  { label: 'Mi negocio', icon: 'chart', route: '/n/negocio' },
+  { label: 'Mi campaña', icon: 'target', route: '/n/campana' },
+  { label: 'Mi equipo', icon: 'users', route: '/n/equipo' },
+  { label: 'Mi carrera', icon: 'star', route: '/n/carrera' },
+];
 
 const CATS: Cat[] = [
   { label: 'Inicio', icon: 'home', route: '/inicio' },
@@ -53,7 +63,7 @@ const MENU_LINKS: MenuLink[] = [
 
     <header class="hdr">
       <div class="hdr__inner">
-        <a class="brand" routerLink="/inicio" aria-label="Yanbal Maya — inicio">
+        <a class="brand" [routerLink]="version.nueva() ? '/n/inicio' : '/inicio'" aria-label="Yanbal Maya — inicio">
           <!-- Logotipo Yanbal (desktop) -->
           <svg class="brand__logo" viewBox="21 53 321 54" fill="none" xmlns="http://www.w3.org/2000/svg">
             <path d="M64.02 53.7839H74.3706L52.104 85.7722V106.221H43.4543L43.5948 85.7722L21.3333 53.7839H31.9698L47.9949 77.3816L64.02 53.7839ZM99.1909 53.3334L125.215 106.216H115.286L110.465 95.806H86.6377L81.8162 106.216H72.173L98.1925 53.3334H99.1909ZM106.636 87.5638L98.624 70.4115H98.4835L90.4709 87.5638H106.636ZM168.891 53.7839H177.54V106.667H176.406L145.706 73.4805V106.216H137.056V53.3334H138.19L168.891 86.5196V53.7839ZM235.329 91.3854C235.329 100.227 228.877 106.216 218.1 106.216H199.024V53.7839H217.176C226.89 53.7839 233.698 58.8777 233.698 67.7188C233.698 73.0352 230.864 76.7827 226.609 78.9558C232.068 81.129 235.329 85.3959 235.329 91.3907V91.3854ZM207.323 61.5703V75.2031H216.825C221.436 75.2031 224.697 73.4063 224.697 68.3867C224.697 63.3672 221.436 61.5703 216.825 61.5703H207.323ZM217.462 98.4245C223.277 98.4245 226.398 96.1029 226.398 90.8607C226.398 85.6185 223.277 83.2969 217.462 83.2969H207.323V98.4298H217.462V98.4245ZM270.214 53.3334H271.207L297.232 106.216H287.303L282.481 95.806H258.659L253.838 106.216H244.194L270.214 53.3334ZM278.653 87.5638L270.64 70.4115H270.5L262.487 87.5638H278.653ZM319.709 97.6771H341.333L338.213 106.216H311.054V53.7839H319.704V97.6824L319.709 97.6771Z" fill="currentColor"/>
@@ -75,7 +85,17 @@ const MENU_LINKS: MenuLink[] = [
         </button>
 
         <div class="hdr__right">
-          <a class="hdr__link" routerLink="/externa/mis-pedidos">Realizar Pedido</a>
+          <button
+            class="vswitch"
+            type="button"
+            role="switch"
+            [attr.aria-checked]="version.nueva()"
+            (click)="toggleVersion()"
+            title="Alterna entre la versión actual y la nueva"
+          >
+            <span class="vswitch__label">Vista nueva <span class="vswitch__beta">beta</span></span>
+            <span class="vswitch__track" [class.vswitch__track--on]="version.nueva()"><span class="vswitch__knob"></span></span>
+          </button>
           <button
             class="hdr__iconbtn"
             (click)="theme.toggle()"
@@ -102,10 +122,16 @@ const MENU_LINKS: MenuLink[] = [
                   <span class="tiny">Cód. {{ usuaria.codigo }} · {{ usuaria.rol }}</span>
                 </div>
                 <div class="dropdown__sep"></div>
-                @for (l of menuLinks; track l.label) {
-                  <a class="dropdown__item" [class.dropdown__item--bold]="l.bold" [routerLink]="l.route" (click)="menuOpen.set(false)">
-                    {{ l.label }}
-                  </a>
+                @if (version.nueva()) {
+                  <a class="dropdown__item dropdown__item--bold" routerLink="/n/herramientas" (click)="menuOpen.set(false)">Herramientas</a>
+                  <a class="dropdown__item" routerLink="/externa/cursos" (click)="menuOpen.set(false)">Mis Cursos</a>
+                  <a class="dropdown__item" routerLink="/externa/reportes" (click)="menuOpen.set(false)">Reportes</a>
+                } @else {
+                  @for (l of menuLinks; track l.label) {
+                    <a class="dropdown__item" [class.dropdown__item--bold]="l.bold" [routerLink]="l.route" (click)="menuOpen.set(false)">
+                      {{ l.label }}
+                    </a>
+                  }
                 }
                 <div class="dropdown__sep"></div>
                 <a class="dropdown__item" (click)="menuOpen.set(false)">Cerrar sesión</a>
@@ -115,10 +141,10 @@ const MENU_LINKS: MenuLink[] = [
         </div>
       </div>
 
-      <!-- Barra de categorías -->
-      <nav class="cats" aria-label="Categorías">
+      <!-- Barra de categorías (cambia según la versión activa) -->
+      <nav class="cats" [class.cats--new]="version.nueva()" aria-label="Categorías">
         <div class="cats__inner">
-          @for (c of cats; track c.label) {
+          @for (c of (version.nueva() ? newCats : cats); track c.label) {
             <a class="cat" [routerLink]="c.route" routerLinkActive="cat--active" (click)="menuOpen.set(false)">
               <app-icon [name]="c.icon" [size]="22" />
               <span>{{ c.label }}</span>
@@ -135,6 +161,14 @@ const MENU_LINKS: MenuLink[] = [
     <main>
       <router-outlet />
     </main>
+
+    @if (version.nueva()) {
+      <!-- Barra de acción fija: los dos verbos que mueven el negocio -->
+      <div class="actionbar">
+        <a class="btn btn--ghost" routerLink="/externa/mis-pedidos"><app-icon name="cart" [size]="16" /> Realizar pedido</a>
+        <a class="btn btn--primary" routerLink="/n/equipo"><app-icon name="heart-plus" [size]="16" /> Incorporar</a>
+      </div>
+    }
   `,
   styles: [
     `
@@ -324,6 +358,37 @@ const MENU_LINKS: MenuLink[] = [
         opacity: 1;
         font-weight: 700;
       }
+      /* Nav de la vista nueva: 5 tabs centrados y holgados */
+      .cats--new .cats__inner { justify-content: center; gap: 6px; }
+      .cats--new .cat { padding: 10px 20px 12px; font-size: 13px; }
+
+      /* ----- Switch de versión (Vista nueva beta) ----- */
+      .vswitch {
+        display: inline-flex;
+        align-items: center;
+        gap: 9px;
+        background: var(--sand);
+        border: 1px solid var(--line);
+        border-radius: 99px;
+        padding: 6px 8px 6px 14px;
+        color: var(--ink);
+      }
+      .vswitch:hover { border-color: var(--line-strong); }
+      .vswitch__label { font-size: 12.5px; font-weight: 700; white-space: nowrap; }
+      .vswitch__beta {
+        font-size: 9px; font-weight: 800; letter-spacing: 0.06em; text-transform: uppercase;
+        background: var(--brand-100); color: var(--brand-700); padding: 1px 5px; border-radius: 99px; margin-left: 2px;
+      }
+      .vswitch__track {
+        position: relative; width: 38px; height: 22px; border-radius: 99px;
+        background: var(--line-strong); transition: background 0.18s ease; flex-shrink: 0;
+      }
+      .vswitch__track--on { background: var(--brand-grad-strong); }
+      .vswitch__knob {
+        position: absolute; top: 2px; left: 2px; width: 18px; height: 18px; border-radius: 99px;
+        background: #fff; box-shadow: var(--shadow-s); transition: transform 0.18s ease;
+      }
+      .vswitch__track--on .vswitch__knob { transform: translateX(16px); }
 
       /* ----- Responsive ----- */
       @media (max-width: 980px) {
@@ -337,15 +402,37 @@ const MENU_LINKS: MenuLink[] = [
         .searchpill { padding-left: 16px; }
         .hdr__link { display: none; }
         .cats__inner { justify-content: flex-start; padding: 0 12px; }
+        .cats--new .cats__inner { justify-content: flex-start; }
+        .vswitch__label { display: none; }
+        .vswitch { padding: 6px; }
       }
     `,
   ],
 })
-export class App {
+export class App implements OnInit {
   protected readonly cats = CATS;
+  protected readonly newCats = NEW_CATS;
   protected readonly menuLinks = MENU_LINKS;
   protected readonly usuaria = USUARIA;
   protected readonly menuOpen = signal(false);
   protected readonly entered = signal(false);
   protected readonly theme = inject(ThemeService);
+  protected readonly version = inject(VersionService);
+  private readonly router = inject(Router);
+
+  ngOnInit(): void {
+    // Sincroniza la ruta con la versión persistida al cargar (sin recarga brusca).
+    const url = this.router.url;
+    if (this.version.nueva() && !url.startsWith('/n/')) {
+      this.router.navigateByUrl('/n/inicio');
+    } else if (!this.version.nueva() && url.startsWith('/n/')) {
+      this.router.navigateByUrl('/inicio');
+    }
+  }
+
+  protected toggleVersion(): void {
+    const nueva = this.version.toggle();
+    this.menuOpen.set(false);
+    this.router.navigateByUrl(nueva ? '/n/inicio' : '/inicio');
+  }
 }
