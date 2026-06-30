@@ -343,21 +343,100 @@ export const CREDITOS_PENDIENTES: CreditoPendiente[] = [
   { nombre: 'Natalia Fuentes Gil', iniciales: 'NF', codigo: '2202051190', montoSolicitado: 650, impactoIM: 0.4 },
 ];
 
-/** Genealogía: directoras hijas que esta líder (SSE) ha formado. */
+/**
+ * Genealogía de liderazgo: la red de directoras de la Líder, repartida en
+ * 3 generaciones (Hija = Gen 1, Nieta = Gen 2, Bisnieta = Gen 3). Cada directora
+ * es empresaria independiente — gestiona el crédito de su propio grupo — por eso
+ * aquí NO hay aprobación de créditos. Cada una aparece una sola vez; las lentes
+ * (Prioridad/Cuadrante/Metas/Emprendedoras/PAR+) reordenan esta misma lista.
+ *
+ * Las 4 dimensiones son de la DIRECTORA, no de la Líder.
+ */
+export interface MetaProyeccion {
+  real: number;
+  meta: number; // proyección que la directora registró al iniciar la campaña
+}
+
 export interface Directora {
   nombre: string;
   iniciales: string;
   estatus: 'JNR' | 'SNR' | 'SSE';
+  generacion: 1 | 2 | 3; // 1 Hija · 2 Nieta · 3 Bisnieta
   cuadrante: 'A' | 'B' | 'C' | 'D';
-  ventaGP: number;
+  /** Qué le falta para llegar a Cuadrante A ('' si ya está en A). */
+  faltaA: string;
+  /** Metas registradas al iniciar la campaña: real vs. proyección. */
+  metas: {
+    ventaGP: MetaProyeccion;
+    activas: MetaProyeccion;
+    pped: MetaProyeccion;
+    reactivas: MetaProyeccion;
+    retenidas: MetaProyeccion;
+  };
+  /** CEM/CES a su cargo y nota corta de su crecimiento paralelo. */
+  emprendedoras: { cem: number; ces: number; nota: string };
+  /** PAR+: a qué Estrella se proyecta, su Estrella Sueño (BP) y qué le falta. */
+  par: { proyectada: number; sueno: number; falta: string };
 }
 
 export const DIRECTORAS: Directora[] = [
-  { nombre: 'Lucía Herrera', iniciales: 'LH', estatus: 'SNR', cuadrante: 'A', ventaGP: 212400 },
-  { nombre: 'Paola Vásquez', iniciales: 'PV', estatus: 'JNR', cuadrante: 'A', ventaGP: 168900 },
-  { nombre: 'Andrea Quispe', iniciales: 'AQ', estatus: 'JNR', cuadrante: 'C', ventaGP: 98300 },
-  { nombre: 'Rosa Maldonado', iniciales: 'RM', estatus: 'JNR', cuadrante: 'D', ventaGP: 64100 },
-  { nombre: 'Verónica Ríos', iniciales: 'VR', estatus: 'SNR', cuadrante: 'A', ventaGP: 245700 },
+  // ---- Gen 1 · Hijas ----
+  {
+    nombre: 'Verónica Ríos', iniciales: 'VR', estatus: 'SNR', generacion: 1, cuadrante: 'A', faltaA: '',
+    metas: { ventaGP: { real: 245700, meta: 230000 }, activas: { real: 63, meta: 60 }, pped: { real: 7, meta: 6 }, reactivas: { real: 11, meta: 10 }, retenidas: { real: 49, meta: 47 } },
+    emprendedoras: { cem: 4, ces: 2, nota: '4 CEM · 2 CES — crecen parejo' },
+    par: { proyectada: 4, sueno: 5, falta: 'IM de GF ≤ 3% para su Estrella 5' },
+  },
+  {
+    nombre: 'Lucía Herrera', iniciales: 'LH', estatus: 'SNR', generacion: 1, cuadrante: 'A', faltaA: '',
+    metas: { ventaGP: { real: 212400, meta: 200000 }, activas: { real: 58, meta: 55 }, pped: { real: 6, meta: 5 }, reactivas: { real: 9, meta: 8 }, retenidas: { real: 44, meta: 42 } },
+    emprendedoras: { cem: 3, ces: 1, nota: '3 CEM · 1 CES' },
+    par: { proyectada: 3, sueno: 4, falta: 'Sostener el monto de venta del Sueño' },
+  },
+  {
+    nombre: 'Paola Vásquez', iniciales: 'PV', estatus: 'JNR', generacion: 1, cuadrante: 'A', faltaA: '',
+    metas: { ventaGP: { real: 168900, meta: 160000 }, activas: { real: 41, meta: 40 }, pped: { real: 4, meta: 4 }, reactivas: { real: 6, meta: 6 }, retenidas: { real: 33, meta: 32 } },
+    emprendedoras: { cem: 2, ces: 0, nota: '2 CEM · aún sin CES' },
+    par: { proyectada: 2, sueno: 3, falta: 'Formar 1 nueva directora para Estrella 3' },
+  },
+  {
+    nombre: 'Andrea Quispe', iniciales: 'AQ', estatus: 'JNR', generacion: 1, cuadrante: 'C', faltaA: 'Cumple PPED · faltan $41.7k de venta (MRM)',
+    metas: { ventaGP: { real: 98300, meta: 140000 }, activas: { real: 27, meta: 38 }, pped: { real: 4, meta: 4 }, reactivas: { real: 2, meta: 6 }, retenidas: { real: 22, meta: 31 } },
+    emprendedoras: { cem: 0, ces: 0, nota: 'Sin emprendedoras aún' },
+    par: { proyectada: 1, sueno: 3, falta: 'Cumplir el monto de venta del Sueño' },
+  },
+  {
+    nombre: 'Rosa Maldonado', iniciales: 'RM', estatus: 'JNR', generacion: 1, cuadrante: 'D', faltaA: 'Faltan venta (MRM) y primeros pedidos',
+    metas: { ventaGP: { real: 64100, meta: 135000 }, activas: { real: 21, meta: 37 }, pped: { real: 0, meta: 4 }, reactivas: { real: 1, meta: 6 }, retenidas: { real: 16, meta: 31 } },
+    emprendedoras: { cem: 1, ces: 0, nota: '1 CEM · aún sin CES' },
+    par: { proyectada: 1, sueno: 2, falta: 'Estabilizar el grupo antes de proyectar' },
+  },
+  // ---- Gen 2 · Nietas ----
+  {
+    nombre: 'Mónica Lazo', iniciales: 'ML', estatus: 'JNR', generacion: 2, cuadrante: 'A', faltaA: '',
+    metas: { ventaGP: { real: 142000, meta: 135000 }, activas: { real: 36, meta: 34 }, pped: { real: 4, meta: 3 }, reactivas: { real: 5, meta: 5 }, retenidas: { real: 27, meta: 26 } },
+    emprendedoras: { cem: 1, ces: 0, nota: '1 CEM · aún sin CES' },
+    par: { proyectada: 2, sueno: 3, falta: 'Cuadrante A 1 campaña más' },
+  },
+  {
+    nombre: 'Brenda Salas', iniciales: 'BS', estatus: 'JNR', generacion: 2, cuadrante: 'B', faltaA: 'Cumple venta (MRM) · faltan 2 primeros pedidos',
+    metas: { ventaGP: { real: 121000, meta: 150000 }, activas: { real: 32, meta: 40 }, pped: { real: 2, meta: 4 }, reactivas: { real: 4, meta: 7 }, retenidas: { real: 26, meta: 33 } },
+    emprendedoras: { cem: 1, ces: 0, nota: '1 CEM · aún sin CES' },
+    par: { proyectada: 1, sueno: 2, falta: 'Subir a Cuadrante A' },
+  },
+  {
+    nombre: 'Diana Cabrera', iniciales: 'DC', estatus: 'JNR', generacion: 2, cuadrante: 'D', faltaA: 'Faltan venta (MRM) y primeros pedidos',
+    metas: { ventaGP: { real: 51200, meta: 130000 }, activas: { real: 18, meta: 36 }, pped: { real: 0, meta: 4 }, reactivas: { real: 1, meta: 6 }, retenidas: { real: 14, meta: 30 } },
+    emprendedoras: { cem: 0, ces: 0, nota: 'Sin emprendedoras aún' },
+    par: { proyectada: 0, sueno: 2, falta: 'Aún sin proyección PAR+' },
+  },
+  // ---- Gen 3 · Bisnieta ----
+  {
+    nombre: 'Inés Ferrer', iniciales: 'IF', estatus: 'JNR', generacion: 3, cuadrante: 'C', faltaA: 'Cumple PPED · faltan $44k de venta (MRM)',
+    metas: { ventaGP: { real: 76000, meta: 120000 }, activas: { real: 22, meta: 35 }, pped: { real: 4, meta: 4 }, reactivas: { real: 1, meta: 5 }, retenidas: { real: 18, meta: 30 } },
+    emprendedoras: { cem: 0, ces: 0, nota: 'Sin emprendedoras aún' },
+    par: { proyectada: 1, sueno: 2, falta: 'Lograr su primer hito PAR+' },
+  },
 ];
 
 /** Reconocimientos / medallas anuales (PAR+). */
