@@ -86,7 +86,7 @@ import { CAMPANA, CREDITOS_PENDIENTES, PLAN_CAMPANA, SEGMENTOS_GP, USUARIA } fro
           </div>
 
           <a class="card par" routerLink="/n/carrera" appReveal [revealDelay]="60">
-            <div class="par__cover">🌴</div>
+            <div class="par__cover"><img src="media/punta-cana.jpg" alt="" aria-hidden="true" /></div>
             <div class="par__body">
               <span class="badge badge--brand">{{ campana.par.nivel }}</span>
               <strong>{{ campana.par.sueno }}</strong>
@@ -138,7 +138,8 @@ import { CAMPANA, CREDITOS_PENDIENTES, PLAN_CAMPANA, SEGMENTOS_GP, USUARIA } fro
       .area__top { display: flex; align-items: center; justify-content: space-between; }
       .area__top .sem { width: 9px; height: 9px; }
       .par { overflow: hidden; display: block; }
-      .par__cover { height: 96px; display: grid; place-items: center; font-size: 44px; background: linear-gradient(120deg, #0c5566, #0e7490 60%, #1287a8); }
+      .par__cover { height: 110px; overflow: hidden; background: linear-gradient(120deg, #0c5566, #0e7490 60%, #1287a8); }
+      .par__cover img { width: 100%; height: 100%; object-fit: cover; display: block; }
       .par__body { padding: 14px 16px; display: flex; flex-direction: column; gap: 4px; }
       .row-eq { display: flex; align-items: center; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); }
       .row-eq:last-child { border-bottom: 0; }
