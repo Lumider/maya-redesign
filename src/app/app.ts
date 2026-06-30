@@ -85,6 +85,14 @@ const MENU_LINKS: MenuLink[] = [
         </button>
 
         <div class="hdr__right">
+          @if (version.nueva()) {
+            <!-- Los dos verbos que mueven el negocio, al extremo derecho del header.
+                 Jerarquía: Realizar pedido = primario (relleno) · Incorporar = secundario (borde). -->
+            <div class="hdr__actions">
+              <a class="btn btn--primary btn--sm" routerLink="/externa/mis-pedidos"><app-icon name="cart" [size]="16" /> <span class="hdr__actions-l">Realizar pedido</span></a>
+              <a class="btn btn--ghost btn--sm" routerLink="/n/equipo"><app-icon name="heart-plus" [size]="16" /> <span class="hdr__actions-l">Incorporar</span></a>
+            </div>
+          }
           <button
             class="vswitch"
             type="button"
@@ -161,14 +169,6 @@ const MENU_LINKS: MenuLink[] = [
     <main>
       <router-outlet />
     </main>
-
-    @if (version.nueva()) {
-      <!-- Barra de acción fija: los dos verbos que mueven el negocio -->
-      <div class="actionbar">
-        <a class="btn btn--ghost" routerLink="/externa/mis-pedidos"><app-icon name="cart" [size]="16" /> Realizar pedido</a>
-        <a class="btn btn--primary" routerLink="/n/equipo"><app-icon name="heart-plus" [size]="16" /> Incorporar</a>
-      </div>
-    }
   `,
   styles: [
     `
@@ -244,6 +244,9 @@ const MENU_LINKS: MenuLink[] = [
       }
 
       .hdr__right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+      /* Acciones del header (vista nueva): primario relleno + secundario borde */
+      .hdr__actions { display: flex; align-items: center; gap: 8px; margin-right: 4px; }
+      .hdr__actions .btn { padding: 9px 16px; font-size: 13px; }
       .hdr__link {
         font-size: 13.5px;
         font-weight: 700;
@@ -405,6 +408,9 @@ const MENU_LINKS: MenuLink[] = [
         .cats--new .cats__inner { justify-content: flex-start; }
         .vswitch__label { display: none; }
         .vswitch { padding: 6px; }
+        /* Acciones en móvil: solo icono para no desbordar el header */
+        .hdr__actions-l { display: none; }
+        .hdr__actions .btn { padding: 9px 11px; }
       }
     `,
   ],
