@@ -62,7 +62,7 @@ const MENU_LINKS: MenuLink[] = [
     }
 
     <header class="hdr">
-      <div class="hdr__inner">
+      <div class="hdr__inner" [class.hdr__inner--new]="version.nueva()">
         <a class="brand" [routerLink]="version.nueva() ? '/n/inicio' : '/inicio'" aria-label="Yanbal Maya — inicio">
           <!-- Logotipo Yanbal (desktop) -->
           <svg class="brand__logo" viewBox="21 53 321 54" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -75,48 +75,62 @@ const MENU_LINKS: MenuLink[] = [
           <span class="brand__sub">maya</span>
         </a>
 
-        <button class="searchpill" aria-label="Buscar en Maya">
-          <span class="searchpill__seg">Campaña {{ usuaria.campana }}</span>
-          <span class="searchpill__div"></span>
-          <span class="searchpill__seg">Semana {{ usuaria.semana }}</span>
-          <span class="searchpill__div"></span>
-          <span class="searchpill__seg searchpill__seg--muted">Buscar en Maya</span>
-          <span class="searchpill__btn"><app-icon name="search" [size]="14" /></span>
-        </button>
+        <!-- Identidad + contexto (izquierda) -->
+        @if (version.nueva()) {
+          <span class="ctxpill" aria-label="Contexto de campaña">
+            <app-icon name="target" [size]="14" /> Campaña {{ usuaria.campana }} <span class="ctxpill__div"></span> Semana {{ usuaria.semana }}
+          </span>
+        } @else {
+          <button class="searchpill" aria-label="Buscar en Maya">
+            <span class="searchpill__seg">Campaña {{ usuaria.campana }}</span>
+            <span class="searchpill__div"></span>
+            <span class="searchpill__seg">Semana {{ usuaria.semana }}</span>
+            <span class="searchpill__div"></span>
+            <span class="searchpill__seg searchpill__seg--muted">Buscar en Maya</span>
+            <span class="searchpill__btn"><app-icon name="search" [size]="14" /></span>
+          </button>
+        }
 
         <div class="hdr__right">
           @if (version.nueva()) {
-            <!-- Los dos verbos que mueven el negocio, al extremo derecho del header.
-                 Jerarquía: Realizar pedido = primario (relleno) · Incorporar = secundario (borde). -->
+            <!-- Utilidades: buscar + carrito -->
+            <button class="hdr__iconbtn" aria-label="Buscar en Maya"><app-icon name="search" [size]="18" /></button>
+            <button class="hdr__iconbtn" aria-label="Carrito">
+              <app-icon name="cart" [size]="18" />
+              <span class="count">{{ usuaria.carrito }}</span>
+            </button>
+            <!-- Acciones: Realizar pedido (primario) · Incorporar (secundario) -->
             <div class="hdr__actions">
               <a class="btn btn--primary btn--sm" routerLink="/externa/mis-pedidos"><app-icon name="cart" [size]="16" /> <span class="hdr__actions-l">Realizar pedido</span></a>
               <a class="btn btn--ghost btn--sm" routerLink="/n/equipo"><app-icon name="heart-plus" [size]="16" /> <span class="hdr__actions-l">Incorporar</span></a>
             </div>
+          } @else {
+            <button
+              class="vswitch"
+              type="button"
+              role="switch"
+              [attr.aria-checked]="version.nueva()"
+              (click)="toggleVersion()"
+              title="Alterna entre la versión actual y la nueva"
+            >
+              <span class="vswitch__label">Vista nueva <span class="vswitch__beta">beta</span></span>
+              <span class="vswitch__track" [class.vswitch__track--on]="version.nueva()"><span class="vswitch__knob"></span></span>
+            </button>
+            <button
+              class="hdr__iconbtn"
+              (click)="theme.toggle()"
+              [attr.aria-label]="theme.theme() === 'dark' ? 'Activar modo claro' : 'Activar modo oscuro'"
+              [attr.aria-pressed]="theme.theme() === 'dark'"
+            >
+              <app-icon [name]="theme.theme() === 'dark' ? 'sun' : 'moon'" [size]="18" />
+            </button>
+            <button class="hdr__iconbtn" aria-label="Carrito">
+              <app-icon name="cart" [size]="18" />
+              <span class="count">{{ usuaria.carrito }}</span>
+            </button>
           }
-          <button
-            class="vswitch"
-            type="button"
-            role="switch"
-            [attr.aria-checked]="version.nueva()"
-            (click)="toggleVersion()"
-            title="Alterna entre la versión actual y la nueva"
-          >
-            <span class="vswitch__label">Vista nueva <span class="vswitch__beta">beta</span></span>
-            <span class="vswitch__track" [class.vswitch__track--on]="version.nueva()"><span class="vswitch__knob"></span></span>
-          </button>
-          <button
-            class="hdr__iconbtn"
-            (click)="theme.toggle()"
-            [attr.aria-label]="theme.theme() === 'dark' ? 'Activar modo claro' : 'Activar modo oscuro'"
-            [attr.aria-pressed]="theme.theme() === 'dark'"
-          >
-            <app-icon [name]="theme.theme() === 'dark' ? 'sun' : 'moon'" [size]="18" />
-          </button>
-          <button class="hdr__iconbtn" aria-label="Carrito">
-            <app-icon name="cart" [size]="18" />
-            <span class="count">{{ usuaria.carrito }}</span>
-          </button>
 
+          <!-- Cuenta -->
           <div class="usermenu">
             <button class="userpill" (click)="menuOpen.set(!menuOpen())" aria-label="Menú de usuario">
               <app-icon name="menu" [size]="16" />
@@ -129,12 +143,26 @@ const MENU_LINKS: MenuLink[] = [
                   <strong>{{ usuaria.nombre }}</strong>
                   <span class="tiny">Cód. {{ usuaria.codigo }} · {{ usuaria.rol }}</span>
                 </div>
-                <div class="dropdown__sep"></div>
                 @if (version.nueva()) {
+                  <!-- Ajustes (no acciones frecuentes): BETA arriba del todo + tema -->
+                  <div class="dropdown__sep"></div>
+                  <button class="dropdown__toggle" (click)="toggleVersion()" role="switch" aria-checked="true">
+                    <span class="dropdown__toggle-l">Vista nueva <span class="vswitch__beta">beta</span></span>
+                    <span class="vswitch__track vswitch__track--on"><span class="vswitch__knob"></span></span>
+                  </button>
+                  <button class="dropdown__toggle" (click)="theme.toggle()" [attr.aria-pressed]="theme.theme() === 'dark'">
+                    <span class="dropdown__toggle-l"><app-icon [name]="theme.theme() === 'dark' ? 'sun' : 'moon'" [size]="16" /> Modo {{ theme.theme() === 'dark' ? 'claro' : 'oscuro' }}</span>
+                  </button>
+                  <div class="dropdown__sep"></div>
+                  <a class="dropdown__item" (click)="menuOpen.set(false)">Mi perfil</a>
+                  <a class="dropdown__item" (click)="menuOpen.set(false)">Ajustes</a>
+                  <a class="dropdown__item" (click)="menuOpen.set(false)">Notificaciones</a>
+                  <div class="dropdown__sep"></div>
                   <a class="dropdown__item dropdown__item--bold" routerLink="/n/herramientas" (click)="menuOpen.set(false)">Herramientas</a>
                   <a class="dropdown__item" routerLink="/externa/cursos" (click)="menuOpen.set(false)">Mis Cursos</a>
                   <a class="dropdown__item" routerLink="/externa/reportes" (click)="menuOpen.set(false)">Reportes</a>
                 } @else {
+                  <div class="dropdown__sep"></div>
                   @for (l of menuLinks; track l.label) {
                     <a class="dropdown__item" [class.dropdown__item--bold]="l.bold" [routerLink]="l.route" (click)="menuOpen.set(false)">
                       {{ l.label }}
@@ -244,9 +272,29 @@ const MENU_LINKS: MenuLink[] = [
       }
 
       .hdr__right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+      /* Vista nueva: tres grupos — identidad/contexto (izq) · acciones+cuenta (der) */
+      .hdr__inner--new .hdr__right { margin-left: auto; gap: 8px; }
+      /* Pastilla de contexto (una sola, no chips sueltos) */
+      .ctxpill {
+        display: inline-flex; align-items: center; gap: 8px;
+        border: 1px solid var(--line-strong); background: var(--surface);
+        border-radius: 99px; padding: 8px 16px; box-shadow: var(--shadow-s);
+        font-size: 13px; font-weight: 700; color: var(--ink); white-space: nowrap;
+      }
+      .ctxpill__div { width: 1px; height: 14px; background: var(--line-strong); }
       /* Acciones del header (vista nueva): primario relleno + secundario borde */
-      .hdr__actions { display: flex; align-items: center; gap: 8px; margin-right: 4px; }
+      .hdr__actions { display: flex; align-items: center; gap: 8px; }
       .hdr__actions .btn { padding: 9px 16px; font-size: 13px; }
+      /* Separador visual entre utilidades y acciones */
+      .hdr__inner--new .hdr__actions { margin-left: 4px; padding-left: 10px; border-left: 1px solid var(--line); }
+      /* Filas-toggle dentro del menú (BETA / tema) */
+      .dropdown__toggle {
+        width: 100%; display: flex; align-items: center; justify-content: space-between;
+        gap: 10px; padding: 10px 16px; background: none; border: 0; color: var(--ink);
+        font-size: 13.5px; font-weight: 700; transition: background 0.12s ease;
+      }
+      .dropdown__toggle:hover { background: var(--sand); }
+      .dropdown__toggle-l { display: inline-flex; align-items: center; gap: 8px; }
       .hdr__link {
         font-size: 13.5px;
         font-weight: 700;
@@ -411,6 +459,11 @@ const MENU_LINKS: MenuLink[] = [
         /* Acciones en móvil: solo icono para no desbordar el header */
         .hdr__actions-l { display: none; }
         .hdr__actions .btn { padding: 9px 11px; }
+        /* Contexto: en móvil, chip compacto */
+        .ctxpill { padding: 7px 12px; font-size: 12px; }
+      }
+      @media (max-width: 560px) {
+        .ctxpill { display: none; }
       }
     `,
   ],
