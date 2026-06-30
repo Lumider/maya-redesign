@@ -29,34 +29,24 @@ import { CAMPANA, PAR_ESTRELLAS, RECONOCIMIENTOS } from '../data/mock';
           <!-- Hero full-bleed estilo editorial: media + overlay + kicker + titular + progreso -->
           <section id="sueno" class="card par-hero v2-section" appReveal>
             <div class="par-hero__bg" aria-hidden="true">
-              @if (!reducedMotion) {
-                @if (usarYoutube) {
-                  <!-- Referencia: YouTube SOLO de ejemplo mientras no haya mp4 propio.
-                       Camino preferido = el <video> de abajo (poner usarYoutube=false
-                       y un .mp4 corto/mudo/optimizado en public/media/). -->
-                  <iframe
-                    class="par-hero__yt"
-                    src="https://www.youtube.com/embed/YL7sFP6tr2M?autoplay=1&mute=1&loop=1&playlist=YL7sFP6tr2M&controls=0&modestbranding=1&playsinline=1&rel=0&showinfo=0&disablekb=1"
-                    title=""
-                    aria-hidden="true"
-                    tabindex="-1"
-                    allow="autoplay; encrypted-media"
-                    referrerpolicy="strict-origin-when-cross-origin"
-                  ></iframe>
-                } @else {
-                  <video
-                    class="par-hero__media"
-                    autoplay
-                    muted
-                    loop
-                    playsinline
-                    poster="media/punta-cana-poster.jpg"
-                    aria-hidden="true"
-                    tabindex="-1"
-                  >
-                    <source src="media/punta-cana.mp4" type="video/mp4" />
-                  </video>
-                }
+              @if (usarVideo && !reducedMotion) {
+                <video
+                  class="par-hero__media"
+                  autoplay
+                  muted
+                  loop
+                  playsinline
+                  poster="media/punta-cana.jpg"
+                  aria-hidden="true"
+                  tabindex="-1"
+                >
+                  <source src="media/punta-cana.mp4" type="video/mp4" />
+                </video>
+              } @else {
+                <!-- Fondo del hero: foto propia de Punta Cana (estática, liviana,
+                     funciona también con reduce-motion). Para usar video: usarVideo=true
+                     y un .mp4 corto/mudo/optimizado en public/media/. -->
+                <img class="par-hero__media" src="media/punta-cana.jpg" alt="" aria-hidden="true" tabindex="-1" />
               }
             </div>
             <div class="par-hero__overlay" aria-hidden="true"></div>
@@ -151,7 +141,7 @@ import { CAMPANA, PAR_ESTRELLAS, RECONOCIMIENTOS } from '../data/mock';
         align-items: flex-end;
         isolation: isolate;
       }
-      /* Fallback siempre detrás del media (y único fondo con reduce-motion) */
+      /* Fallback detrás del media (visible si la imagen aún no carga) */
       .par-hero__bg {
         position: absolute;
         inset: 0;
@@ -165,7 +155,7 @@ import { CAMPANA, PAR_ESTRELLAS, RECONOCIMIENTOS } from '../data/mock';
         object-fit: cover;
         pointer-events: none;
       }
-      /* iframe cover: centra y escala 16:9 para cubrir el alto del hero */
+      /* iframe cover (solo si se usara YouTube de referencia) */
       .par-hero__yt {
         position: absolute;
         top: 50%;
@@ -254,9 +244,7 @@ import { CAMPANA, PAR_ESTRELLAS, RECONOCIMIENTOS } from '../data/mock';
       .rung--next { outline: 2px solid var(--brand-500); background: var(--brand-50); }
 
       /* Seguridad extra: con reduce-motion, nunca mostrar media en movimiento */
-      @media (prefers-reduced-motion: reduce) {
-        .par-hero__yt, .par-hero__media { display: none; }
-      }
+      /* Con reduce-motion la imagen estática se mantiene; el video no se renderiza (guard en TS) */
 
       @media (max-width: 560px) {
         .par-hero { min-height: 60vh; }
@@ -278,9 +266,9 @@ export class Carrera {
   protected readonly objetivoEstrella = 3;
   protected readonly suenoPct = Math.round((CAMPANA.par.ventaC6 / CAMPANA.par.metaSueno) * 100);
 
-  /** Camino preferido = <video> propio; YouTube solo de referencia/ejemplo. */
-  protected readonly usarYoutube = true;
-  /** Con reduce-motion no se reproduce media: queda el gradiente/poster estático. */
+  /** Fondo del hero: imagen estática por defecto. true = usar mp4 propio en public/media/. */
+  protected readonly usarVideo = false;
+  /** Con reduce-motion no se reproduce video: queda la imagen estática. */
   protected readonly reducedMotion =
     typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
 }
