@@ -143,7 +143,10 @@ h1, h2, h3 {
 }
 
 a { color: inherit; text-decoration: none; }
-button { font-family: inherit; cursor: pointer; }
+/* Los <button> nativos no heredan color: sin esto, las tarjetas-botón
+   (.seg, .acc, .tabs__tab…) usan el ButtonText del sistema (negro) y fallan
+   contraste en modo oscuro (WCAG 1.4.3). */
+button { font-family: inherit; color: inherit; cursor: pointer; }
 
 /* Indicador de foco de teclado visible y consistente (WCAG 2.4.7) */
 :focus-visible {
