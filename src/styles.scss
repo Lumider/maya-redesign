@@ -398,3 +398,15 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
   .v2-grid { grid-template-columns: 1fr; }
   .v2-aside { position: static; }
 }
+
+/* Móvil: una columna, chips-ancla deslizables y espacio para el bottom nav fijo */
+@media (max-width: 720px) {
+  .v2 { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+  .anchors {
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+  .anchors::-webkit-scrollbar { display: none; }
+}

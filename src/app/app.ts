@@ -10,15 +10,17 @@ interface Cat {
   label: string;
   icon: string;
   route: string;
+  /** Etiqueta corta para el bottom nav móvil. */
+  short?: string;
 }
 
 /** Navegación de la vista nueva (beta): 5 áreas + Herramientas (apoyo, en menú). */
 const NEW_CATS: Cat[] = [
-  { label: 'Inicio', icon: 'home', route: '/n/inicio' },
-  { label: 'Mi negocio', icon: 'chart', route: '/n/negocio' },
-  { label: 'Mi campaña', icon: 'target', route: '/n/campana' },
-  { label: 'Mi equipo', icon: 'users', route: '/n/equipo' },
-  { label: 'Mi carrera', icon: 'star', route: '/n/carrera' },
+  { label: 'Inicio', icon: 'home', route: '/n/inicio', short: 'Inicio' },
+  { label: 'Mi negocio', icon: 'chart', route: '/n/negocio', short: 'Negocio' },
+  { label: 'Mi campaña', icon: 'target', route: '/n/campana', short: 'Campaña' },
+  { label: 'Mi equipo', icon: 'users', route: '/n/equipo', short: 'Equipo' },
+  { label: 'Mi carrera', icon: 'star', route: '/n/carrera', short: 'Carrera' },
 ];
 
 const CATS: Cat[] = [
@@ -93,16 +95,24 @@ const MENU_LINKS: MenuLink[] = [
 
         <div class="hdr__right">
           @if (version.nueva()) {
-            <!-- Utilidades: buscar + carrito -->
-            <button class="hdr__iconbtn" aria-label="Buscar en Maya"><app-icon name="search" [size]="18" /></button>
-            <button class="hdr__iconbtn" aria-label="Carrito">
+            <!-- Utilidades: buscar + carrito (el carrito se oculta en móvil) -->
+            <button class="hdr__iconbtn hdr__iconbtn--search" aria-label="Buscar en Maya"><app-icon name="search" [size]="18" /></button>
+            <button class="hdr__iconbtn hdr__iconbtn--cart" aria-label="Carrito">
               <app-icon name="cart" [size]="18" />
               <span class="count">{{ usuaria.carrito }}</span>
             </button>
             <!-- Acciones: Realizar pedido (primario) · Incorporar (secundario) -->
             <div class="hdr__actions">
-              <a class="btn btn--primary btn--sm" routerLink="/externa/mis-pedidos"><app-icon name="cart" [size]="16" /> <span class="hdr__actions-l">Realizar pedido</span></a>
-              <a class="btn btn--ghost btn--sm" routerLink="/n/equipo"><app-icon name="heart-plus" [size]="16" /> <span class="hdr__actions-l">Incorporar</span></a>
+              <a class="btn btn--primary btn--sm" routerLink="/externa/mis-pedidos" aria-label="Realizar pedido">
+                <app-icon name="cart" [size]="16" />
+                <span class="hdr__actions-l">Realizar pedido</span>
+                <span class="hdr__actions-s">Pedido</span>
+              </a>
+              <a class="btn btn--ghost btn--sm hdr__inc" routerLink="/n/equipo" aria-label="Incorporar">
+                <app-icon name="heart-plus" [size]="16" />
+                <span class="hdr__actions-l">Incorporar</span>
+                <span class="hdr__actions-plus" aria-hidden="true">＋</span>
+              </a>
             </div>
           } @else {
             <button
@@ -197,6 +207,18 @@ const MENU_LINKS: MenuLink[] = [
     <main>
       <router-outlet />
     </main>
+
+    <!-- Bottom nav (solo vista nueva; visible únicamente en móvil vía CSS) -->
+    @if (version.nueva()) {
+      <nav class="botnav" aria-label="Navegación principal">
+        @for (c of newCats; track c.label) {
+          <a class="botnav__i" [routerLink]="c.route" routerLinkActive="botnav__i--active" (click)="menuOpen.set(false)">
+            <app-icon [name]="c.icon" [size]="22" />
+            <span>{{ c.short ?? c.label }}</span>
+          </a>
+        }
+      </nav>
+    }
   `,
   styles: [
     `
@@ -285,6 +307,8 @@ const MENU_LINKS: MenuLink[] = [
       /* Acciones del header (vista nueva): primario relleno + secundario borde */
       .hdr__actions { display: flex; align-items: center; gap: 8px; }
       .hdr__actions .btn { padding: 9px 16px; font-size: 13px; }
+      /* Etiqueta corta ("Pedido") y "＋": solo aparecen en móvil */
+      .hdr__actions-s, .hdr__actions-plus { display: none; }
       /* Separador visual entre utilidades y acciones */
       .hdr__inner--new .hdr__actions { margin-left: 4px; padding-left: 10px; border-left: 1px solid var(--line); }
       /* Filas-toggle dentro del menú (BETA / tema) */
@@ -441,6 +465,9 @@ const MENU_LINKS: MenuLink[] = [
       }
       .vswitch__track--on .vswitch__knob { transform: translateX(16px); }
 
+      /* ----- Bottom nav (móvil, vista nueva) ----- */
+      .botnav { display: none; }
+
       /* ----- Responsive ----- */
       @media (max-width: 980px) {
         .hdr__inner { padding: 12px 16px 8px; gap: 10px; }
@@ -464,6 +491,53 @@ const MENU_LINKS: MenuLink[] = [
       }
       @media (max-width: 560px) {
         .ctxpill { display: none; }
+      }
+
+      /* ----- Móvil (vista nueva): header comprimido + bottom nav ----- */
+      @media (max-width: 720px) {
+        /* Comprimir header: fuera contexto y carrito; buscador queda como icono */
+        .hdr__inner--new .ctxpill { display: none; }
+        .hdr__inner--new .hdr__iconbtn--cart { display: none; }
+
+        /* Acciones compactas: "Pedido" (primario) · "＋" (secundario) */
+        .hdr__actions-s { display: inline; }
+        .hdr__inc app-icon { display: none; }
+        .hdr__inc .hdr__actions-plus { display: inline; font-size: 20px; font-weight: 800; line-height: 1; }
+        .hdr__actions .btn { padding: 10px 14px; }
+
+        /* Objetivos táctiles ≥ 44px */
+        .hdr__iconbtn { min-width: 44px; min-height: 44px; justify-content: center; }
+
+        /* La fila de tabs superior se reemplaza por el bottom nav */
+        .cats--new { display: none; }
+
+        /* Bottom nav fijo, alcanzable con el pulgar */
+        .botnav {
+          display: flex;
+          position: fixed;
+          left: 0; right: 0; bottom: 0;
+          z-index: 55;
+          background: var(--surface);
+          border-top: 1px solid var(--line);
+          padding-bottom: env(safe-area-inset-bottom);
+          box-shadow: 0 -2px 12px rgba(0, 0, 0, 0.12);
+        }
+        .botnav__i {
+          flex: 1;
+          display: flex;
+          flex-direction: column;
+          align-items: center;
+          justify-content: center;
+          gap: 3px;
+          min-height: 56px;
+          padding: 8px 2px 7px;
+          color: var(--ink-2);
+          font-size: 10.5px;
+          font-weight: 600;
+          text-align: center;
+        }
+        .botnav__i span { line-height: 1; }
+        .botnav__i--active { color: var(--brand-600); }
       }
     `,
   ],
