@@ -1,0 +1,69 @@
+# Maya Redesign — Guía para Claude
+
+Rediseño de la app **Maya** (Yanbal) para líderes/directoras de venta. Angular 22, SPA, prototipo con datos mock.
+
+## Comandos
+
+Requiere Node 24.16.0 vía nvm (Angular 22 no compila con Node < 22.22.3):
+
+```bash
+export NVM_DIR="$HOME/.nvm" && . "$NVM_DIR/nvm.sh" && nvm use   # SIEMPRE antes de npm/ng
+npm start            # dev server → http://localhost:4200
+npm run build        # build producción → dist/maya-redesign/browser/
+npm test             # tests unitarios (ng test)
+npx prettier --check "src/**/*.{ts,scss,html}"   # verificar formato
+```
+
+## Arquitectura
+
+Dos versiones de la app conviven en paralelo (switch en el header, `VersionService`):
+
+- **Vista actual** (`src/app/pages/`): rutas `/inicio`, `/mi-plan`, `/mi-campana`, `/incorpora-y-gana`, `/grupo-personal`, `/cuadrante`, `/herramientas`, `/externa/:slug`.
+- **Vista nueva (beta)** (`src/app/nueva/`): rutas `/n/inicio`, `/n/negocio`, `/n/campana`, `/n/equipo`, `/n/carrera`. **Al trabajar en la vista nueva, la actual queda intacta** (y viceversa).
+
+```
+src/
+├── styles.scss          # design tokens (:root + [data-theme='dark']) y estilos base
+├── app/
+│   ├── app.ts           # shell: header, nav, menú, bottom-nav móvil (~570 líneas)
+│   ├── app.routes.ts    # todas las rutas, lazy con loadComponent
+│   ├── data/mock.ts     # TODOS los datos (ficticios) — única fuente; no inventar datos en páginas
+│   ├── shared/          # Icon (SVG línea), Icon3d (SVG 3D), Ring, Reveal, Anchor, Loader,
+│   │                    # ThemeService (claro/oscuro), VersionService (actual/nueva)
+│   ├── pages/           # vista actual
+│   └── nueva/           # vista nueva (beta)
+public/
+├── brand/               # logo-yanbal.svg, iso-yanbal.svg
+├── icons/               # set de iconos 3D PNG 100×100 (check, goals, medal-01, money-01,
+│                        # megaphone, growth, alert-02, airplane-01, file, searching)
+├── loader/              # 01.jpg…12.jpg (pantalla de carga)
+└── media/               # imágenes de contenido
+```
+
+Assets de `public/` se referencian desde la raíz: `/icons/check.png`, `/brand/logo-yanbal.svg`.
+
+## Convenciones de código (obligatorias)
+
+- **Componentes standalone** con `template:` y `styles:` inline en el `.ts` — no hay archivos `.html`/`.scss` separados. Un componente = un archivo.
+- **`ChangeDetectionStrategy.OnPush` siempre.**
+- **Signals**, no decoradores: `input()` / `input.required()`, `signal()`, `inject()` en vez de constructor injection.
+- **Control flow moderno**: `@if` / `@for` / `@switch` (nunca `*ngIf`/`*ngFor`).
+- **Rutas lazy**: `loadComponent: () => import(...)`.
+- **Comentarios y JSDoc en español**, explican el *porqué* de las decisiones de UX/negocio (ver `nueva/negocio.ts` como referencia de estilo).
+- **Datos solo desde `data/mock.ts`** — tipados con interfaces exportadas.
+- Formato: Prettier (printWidth 100, singleQuote), indentación 2 espacios. Sin tests por schematic (`skipTests: true`).
+
+## Sistema de diseño (resumen — detalle en la skill `diseno-ux`)
+
+- **Solo tokens CSS** de `styles.scss`: `var(--brand-500)`, `var(--ink)`, `var(--surface)`, etc. **Nunca colores hardcodeados** en componentes.
+- Marca: naranja Yanbal `#DC582A` (`--brand-500`). Tipografía: Plus Jakarta Sans.
+- **Tema claro y oscuro**: todo cambio visual debe verse bien en ambos (`data-theme` en `<html>`). Los tokens ya resuelven el 95%; no redefinir colores por tema en componentes.
+- **Accesibilidad AA**: contrastes ya calibrados en los tokens (los comentarios de `styles.scss` lo indican); `aria-label` en botones de icono; `aria-hidden` en SVG decorativos.
+- Tonos de estado: `success`, `warning`, `danger`, `info`, `teal`, `violet` — cada uno con par `--X` / `--X-bg`.
+
+## Flujo de trabajo
+
+- Rama principal: `main`. Remoto SSH: `git@github.com:Lumider/maya-redesign.git`.
+- Antes de dar por terminado un cambio: `npm run build` debe pasar sin errores y el formato debe cumplir Prettier.
+- Cambios de UI: verificar en el navegador (desktop + móvil 375px + tema oscuro) — usar la skill `diseno-ux`.
+- Antes de commit/push: pasar la skill `revision-codigo`.

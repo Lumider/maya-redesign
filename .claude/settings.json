@@ -1,0 +1,25 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(npm start*)",
+      "Bash(npm run build*)",
+      "Bash(npm test*)",
+      "Bash(npm run watch*)",
+      "Bash(npx prettier*)",
+      "Bash(npx ng *)",
+      "Bash(git status*)",
+      "Bash(git diff*)",
+      "Bash(git log*)",
+      "Bash(git branch*)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git pull*)",
+      "Bash(git fetch*)",
+      "Bash(nvm *)",
+      "Read(//Users/gcharca/maya-redesign/**)"
+    ],
+    "ask": [
+      "Bash(git push*)"
+    ]
+  }
+}

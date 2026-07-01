@@ -43,5 +43,6 @@ __screenshots__/
 .DS_Store
 Thumbs.db
 
-# Claude Code (config local de herramientas)
-.claude/
+# Claude Code — se comparten skills, launch y settings del proyecto;
+# solo se ignora la configuración personal/local.
+.claude/settings.local.json
