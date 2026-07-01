@@ -359,6 +359,10 @@ import {
         .dim-grid { grid-template-columns: 1fr; }
         .dir-profile { padding-left: 16px; }
         .mp { grid-template-columns: 84px 1fr auto; }
+        /* Chips (filtros/lentes) deslizables, sin wrap */
+        .chips { flex-wrap: nowrap; overflow-x: auto; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
+        .chips::-webkit-scrollbar { display: none; }
+        .chip { flex: 0 0 auto; }
       }
     `,
   ],
