@@ -21,17 +21,11 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
     <div class="v2">
       <header class="v2-head" appReveal>
         <nav class="crumbs tiny"><a routerLink="/n/inicio">Inicio</a> / Mi campaña</nav>
-        <div class="row-between">
-          <div><h1 class="v2-title">Mi campaña</h1><p class="v2-sub">¿Voy a tiempo y qué hago esta campaña?</p></div>
-          <div class="tabs">
-            @for (t of c.tabs; track t) {
-              <button class="tabs__tab" [class.tabs__tab--active]="tab() === t" (click)="tab.set(t)">{{ t }}</button>
-            }
-          </div>
-        </div>
+        <div><h1 class="v2-title">Mi campaña · {{ c.actual }}</h1><p class="v2-sub">¿Voy a tiempo y qué hago esta campaña?</p></div>
         <nav class="anchors" aria-label="Secciones">
           <a class="anchor" appAnchor="plan">Mi plan</a>
           <a class="anchor" appAnchor="mision">Misión</a>
+          <a class="anchor" appAnchor="progreso">Progreso</a>
           <a class="anchor" appAnchor="acciones">Acciones</a>
           <a class="anchor" appAnchor="ritmo">Ritmo</a>
           <a class="anchor anchor--ext">Mis pedidos</a>
@@ -59,15 +53,15 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
 
           <!-- Metas gamificadas: la Misión de la campaña -->
           <section id="mision" class="v2-section" appReveal>
-            <h2 class="v2-h"><app-icon name="target" [size]="18" /> Misión de {{ tab() }} <span class="tiny" style="font-weight:500">recompensas reales, no puntos</span></h2>
+            <h2 class="v2-h"><app-icon name="target" [size]="18" /> Misión de {{ c.actual }} <span class="tiny" style="font-weight:500">recompensas reales, no puntos</span></h2>
 
-            <!-- Misión + premio al frente -->
             <div class="card pad mission" [class.mission--won]="cuadranteListo()">
+              <!-- Objetivo + premio (el bono se muestra una sola vez, aquí) -->
               <div class="mission__head">
                 <div>
                   <span class="badge" [class]="cuadranteListo() ? 'badge badge--success' : 'badge badge--warning'">{{ cuadranteListo() ? 'Premio desbloqueado' : 'Misión en curso' }}</span>
                   <h3 class="mission__title">Sube a Cuadrante A</h3>
-                  <p class="tiny">Cumple los 2 checkpoints y ganas el Bono de Desempeño de {{ tab() }}.</p>
+                  <p class="tiny">Cumple los 2 checkpoints y aseguras tu Bono de Desempeño.</p>
                 </div>
                 <div class="reward" [class.reward--locked]="!cuadranteListo()">
                   <span class="reward__emoji">🏆</span>
@@ -75,7 +69,6 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
                     <div class="reward__val">\${{ c.cuadrante.bono | number }}</div>
                     <div class="tiny">Bono de Desempeño</div>
                   </div>
-                  @if (!cuadranteListo()) { <span class="reward__lock" aria-label="Bloqueado">🔒</span> }
                 </div>
               </div>
 
@@ -83,9 +76,9 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
               <div class="streak">
                 <div class="streak__top">
                   <strong><app-icon name="trending" [size]="15" /> Racha: {{ rachaCumplidas }} campañas en Cuadrante A</strong>
-                  <span class="tiny streak__msg">{{ tab() }} en riesgo — aún estás a tiempo de no romperla 💪</span>
+                  <span class="tiny streak__msg">{{ c.actual }} en riesgo — no la rompas 💪</span>
                 </div>
-                <div class="streak__row" role="img" [attr.aria-label]="rachaCumplidas + ' campañas en Cuadrante A, ' + tab() + ' pendiente'">
+                <div class="streak__row" role="img" [attr.aria-label]="rachaCumplidas + ' campañas en Cuadrante A, ' + c.actual + ' pendiente'">
                   @for (h of racha; track h.campana) {
                     <span
                       class="streak__dot"
@@ -100,9 +93,9 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
                 </div>
               </div>
 
-              <!-- Camino de checkpoints que desbloquean el premio -->
+              <!-- 2 checkpoints idénticos que desbloquean el bono -->
               <div class="checks">
-                <!-- Checkpoint 1: Venta (MRM vs meta C6, claramente diferenciadas) -->
+                <!-- Checkpoint 1: Venta · MRM (una barra; la meta C6 va como texto secundario) -->
                 <div class="check" [class.check--ok]="ventaMrmPct>=100" [class.check--warn]="ventaMrmPct<100">
                   <span class="check__ic"><app-icon [name]="ventaMrmPct>=100 ? 'check' : 'trending'" [size]="15" /></span>
                   <div class="check__body">
@@ -111,17 +104,11 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
                       <span class="check__n">{{ ventaMrmPct }}% <span class="muted">· casi</span></span>
                     </div>
                     <div class="progress" [class.progress--success]="ventaMrmPct>=100"><div class="progress__fill" [style.width.%]="ventaMrmPct"></div></div>
-                    <div class="check__foot tiny">
-                      Mínimo para calificar: \${{ c.cuadrante.ventaRequerida | number }} · faltan <strong>\${{ c.cuadrante.faltaVenta | number }}</strong>
-                    </div>
-                    <div class="stretch tiny">
-                      <span class="stretch__bar"><span class="stretch__fill" [style.width.%]="ventaC6Pct"></span></span>
-                      Meta {{ tab() }} (reto): \${{ c.meta | number }} · vas {{ ventaC6Pct }}%
-                    </div>
+                    <div class="check__foot tiny">Mínimo para calificar \${{ c.cuadrante.ventaRequerida | number }} · faltan <strong>\${{ c.cuadrante.faltaVenta | number }}</strong> · {{ ventaC6Pct }}% de tu meta {{ c.actual }} (\${{ c.meta | number }})</div>
                   </div>
                 </div>
 
-                <!-- Checkpoint 2: Primeros pedidos -->
+                <!-- Checkpoint 2: Primeros pedidos (misma caja, mismo peso) -->
                 <div class="check" [class.check--ok]="ppedListo()" [class.check--bad]="!ppedListo()">
                   <span class="check__ic"><app-icon [name]="ppedListo() ? 'check' : 'box'" [size]="15" /></span>
                   <div class="check__body">
@@ -134,34 +121,37 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
                   </div>
                 </div>
 
-                <!-- Desbloqueo -->
+                <!-- Desbloqueo (sin repetir el monto ni doble candado) -->
                 <div class="check check--unlock" [class.check--ok]="cuadranteListo()">
                   <span class="check__ic">{{ cuadranteListo() ? '🎉' : '🔒' }}</span>
                   <div class="check__body">
-                    <strong>Cuadrante A + Bono \${{ c.cuadrante.bono | number }}</strong>
-                    <div class="tiny">{{ cuadranteListo() ? '¡Lo lograste! Tu bono está asegurado.' : 'Se desbloquea al cumplir los 2 checkpoints.' }}</div>
+                    <strong>Cuadrante A</strong>
+                    <div class="tiny">{{ cuadranteListo() ? '¡Lo lograste! Tu bono está asegurado.' : 'Al cumplir los 2 checkpoints.' }}</div>
                   </div>
                 </div>
               </div>
 
-              <!-- Reto de la semana + Trofeo del año -->
-              <div class="mission__foot">
-                <a class="foot-card" appAnchor="acciones">
-                  <app-ring [pct]="retoPct()" [size]="58" [label]="'reto'" [expected]="100" />
-                  <div><strong class="tiny2">Reto de la semana</strong><div class="tiny">{{ hechas() }}/{{ plan.acciones.length }} acciones hechas</div></div>
-                </a>
-                <div class="foot-card">
-                  <span class="trophy">🥇</span>
-                  <div><strong class="tiny2">Medalla Excelencia GP</strong><div class="tiny">{{ recon.excelenciaGP.medalla }} · {{ recon.excelenciaGP.cumplidas }}/{{ recon.excelenciaGP.de }} campañas del año</div></div>
-                </div>
-              </div>
-
-              <!-- Ancla al sueño: el bono es un paso, no el destino -->
+              <!-- Ancla al sueño: cada campaña en A acerca el sueño -->
               <a class="dream" routerLink="/n/carrera">
                 <span>🌴</span>
-                <p>El bono no es la meta final: es un paso hacia <strong>{{ c.par.sueno }}</strong>. Míralo en Mi carrera.</p>
+                <p>Cada campaña en Cuadrante A te acerca a tu sueño: <strong>{{ c.par.sueno }}</strong>. Míralo en Mi carrera.</p>
                 <app-icon name="arrow-right" [size]="16" />
               </a>
+            </div>
+          </section>
+
+          <!-- Tu progreso del año (fuera de la Misión para no recargarla) -->
+          <section id="progreso" class="v2-section" appReveal>
+            <h2 class="v2-h"><app-icon name="sparkles" [size]="18" /> Tu progreso del año</h2>
+            <div class="progreso-grid">
+              <a class="card pad prog" appAnchor="acciones">
+                <app-ring [pct]="retoPct()" [size]="64" label="reto" [expected]="100" />
+                <div><strong>Reto de la semana</strong><div class="tiny">{{ hechas() }}/{{ plan.acciones.length }} acciones hechas</div></div>
+              </a>
+              <div class="card pad prog">
+                <span class="trophy">🥇</span>
+                <div><strong>Medalla Excelencia GP</strong><div class="tiny">{{ recon.excelenciaGP.medalla }} · {{ recon.excelenciaGP.cumplidas }}/{{ recon.excelenciaGP.de }} campañas del año</div></div>
+              </div>
             </div>
           </section>
 
@@ -235,9 +225,6 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
       .crumbs { margin-bottom: 6px; } .crumbs a { color: var(--ink-2); }
       .row-between { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
       .pad { padding: 18px 20px; }
-      .tabs { display: inline-flex; background: var(--sand); border-radius: 99px; padding: 4px; }
-      .tabs__tab { border: 0; background: none; border-radius: 99px; padding: 7px 16px; font-weight: 700; font-size: 13px; color: var(--ink-2); }
-      .tabs__tab--active { background: var(--ink); color: var(--on-ink); }
 
       /* Plan / sueño */
       .plan { display: flex; gap: 18px; align-items: center; border-color: var(--warning); flex-wrap: wrap; }
@@ -260,7 +247,6 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
       .reward__val { font-family: var(--font-display); font-size: 20px; font-weight: 800; line-height: 1; }
       .reward .tiny { color: rgba(255, 255, 255, 0.85); }
       .reward--locked { filter: saturate(0.7) brightness(0.92); }
-      .reward__lock { position: absolute; top: -8px; right: -8px; font-size: 15px; background: var(--surface); border-radius: 99px; padding: 3px 5px; box-shadow: var(--shadow-s); }
 
       /* Racha */
       .streak { margin: 16px 0; padding: 14px 16px; background: var(--sand); border-radius: var(--radius); }
@@ -287,16 +273,12 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
       .check--unlock { align-items: center; background: transparent; border: 1.5px dashed var(--line-strong); border-left-width: 3px; }
       .check--unlock.check--ok { border-style: solid; background: var(--success-bg); }
 
-      .stretch { display: flex; align-items: center; gap: 8px; margin-top: 8px; color: var(--ink-3); }
-      .stretch__bar { flex: 0 0 60px; height: 5px; border-radius: 99px; background: var(--line); overflow: hidden; }
-      .stretch__fill { display: block; height: 100%; border-radius: 99px; background: var(--brand-400); }
-
-      /* Reto + trofeo */
-      .mission__foot { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 18px; }
-      .foot-card { display: flex; align-items: center; gap: 12px; background: var(--sand); border-radius: var(--radius); padding: 10px 14px; text-align: left; }
-      a.foot-card { cursor: pointer; transition: background 0.15s ease; }
-      a.foot-card:hover { background: var(--line); }
-      .tiny2 { font-size: 13px; }
+      /* Tu progreso del año (cajas estándar) */
+      .progreso-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+      .prog { display: flex; align-items: center; gap: 14px; }
+      .prog strong { font-size: 14px; }
+      a.prog { transition: box-shadow 0.18s ease, transform 0.18s ease; }
+      a.prog:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
       .trophy { font-size: 30px; }
 
       /* Ancla al sueño */
@@ -337,7 +319,7 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
       .rel:hover strong { color: var(--brand-600); }
       .ext { display: block; }
 
-      @media (max-width: 560px) { .mission__foot { grid-template-columns: 1fr; } }
+      @media (max-width: 560px) { .progreso-grid { grid-template-columns: 1fr; } }
     `,
   ],
 })
@@ -348,7 +330,6 @@ export class CampanaN {
   protected readonly racha = CUADRANTE_HISTORIA.filter((h) => h.valor !== '-');
   protected readonly rachaCumplidas = this.racha.filter((h) => h.valor === 'A').length;
 
-  protected readonly tab = signal(CAMPANA.actual);
   protected readonly done = signal(new Set(PLAN_CAMPANA.acciones.filter((a) => a.hecho).map((a) => a.id)));
 
   protected readonly gananciaPct = Math.round((PLAN_CAMPANA.gananciaProyectada / PLAN_CAMPANA.gananciaObjetivo) * 100);

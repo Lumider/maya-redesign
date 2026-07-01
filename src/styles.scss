@@ -361,6 +361,11 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
 /* El header es sticky: deja margen al hacer scroll a una sección anclada */
 .v2 [id] { scroll-margin-top: 150px; }
 
+/* Breadcrumb: el enlace debe distinguirse del texto sin depender del color
+   (WCAG 1.4.1) — subrayado; el color de acento llega en hover/focus. */
+.crumbs a { text-decoration: underline; text-underline-offset: 2px; }
+.crumbs a:hover { color: var(--brand-600); }
+
 /* Encabezado de sección dentro de vista */
 .v2-h { font-size: 18px; font-weight: 800; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
 
