@@ -1,18 +1,20 @@
-import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../shared/icon';
 import { Reveal } from '../shared/reveal';
 import { Anchor } from '../shared/anchor';
 import { Ring } from '../shared/ring';
-import { CAMPANA_CES, GANAMAS_NIVELES, USUARIA_CES } from '../data/mock-ces';
+import { EstatusService } from '../shared/estatus';
+import { CAMPANA_CES, GANAMAS_NIVELES, PERFILES } from '../data/mock-ces';
 
 /**
- * Mi campaña (CES): la salud de la campaña de la EMPRENDEDORA.
- * Replica el orden de la Maya real (docs/referencia-vista-ces.md) pero con el
- * lenguaje de la vista nueva. Cada cifra vive en un solo lugar:
- *  · Venta GP + composición de activas = hero.
- *  · Ganamás (mi nivel + bonificaciones) = una sola sección.
+ * Mi campaña: la salud de la campaña de la EMPRENDEDORA, según el estatus
+ * encarnado (conmutador demo). Replica el orden de la Maya real
+ * (docs/referencia-vista-ces.md) pero con el lenguaje de la vista nueva:
+ *  · El hero muestra venta del GP (CES/ASP) o venta personal (CNS/CEM).
+ *  · Ganamás (mi nivel + bonificaciones) = una sola sección, del perfil.
+ *  · Lo grupal (morosidad del GP, bonif del grupo) solo existe con grupo.
  *  · La ganancia se muestra SOLO al final, oculta por defecto (privacidad).
  */
 @Component({
@@ -37,7 +39,7 @@ import { CAMPANA_CES, GANAMAS_NIVELES, USUARIA_CES } from '../data/mock-ces';
 
       <div class="v2-grid">
         <main>
-          <!-- Hero: venta del GP + composición de activas -->
+          <!-- Hero: venta del GP (con grupo) o venta personal (CNS/CEM) -->
           <section class="card pad hero v2-section" appReveal>
             <img
               class="hero__img"
@@ -47,34 +49,45 @@ import { CAMPANA_CES, GANAMAS_NIVELES, USUARIA_CES } from '../data/mock-ces';
               width="64"
               height="64"
             />
-            <div class="hero__body">
-              <span class="tiny">Venta de tu Grupo Personal</span>
-              <div class="hero__v">S/ {{ c.ventaGP | number: '1.0-2' }}</div>
-              <div class="progress" style="margin:8px 0 4px">
-                <div class="progress__fill" [style.width.%]="ventaPct"></div>
+            @if (p().ventaGP; as gp) {
+              <div class="hero__body">
+                <span class="tiny">Venta de tu Grupo Personal</span>
+                <div class="hero__v">S/ {{ gp.actual | number: '1.0-2' }}</div>
+                <div class="progress" style="margin:8px 0 4px">
+                  <div class="progress__fill" [style.width.%]="ventaPct()"></div>
+                </div>
+                <span class="tiny">{{ ventaPct() }}% de la {{ gp.etiquetaMeta }}</span>
               </div>
-              <span class="tiny"
-                >{{ ventaPct }}% de la meta CES (S/ {{ c.metaVentaGP | number }} — 30% del
-                MRM)</span
-              >
-            </div>
-            <div class="hero__act">
-              <span class="badge badge--neutral">{{ c.activas.estatus }}</span>
-              <div class="hero__chips">
-                <span class="mini card"
-                  >Activas <strong>{{ c.activas.total }}</strong></span
-                >
-                <span class="mini card"
-                  >Retenidas <strong>{{ c.retenidas }}</strong></span
-                >
-                <span class="mini card"
-                  >Reactivadas <strong>{{ c.reactivadas }}</strong></span
-                >
-                <span class="mini card"
-                  >1eros pedidos <strong>{{ c.ppedDirectos }}</strong></span
+              <div class="hero__act">
+                <span class="badge badge--neutral">{{ c.activas.estatus }}</span>
+                <div class="hero__chips">
+                  <span class="mini card"
+                    >Activas <strong>{{ c.activas.total }}</strong></span
+                  >
+                  <span class="mini card"
+                    >Retenidas <strong>{{ c.retenidas }}</strong></span
+                  >
+                  <span class="mini card"
+                    >Reactivadas <strong>{{ c.reactivadas }}</strong></span
+                  >
+                  <span class="mini card"
+                    >1eros pedidos <strong>{{ c.ppedDirectos }}</strong></span
+                  >
+                </div>
+              </div>
+            } @else {
+              <div class="hero__body">
+                <span class="tiny">Tu venta personal</span>
+                <div class="hero__v">S/ {{ p().ventaPersonal | number: '1.0-2' }}</div>
+                <div class="progress" style="margin:8px 0 4px">
+                  <div class="progress__fill" [style.width.%]="nivelPct()"></div>
+                </div>
+                <span class="tiny"
+                  >Nivel {{ p().nivelGanamas }} · {{ p().descuento }}% de descuento — el detalle
+                  está en Ganamás ↓</span
                 >
               </div>
-            </div>
+            }
           </section>
 
           <!-- Ganamás: mi nivel + mis bonificaciones (premios en producto) -->
@@ -82,22 +95,27 @@ import { CAMPANA_CES, GANAMAS_NIVELES, USUARIA_CES } from '../data/mock-ces';
             <h2 class="v2-h"><app-icon name="gift" [size]="18" /> Bonificaciones Ganamás</h2>
 
             <div class="nivel">
-              <app-ring [pct]="nivelPct" [size]="86" label="al N4" [expected]="60" />
+              <app-ring
+                [pct]="nivelPct()"
+                [size]="86"
+                [label]="'al ' + siguiente().nivel"
+                [expected]="60"
+              />
               <div class="nivel__body">
                 <strong
-                  >Tu venta personal: S/ {{ c.ventaPersonal | number: '1.0-2' }} · nivel
-                  {{ c.nivelGanamas }} ({{ c.descuentoActual }}% de descuento)</strong
+                  >Tu venta personal: S/ {{ p().ventaPersonal | number: '1.0-2' }} · nivel
+                  {{ p().nivelGanamas }} ({{ p().descuento }}% de descuento)</strong
                 >
                 <p class="muted" style="margin:4px 0 8px">
-                  Completa S/ {{ faltaN4 | number: '1.0-2' }} más y llegas al N4: mantienes el 35% y
-                  sumas premios.
+                  Completa S/ {{ faltaSiguiente() | number: '1.0-2' }} más y llegas al
+                  {{ siguiente().nivel }}: {{ siguiente().descuento }}% de descuento y más premios.
                 </p>
                 <div class="escala" role="list" aria-label="Niveles Ganamás">
                   @for (n of niveles; track n.nivel) {
                     <span
                       class="escala__n"
                       role="listitem"
-                      [class.escala__n--on]="c.ventaPersonal >= n.desde"
+                      [class.escala__n--on]="p().ventaPersonal >= n.desde"
                     >
                       {{ n.nivel }}<span class="tiny">{{ n.descuento }}%</span>
                     </span>
@@ -123,40 +141,44 @@ import { CAMPANA_CES, GANAMAS_NIVELES, USUARIA_CES } from '../data/mock-ces';
               }
             </div>
 
-            <p class="muted gp-bonif">
-              En tu grupo:
-              <strong>{{ c.bonifGP.calificadas }} consultoras ya calificaron</strong> su
-              bonificación y {{ c.bonifGP.cerca }} están cerca —
-              <a routerLink="/e/grupo" class="link">ayúdalas a llegar</a>.
-            </p>
+            @if (p().capacidades.grupo) {
+              <p class="muted gp-bonif">
+                En tu grupo:
+                <strong>{{ c.bonifGP.calificadas }} consultoras ya calificaron</strong> su
+                bonificación y {{ c.bonifGP.cerca }} están cerca —
+                <a routerLink="/e/grupo" class="link">ayúdalas a llegar</a>.
+              </p>
+            }
           </section>
 
           <!-- Morosidad y deuda: el veredicto + la acción con cifra exacta -->
           <section id="morosidad" class="card pad v2-section" appReveal>
             <h2 class="v2-h"><app-icon name="alert" [size]="18" /> Morosidad y deuda</h2>
-            <div class="im">
-              <div>
-                <span class="tiny">IM No Cobro</span>
-                <div class="im__v" [class.im__v--bad]="c.morosidad.im > c.morosidad.limite">
-                  {{ c.morosidad.im }}%
+            @if (p().capacidades.grupo) {
+              <div class="im">
+                <div>
+                  <span class="tiny">IM No Cobro</span>
+                  <div class="im__v" [class.im__v--bad]="c.morosidad.im > c.morosidad.limite">
+                    {{ c.morosidad.im }}%
+                  </div>
+                  <span class="tiny">límite: {{ c.morosidad.limite }}%</span>
                 </div>
-                <span class="tiny">límite: {{ c.morosidad.limite }}%</span>
+                <div>
+                  <span class="tiny">Deuda del grupo</span>
+                  <div class="im__n">S/ {{ c.morosidad.deudaGP | number: '1.0-2' }}</div>
+                  <span class="tiny">{{ c.morosidad.deudoras }} deudora</span>
+                </div>
+                <a class="btn btn--ghost btn--sm" routerLink="/e/grupo"
+                  >Contactar deudoras ({{ c.morosidad.deudoras }})</a
+                >
               </div>
-              <div>
-                <span class="tiny">Deuda del grupo</span>
-                <div class="im__n">S/ {{ c.morosidad.deudaGP | number: '1.0-2' }}</div>
-                <span class="tiny">{{ c.morosidad.deudoras }} deudora</span>
+              <div class="alert alert--warning" role="status" style="margin-top:12px">
+                ⚠️ Tu grupo necesita pagar
+                <strong>&nbsp;S/ {{ c.morosidad.pagoNecesario | number: '1.0-2' }}&nbsp;</strong>
+                para lograr un IM de {{ c.morosidad.limite }}%.
               </div>
-              <a class="btn btn--ghost btn--sm" routerLink="/e/grupo"
-                >Contactar deudoras ({{ c.morosidad.deudoras }})</a
-              >
-            </div>
-            <div class="alert alert--warning" role="status" style="margin-top:12px">
-              ⚠️ Tu grupo necesita pagar
-              <strong>&nbsp;S/ {{ c.morosidad.pagoNecesario | number: '1.0-2' }}&nbsp;</strong> para
-              lograr un IM de {{ c.morosidad.limite }}%.
-            </div>
-            <div class="mideuda">
+            }
+            <div class="mideuda" [class.mideuda--sola]="!p().capacidades.grupo">
               <span
                 >Mi deuda: <strong>S/ {{ c.morosidad.miDeuda | number: '1.0-2' }}</strong>
                 <span class="tiny">vence {{ c.morosidad.miDeudaVence }}</span></span
@@ -189,7 +211,7 @@ import { CAMPANA_CES, GANAMAS_NIVELES, USUARIA_CES } from '../data/mock-ces';
                 <span class="tiny">Ganancia estimada actual</span>
                 <div class="gana__v">
                   @if (verGanancia()) {
-                    S/ {{ c.ganancia.total | number: '1.0-2' }}
+                    S/ {{ p().ganancia.total | number: '1.0-2' }}
                   } @else {
                     S/ ______
                   }
@@ -206,58 +228,76 @@ import { CAMPANA_CES, GANAMAS_NIVELES, USUARIA_CES } from '../data/mock-ces';
             <div class="gana__comp">
               <span class="tiny" style="width:100%">Composición de la ganancia:</span>
               <span class="mini card"
-                >Escala {{ c.descuentoActual }}% dscto.
-                <strong>{{ verGanancia() ? 'S/ ' + c.ganancia.escala : 'S/ ___' }}</strong></span
+                >Escala {{ p().descuento }}% dscto.
+                <strong>{{ verGanancia() ? 'S/ ' + p().ganancia.escala : 'S/ ___' }}</strong></span
               >
-              <span class="mini card"
-                >Incorpora y Gana
-                <strong>{{
-                  verGanancia() ? 'S/ ' + c.ganancia.incorporaYGana : 'S/ ___'
-                }}</strong></span
-              >
-              <span class="mini card"
-                >Crece Haciendo Crecer
-                <strong>{{
-                  verGanancia() ? 'S/ ' + c.ganancia.creceHaciendoCrecer : 'S/ ___'
-                }}</strong></span
-              >
+              @if (p().capacidades.incorpora) {
+                <span class="mini card"
+                  >Incorpora y Gana
+                  <strong>{{
+                    verGanancia() ? 'S/ ' + p().ganancia.incorporaYGana : 'S/ ___'
+                  }}</strong></span
+                >
+              }
+              @if (p().capacidades.red) {
+                <span class="mini card"
+                  >Ganancia de red
+                  <strong>{{ verGanancia() ? 'S/ ' + p().ganancia.red : 'S/ ___' }}</strong></span
+                >
+              }
             </div>
-            @if (verGanancia() && c.ganancia.incorporaYGana === 0) {
+            @if (verGanancia() && p().capacidades.incorpora && p().ganancia.incorporaYGana === 0) {
               <p class="muted" style="margin:10px 0 0; font-size:13px">
                 💡 Aún no sumas por Incorpora y Gana este {{ c.actual }} —
                 <a class="link" routerLink="/e/incorpora">un primer pedido pagado son S/ 50</a>.
+              </p>
+            }
+            @if (verGanancia() && !p().capacidades.incorpora) {
+              <p class="muted" style="margin:10px 0 0; font-size:13px">
+                💡 Como CEM sumarías S/ 50 por cada incorporada activa —
+                <a class="link" routerLink="/e/camino">mira cómo dar el paso</a>.
               </p>
             }
           </section>
         </main>
 
         <aside class="v2-aside">
-          <div class="card pad" appReveal>
-            <h3 class="v2-h" style="font-size:15px">
-              <app-icon name="target" [size]="16" /> Mi calificación {{ u.titulo }}
-            </h3>
-            <div class="tiles" style="grid-template-columns:1fr 1fr">
-              <div class="tile card">
-                <span class="tile__label">PPED directos</span
-                ><span class="tile__value"
-                  >{{ c.ppedDirectos
-                  }}<span class="muted" style="font-size:14px">/{{ c.metaPped }}</span></span
-                >
+          @if (p().capacidades.grupo) {
+            <div class="card pad" appReveal>
+              <h3 class="v2-h" style="font-size:15px">
+                <app-icon name="target" [size]="16" /> Mi calificación {{ p().estatus }}
+              </h3>
+              <div class="tiles" style="grid-template-columns:1fr 1fr">
+                <div class="tile card">
+                  <span class="tile__label">PPED directos</span
+                  ><span class="tile__value"
+                    >{{ c.ppedDirectos
+                    }}<span class="muted" style="font-size:14px">/{{ c.metaPped }}</span></span
+                  >
+                </div>
+                <div class="tile card">
+                  <span class="tile__label">Activas directas</span
+                  ><span class="tile__value"
+                    >{{ c.activasDirectas
+                    }}<span class="muted" style="font-size:14px"
+                      >/{{ c.metaActivasDirectas }}</span
+                    ></span
+                  >
+                </div>
               </div>
-              <div class="tile card">
-                <span class="tile__label">Activas directas</span
-                ><span class="tile__value"
-                  >{{ c.activasDirectas
-                  }}<span class="muted" style="font-size:14px"
-                    >/{{ c.metaActivasDirectas }}</span
-                  ></span
-                >
-              </div>
+              <a class="link tiny" routerLink="/e/camino" style="display:block;margin-top:10px"
+                >Ver los requisitos completos →</a
+              >
             </div>
-            <a class="link tiny" routerLink="/e/camino" style="display:block;margin-top:10px"
-              >Ver los 4 requisitos completos →</a
-            >
-          </div>
+          } @else {
+            <div class="card pad" appReveal>
+              <h3 class="v2-h" style="font-size:15px">
+                <app-icon name="target" [size]="16" /> Mi paso actual
+              </h3>
+              <p class="tiny" style="margin:0 0 8px">{{ p().paso.titulo }}</p>
+              <a class="link tiny" routerLink="/e/camino">Ver mis requisitos →</a>
+            </div>
+          }
 
           <div class="card pad" appReveal [revealDelay]="80">
             <h3 class="v2-h" style="font-size:15px">
@@ -428,6 +468,12 @@ import { CAMPANA_CES, GANAMAS_NIVELES, USUARIA_CES } from '../data/mock-ces';
         padding-top: 12px;
         font-size: 13.5px;
       }
+      /* Sin grupo (CNS/CEM) la sección solo tiene la deuda propia */
+      .mideuda--sola {
+        border-top: 0;
+        margin-top: 0;
+        padding-top: 0;
+      }
 
       .cred {
         display: flex;
@@ -511,21 +557,37 @@ import { CAMPANA_CES, GANAMAS_NIVELES, USUARIA_CES } from '../data/mock-ces';
   ],
 })
 export class CampanaCes {
-  protected readonly u = USUARIA_CES;
+  private readonly estatusSrv = inject(EstatusService);
+
   protected readonly c = CAMPANA_CES;
   protected readonly niveles = GANAMAS_NIVELES;
+
+  /** Perfil del estatus encarnado — de aquí sale lo variable de la página. */
+  protected readonly p = computed(() => PERFILES[this.estatusSrv.estatus()]);
 
   /** La ganancia arranca oculta: es dinero personal en pantallas a veces compartidas. */
   protected readonly verGanancia = signal(false);
 
-  protected readonly ventaPct = Math.round((CAMPANA_CES.ventaGP / CAMPANA_CES.metaVentaGP) * 100); // 50
+  protected readonly ventaPct = computed(() => {
+    const gp = this.p().ventaGP;
+    return gp ? Math.round((gp.actual / gp.meta) * 100) : 0;
+  });
   protected readonly credPct = Math.round(
     (CAMPANA_CES.credito.utilizado / CAMPANA_CES.credito.total) * 100,
   ); // 48
 
-  private readonly n4 = GANAMAS_NIVELES[3].desde;
-  protected readonly faltaN4 = this.n4 - CAMPANA_CES.ventaPersonal; // 379.50
-  protected readonly nivelPct = Math.round((CAMPANA_CES.ventaPersonal / this.n4) * 100); // 80
+  /** Siguiente nivel Ganamás por alcanzar (el último si ya está en el tope). */
+  protected readonly siguiente = computed(
+    () =>
+      GANAMAS_NIVELES.find((n) => this.p().ventaPersonal < n.desde) ??
+      GANAMAS_NIVELES[GANAMAS_NIVELES.length - 1],
+  );
+  protected readonly faltaSiguiente = computed(() =>
+    Math.max(0, this.siguiente().desde - this.p().ventaPersonal),
+  );
+  protected readonly nivelPct = computed(() =>
+    Math.min(100, Math.round((this.p().ventaPersonal / this.siguiente().desde) * 100)),
+  );
 
   /** Historial corto: el resultado de calificación de las últimas campañas. */
   protected readonly historial = [

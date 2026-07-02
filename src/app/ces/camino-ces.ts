@@ -1,18 +1,20 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../shared/icon';
 import { Reveal } from '../shared/reveal';
-import { CAMINO_CES, USUARIA_CES } from '../data/mock-ces';
+import { EstatusService } from '../shared/estatus';
+import { CAMINO_CES, PERFILES } from '../data/mock-ces';
 
 /**
- * Mi camino (CES): lo que la Maya actual NO tiene — la carrera de la
- * Audiencia Emprendedoras contada como un camino con posición clara:
- *  · Dónde estás (título CES · calificando como CNS — la distinción es central).
- *  · Qué te falta HOY para recuperar la calificación (4 requisitos, con cifras).
- *  · Qué sigue (Aspirante → Directora) y cuánto más se gana en cada paso.
- * Las varas intimidan (barrera documentada): por eso cada requisito va con
- * su acción concreta, no solo con el número.
+ * Mi camino: lo que la Maya actual NO tiene — la carrera de la Audiencia
+ * Emprendedoras contada como un camino con posición clara. La página entera
+ * reacciona al estatus encarnado (conmutador demo):
+ *  · El "estás aquí" del stepper se mueve con el estatus.
+ *  · Los requisitos son los del PASO que ese estatus está jugando
+ *    (CNS→CEM · CEM→CES · CES recupera calificación · ASP→DIR).
+ * Las varas intimidan (barrera documentada): cada requisito va con su acción
+ * concreta, no solo con el número.
  */
 @Component({
   selector: 'app-camino-ces',
@@ -28,11 +30,11 @@ import { CAMINO_CES, USUARIA_CES } from '../data/mock-ces';
 
       <div class="v2-grid">
         <main>
-          <!-- El camino completo, con la posición actual marcada -->
+          <!-- El camino completo, con la posición del estatus encarnado -->
           <section class="card pad v2-section" appReveal>
             <h2 class="v2-h"><app-icon name="star" [size]="18" /> La carrera</h2>
             <ol class="ruta" aria-label="Niveles de la carrera">
-              @for (n of camino.niveles; track n.sigla) {
+              @for (n of niveles(); track n.sigla) {
                 <li class="ruta__paso" [class]="'ruta__paso--' + n.estado">
                   <span class="ruta__dot" aria-hidden="true">
                     @if (n.estado === 'logrado') {
@@ -52,20 +54,18 @@ import { CAMINO_CES, USUARIA_CES } from '../data/mock-ces';
               }
             </ol>
             <p class="tiny" style="margin:12px 0 0">
-              Ganancias referenciales del modelo (Perú). El título {{ u.titulo }} se conserva; la
-              calificación se juega cada campaña.
+              Ganancias referenciales del modelo (Perú). El título se conserva; la calificación se
+              juega cada campaña.
             </p>
           </section>
 
-          <!-- Requisitos de la calificación CES: la cifra + la acción -->
+          <!-- Requisitos del paso que este estatus está jugando -->
           <section class="card pad v2-section" appReveal>
-            <h2 class="v2-h">
-              <app-icon name="target" [size]="18" /> Recupera tu calificación CES
-            </h2>
+            <h2 class="v2-h"><app-icon name="target" [size]="18" /> {{ p().paso.titulo }}</h2>
             <p class="muted" style="margin:0 0 14px">
-              Los 4 requisitos se cumplen en la misma campaña. Hoy llevas {{ cumplidos }} de 4.
+              {{ p().paso.nota }} Hoy llevas {{ cumplidos() }} de {{ p().paso.requisitos.length }}.
             </p>
-            @for (r of camino.requisitosCes; track r.texto) {
+            @for (r of p().paso.requisitos; track r.texto) {
               <div class="req">
                 <span class="req__check" [class.req__check--ok]="r.cumple" aria-hidden="true">{{
                   r.cumple ? '✓' : ''
@@ -83,27 +83,45 @@ import { CAMINO_CES, USUARIA_CES } from '../data/mock-ces';
                 </div>
               </div>
             }
-            <a class="btn btn--primary btn--sm" routerLink="/e/grupo" style="margin-top:8px"
-              >Trabajar con mi grupo</a
+            <a
+              class="btn btn--primary btn--sm"
+              [routerLink]="p().capacidades.grupo ? '/e/grupo' : '/e/campana'"
+              style="margin-top:8px"
+              >{{ p().capacidades.grupo ? 'Trabajar con mi grupo' : 'Trabajar mi campaña' }}</a
             >
           </section>
 
-          <!-- El siguiente paso: Aspirante -->
-          <section class="card pad asp v2-section" appReveal>
-            <img src="icons/goals.png" alt="" aria-hidden="true" width="56" height="56" />
-            <div>
-              <h2 class="v2-h" style="margin-bottom:6px">Siguiente paso: Aspirante</h2>
-              <p class="muted" style="margin:0 0 10px">
-                Cuando sostengas tu calificación CES, la postulación pide:
-              </p>
-              <ul class="asp__l">
-                @for (r of camino.requisitosAsp; track r) {
-                  <li>{{ r }}</li>
-                }
-              </ul>
-              <p class="tiny" style="margin:10px 0 0">{{ camino.formacion }}</p>
-            </div>
-          </section>
+          <!-- El paso que sigue después del actual -->
+          @if (p().estatus === 'CES') {
+            <section class="card pad asp v2-section" appReveal>
+              <img src="icons/goals.png" alt="" aria-hidden="true" width="56" height="56" />
+              <div>
+                <h2 class="v2-h" style="margin-bottom:6px">Siguiente paso: Aspirante</h2>
+                <p class="muted" style="margin:0 0 10px">
+                  Cuando sostengas tu calificación CES, la postulación pide:
+                </p>
+                <ul class="asp__l">
+                  @for (r of camino.requisitosAsp; track r) {
+                    <li>{{ r }}</li>
+                  }
+                </ul>
+                <p class="tiny" style="margin:10px 0 0">{{ camino.formacion }}</p>
+              </div>
+            </section>
+          } @else if (p().estatus === 'ASP') {
+            <section class="card pad asp v2-section" appReveal>
+              <img src="icons/medal-01.png" alt="" aria-hidden="true" width="56" height="56" />
+              <div>
+                <h2 class="v2-h" style="margin-bottom:6px">Al graduarte: Directora</h2>
+                <p class="muted" style="margin:0 0 10px">
+                  Título permanente, contrato multinivel, el 10% de la venta neta de tu Grupo
+                  Personal, bono de desempeño por Cuadrante A y la puerta al PAR+ (medallas, bonos,
+                  viajes y autos).
+                </p>
+                <p class="tiny" style="margin:0">{{ camino.formacion }}</p>
+              </div>
+            </section>
+          }
         </main>
 
         <aside class="v2-aside">
@@ -111,7 +129,7 @@ import { CAMINO_CES, USUARIA_CES } from '../data/mock-ces';
             <h3 class="v2-h" style="font-size:15px">
               <app-icon name="trending" [size]="16" /> Cuánto crece tu ganancia
             </h3>
-            @for (n of camino.niveles; track n.sigla) {
+            @for (n of niveles(); track n.sigla) {
               <div class="gan__row" [class.gan__row--on]="n.estado === 'actual'">
                 <span class="gan__sigla">{{ n.sigla }}</span>
                 <div class="gan__bar" aria-hidden="true">
@@ -130,7 +148,8 @@ import { CAMINO_CES, USUARIA_CES } from '../data/mock-ces';
             <div>
               <strong>Tu constancia</strong>
               <p class="tiny" style="margin:2px 0 0">
-                Calificaste CES en C5 y C6. Una campaña más y retomas tu mejor racha del año.
+                Calificaste {{ p().estatus }} en C5 y C6. Una campaña más y retomas tu mejor racha
+                del año.
               </p>
             </div>
           </div>
@@ -334,10 +353,24 @@ import { CAMINO_CES, USUARIA_CES } from '../data/mock-ces';
   ],
 })
 export class CaminoCes {
-  protected readonly u = USUARIA_CES;
-  protected readonly camino = CAMINO_CES;
+  private readonly estatusSrv = inject(EstatusService);
 
-  protected readonly cumplidos = CAMINO_CES.requisitosCes.filter((r) => r.cumple).length; // 1
+  protected readonly camino = CAMINO_CES;
+  protected readonly p = computed(() => PERFILES[this.estatusSrv.estatus()]);
+
+  /** Stepper con estado derivado del estatus encarnado (logrado ← actual → futuro). */
+  protected readonly niveles = computed(() => {
+    const orden = CAMINO_CES.niveles.map((n) => n.sigla);
+    const idx = orden.indexOf(this.p().estatus);
+    return CAMINO_CES.niveles.map((n, i) => ({
+      ...n,
+      estado: i < idx ? 'logrado' : i === idx ? 'actual' : i === idx + 1 ? 'siguiente' : 'futuro',
+    }));
+  });
+
+  protected readonly cumplidos = computed(
+    () => this.p().paso.requisitos.filter((r) => r.cumple).length,
+  );
 
   protected pct(actual: number, meta: number): number {
     return Math.min(100, Math.round((actual / meta) * 100));

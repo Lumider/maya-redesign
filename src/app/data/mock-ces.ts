@@ -386,3 +386,339 @@ export const CAMINO_CES = {
   formacion:
     'El programa "Fórmate como Directora" dura de 2 a 4 campañas e incluye 8 cursos de Créana (5 de negocio + 3 de habilidades blandas).',
 };
+
+/* ==========================================================================
+   Perfiles por estatus — la misma usuaria (Valeria) encarnada en cada paso
+   de su carrera, para comparar qué le cambia la app en cada nivel.
+   Reglas del modelo que respetan los datos:
+   · La ganancia por escala = venta personal × % de descuento del nivel.
+   · Incorpora y Gana existe desde CEM (S/ 50 por incorporada activa N1).
+   · El Grupo Personal (hijas + nietas) existe desde CES.
+   · La Aspirante además gana 5–8% de la venta neta cobrada de todo su GP.
+   ========================================================================== */
+
+export interface RequisitoPaso {
+  texto: string;
+  actual: number;
+  meta: number;
+  cumple: boolean;
+  detalle: string;
+}
+
+export interface PerfilEstatus {
+  estatus: 'CNS' | 'CEM' | 'CES' | 'ASP';
+  nombreNivel: string;
+  /** Qué hace este nivel, en una frase (aparece en el conmutador). */
+  resumen: string;
+  /** Calificación que lleva ESTA campaña (puede diferir del título). */
+  calificandoComo: string;
+  /** Qué partes de la app existen en este nivel. */
+  capacidades: { grupo: boolean; incorpora: boolean; red: boolean };
+  ventaPersonal: number;
+  nivelGanamas: string;
+  descuento: number;
+  ganancia: { total: number; escala: number; incorporaYGana: number; red: number };
+  /** Venta del Grupo Personal (solo CES/ASP). */
+  ventaGP?: { actual: number; meta: number; etiquetaMeta: string };
+  alerta: { titulo: string; texto: string; tone: 'warning' | 'success' };
+  acciones: { emoji: string; texto: string; impacto: string; ruta: string; urgente?: boolean }[];
+  /** El paso que está jugando: título + requisitos con progreso. */
+  paso: { titulo: string; nota: string; requisitos: RequisitoPaso[] };
+}
+
+export const PERFILES: Record<'CNS' | 'CEM' | 'CES' | 'ASP', PerfilEstatus> = {
+  CNS: {
+    estatus: 'CNS',
+    nombreNivel: 'Consultora',
+    resumen: 'Vende y gana por sus ventas',
+    calificandoComo: 'CNS',
+    capacidades: { grupo: false, incorpora: false, red: false },
+    ventaPersonal: 620,
+    nivelGanamas: 'N1',
+    descuento: 25,
+    ganancia: { total: 155, escala: 155, incorporaYGana: 0, red: 0 },
+    alerta: {
+      titulo: 'Estás a 1 persona de ser Emprendedora (CEM).',
+      texto:
+        'Incorpora a tu primera consultora activa al N1 y empieza a ganar S/ 50 por campaña, además de tus ventas.',
+      tone: 'success',
+    },
+    acciones: [
+      {
+        emoji: '🛍️',
+        texto: 'Completa S/ 320 más y sube al nivel N2 (30%)',
+        impacto: 'Tu descuento pasa de 25% a 30%',
+        ruta: '/e/campana',
+      },
+      {
+        emoji: '💬',
+        texto: 'Piensa en 3 conocidas que venderían bien',
+        impacto: 'Tu primera incorporada te hace CEM',
+        ruta: '/e/camino',
+      },
+      {
+        emoji: '📖',
+        texto: 'Comparte el catálogo C7 con tus clientas',
+        impacto: 'Empuja la venta de la semana',
+        ruta: '/e/campana',
+      },
+    ],
+    paso: {
+      titulo: 'Conviértete en Emprendedora (CEM)',
+      nota: 'Con tu primera incorporada activa al N1 ya calificas — en la misma campaña.',
+      requisitos: [
+        {
+          texto: 'Venta personal en Nivel 1 Ganamás (S/ 470)',
+          actual: 620,
+          meta: 470,
+          cumple: true,
+          detalle: 'Ya calificas — vas en S/ 620 (N1)',
+        },
+        {
+          texto: '1 nueva consultora activa al N1',
+          actual: 0,
+          meta: 1,
+          cumple: false,
+          detalle: 'Invítala tú: ganarás S/ 50 por campaña por ella',
+        },
+      ],
+    },
+  },
+  CEM: {
+    estatus: 'CEM',
+    nombreNivel: 'Consultora Emprendedora',
+    resumen: '+ Incorpora y asesora consultoras',
+    calificandoComo: 'CEM',
+    capacidades: { grupo: false, incorpora: true, red: false },
+    ventaPersonal: 980,
+    nivelGanamas: 'N2',
+    descuento: 30,
+    ganancia: { total: 344, escala: 294, incorporaYGana: 50, red: 0 },
+    alerta: {
+      titulo: 'Vas camino a CEM Senior.',
+      texto:
+        'Te faltan 1 primer pedido directo y 3 activas directas. Como CES ganarás además el 4% de tus hijas y el 2% de tus nietas.',
+      tone: 'warning',
+    },
+    acciones: [
+      {
+        emoji: '🎯',
+        texto: 'Asegura el primer pedido de Carolina',
+        impacto: 'PPED directos 2/2 · te acerca a CES',
+        ruta: '/e/incorpora',
+      },
+      {
+        emoji: '📞',
+        texto: 'Retén a Rosa: trabajó C6 y aún no pasa pedido',
+        impacto: 'Si repite, sumas S/ 50 del Incorpora y Gana',
+        ruta: '/e/incorpora',
+      },
+      {
+        emoji: '🛍️',
+        texto: 'Completa S/ 430 más y sube al nivel N3 (35%)',
+        impacto: 'Tu descuento pasa de 30% a 35%',
+        ruta: '/e/campana',
+      },
+    ],
+    paso: {
+      titulo: 'Califica como CEM Senior',
+      nota: 'Los 4 requisitos se cumplen en la misma campaña.',
+      requisitos: [
+        {
+          texto: 'Venta personal en Nivel 1 Ganamás (S/ 470)',
+          actual: 980,
+          meta: 470,
+          cumple: true,
+          detalle: 'Ya calificas — vas en S/ 980 (N2)',
+        },
+        {
+          texto: '2 primeros pedidos directos (hijas)',
+          actual: 1,
+          meta: 2,
+          cumple: false,
+          detalle: 'Katia ya pasó el suyo — falta 1',
+        },
+        {
+          texto: '5 activas directas (hijas)',
+          actual: 2,
+          meta: 5,
+          cumple: false,
+          detalle: 'Katia y Rosa — suma 3 más',
+        },
+        {
+          texto: 'Venta del GP ≥ 30% del MRM (S/ 6,000)',
+          actual: 1850,
+          meta: 6000,
+          cumple: false,
+          detalle: 'Tu red recién empieza — llevas S/ 1,850',
+        },
+      ],
+    },
+  },
+  CES: {
+    estatus: 'CES',
+    nombreNivel: 'CEM Senior',
+    resumen: '+ Gana de su red (4% hijas · 2% nietas)',
+    calificandoComo: 'CNS',
+    capacidades: { grupo: true, incorpora: true, red: true },
+    ventaPersonal: 1500.5,
+    nivelGanamas: 'N3',
+    descuento: 35,
+    ganancia: { total: 525, escala: 525, incorporaYGana: 0, red: 0 },
+    ventaGP: { actual: 3029, meta: 6000, etiquetaMeta: 'meta CES (S/ 6,000 — 30% del MRM)' },
+    alerta: {
+      titulo: 'Recupera tu calificación CES esta campaña.',
+      texto:
+        'Te faltan 2 primeros pedidos directos y 2 activas directas — sin la calificación no cobras el 4% de tus hijas ni el 2% de tus nietas.',
+      tone: 'warning',
+    },
+    acciones: [
+      {
+        emoji: '💳',
+        texto: 'Acompaña a Hermelinda a pagar S/ 111.15',
+        impacto: 'Tu IM baja de 5.14% a 5.00% — dentro del límite',
+        ruta: '/e/campana',
+        urgente: true,
+      },
+      {
+        emoji: '🎯',
+        texto: 'Asegura el primer pedido de Carolina y Diego',
+        impacto: 'PPED directos +2 de 2 · recuperas tu calificación CES',
+        ruta: '/e/grupo',
+      },
+      {
+        emoji: '📞',
+        texto: 'Llama a Emilia: solo lleva 1 campaña inactiva',
+        impacto: 'Reactivada +1 · te acerca a las 5 activas directas',
+        ruta: '/e/grupo',
+      },
+      {
+        emoji: '🛍️',
+        texto: 'Completa S/ 379.50 en tu pedido para el nivel N4',
+        impacto: 'Más premios Ganamás en producto',
+        ruta: '/e/campana',
+      },
+    ],
+    paso: {
+      titulo: 'Recupera tu calificación CES',
+      nota: 'Los 4 requisitos se cumplen en la misma campaña. Hoy llevas 1 de 4.',
+      requisitos: [
+        {
+          texto: 'Venta personal en Nivel 1 Ganamás (S/ 470)',
+          actual: 1500.5,
+          meta: 470,
+          cumple: true,
+          detalle: 'Vas en S/ 1,500.50 — nivel N3',
+        },
+        {
+          texto: '2 primeros pedidos directos (hijas)',
+          actual: 0,
+          meta: 2,
+          cumple: false,
+          detalle: 'Carolina y Diego están a un paso',
+        },
+        {
+          texto: '5 activas directas (hijas)',
+          actual: 3,
+          meta: 5,
+          cumple: false,
+          detalle: 'Reactiva a Emilia y retén a Rosa',
+        },
+        {
+          texto: 'Venta del GP ≥ 30% del MRM (S/ 6,000)',
+          actual: 3029,
+          meta: 6000,
+          cumple: false,
+          detalle: 'Llevas el 50% — faltan S/ 2,971',
+        },
+      ],
+    },
+  },
+  ASP: {
+    estatus: 'ASP',
+    nombreNivel: 'Aspirante',
+    resumen: '+ Se forma para ser Directora (5–8% del GP)',
+    calificandoComo: 'ASP',
+    capacidades: { grupo: true, incorpora: true, red: true },
+    ventaPersonal: 1620,
+    nivelGanamas: 'N3',
+    descuento: 35,
+    ganancia: { total: 991, escala: 567, incorporaYGana: 50, red: 374 },
+    ventaGP: { actual: 12450, meta: 20000, etiquetaMeta: 'meta de graduación (1 MRM = S/ 20,000)' },
+    alerta: {
+      titulo: 'Estás en "Fórmate como Directora" — campaña 2 de 4.',
+      texto:
+        'Tu GP ya supera el 60% del MRM. Para graduarte faltan 3 activas, 1 primer pedido y 3 cursos de Créana.',
+      tone: 'warning',
+    },
+    acciones: [
+      {
+        emoji: '🎓',
+        texto: 'Completa el curso 6 de Créana esta semana',
+        impacto: 'Cursos 6/8 · requisito de graduación',
+        ruta: '/e/camino',
+        urgente: true,
+      },
+      {
+        emoji: '🎯',
+        texto: 'Asegura 1 primer pedido más en tu GP',
+        impacto: 'PPED del GP 3/3 · conteo de graduación',
+        ruta: '/e/grupo',
+      },
+      {
+        emoji: '📞',
+        texto: 'Reactiva a 3 consultoras para llegar a 20 activas',
+        impacto: 'Activas 20/20 · conteo de graduación',
+        ruta: '/e/grupo',
+      },
+    ],
+    paso: {
+      titulo: 'Gradúate como Directora',
+      nota: 'El conteo de graduación pide todo esto en la misma campaña (mín. 2, máx. 4 campañas de programa).',
+      requisitos: [
+        {
+          texto: 'Venta personal en Nivel 1 Ganamás (S/ 470)',
+          actual: 1620,
+          meta: 470,
+          cumple: true,
+          detalle: 'Vas en S/ 1,620 — nivel N3',
+        },
+        {
+          texto: '3 primeros pedidos del GP',
+          actual: 2,
+          meta: 3,
+          cumple: false,
+          detalle: 'Falta 1 — hay 2 incorporadas sin pedido',
+        },
+        {
+          texto: '20 activas en el GP',
+          actual: 17,
+          meta: 20,
+          cumple: false,
+          detalle: 'Faltan 3 — tienes 5 por reactivar',
+        },
+        {
+          texto: 'Venta del GP ≥ 1 MRM (S/ 20,000)',
+          actual: 12450,
+          meta: 20000,
+          cumple: false,
+          detalle: 'Llevas el 62% — faltan S/ 7,550',
+        },
+        {
+          texto: 'Morosidad dentro del límite (≤ 6%)',
+          actual: 1,
+          meta: 1,
+          cumple: true,
+          detalle: 'Hoy: 3.8% — sigue así',
+        },
+        {
+          texto: '8 cursos de Créana',
+          actual: 5,
+          meta: 8,
+          cumple: false,
+          detalle: '5 de negocio ✓ · faltan los 3 de habilidades',
+        },
+      ],
+    },
+  },
+};

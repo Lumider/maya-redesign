@@ -12,8 +12,10 @@ import { Icon } from './shared/icon';
 import { Loader } from './shared/loader';
 import { ThemeService } from './shared/theme';
 import { VersionService } from './shared/version';
+import { EstatusService } from './shared/estatus';
+import { EstatusSwitch } from './shared/estatus-switch';
 import { USUARIA } from './data/mock';
-import { USUARIA_CES } from './data/mock-ces';
+import { PERFILES, USUARIA_CES } from './data/mock-ces';
 
 interface Cat {
   label: string;
@@ -75,7 +77,7 @@ const MENU_LINKS: MenuLink[] = [
 @Component({
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, Icon, Loader],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, Icon, Loader, EstatusSwitch],
   template: `
     @if (!entered()) {
       <app-loader (done)="entered.set(true)" />
@@ -118,7 +120,7 @@ const MENU_LINKS: MenuLink[] = [
             <span class="ctxpill__div"></span> Semana {{ u().semana }}
             @if (esCes()) {
               <span class="ctxpill__div"></span>
-              <span class="ctxpill__rol">{{ usuariaCes.titulo }}</span>
+              <span class="ctxpill__rol">{{ estatusSrv.estatus() }}</span>
             }
           </span>
         } @else {
@@ -344,6 +346,11 @@ const MENU_LINKS: MenuLink[] = [
           </a>
         }
       </nav>
+    }
+
+    <!-- Conmutador de estatus (demo) — solo en la vista Emprendedora -->
+    @if (esCes()) {
+      <app-estatus-switch />
     }
   `,
   styles: [
@@ -892,6 +899,7 @@ export class App implements OnInit {
   protected readonly entered = signal(false);
   protected readonly theme = inject(ThemeService);
   protected readonly version = inject(VersionService);
+  protected readonly estatusSrv = inject(EstatusService);
   private readonly router = inject(Router);
 
   /** La vista CES vive en /e/… — se detecta por ruta (no por preferencia persistida):
@@ -901,11 +909,21 @@ export class App implements OnInit {
   );
   /** Vistas con el header/nav moderno (nueva beta y CES). */
   protected readonly moderna = computed(() => this.version.nueva() || this.esCes());
-  protected readonly activeCats = computed<Cat[]>(() =>
-    this.esCes() ? CES_CATS : this.version.nueva() ? NEW_CATS : CATS,
-  );
+  /** Nav activa. En la vista Emprendedora, las secciones dependen del estatus:
+   *  "Mi grupo" existe desde CES; "Incorpora y Gana" desde CEM. */
+  protected readonly activeCats = computed<Cat[]>(() => {
+    if (!this.esCes()) return this.version.nueva() ? NEW_CATS : CATS;
+    const cap = PERFILES[this.estatusSrv.estatus()].capacidades;
+    return CES_CATS.filter(
+      (c) => (c.route !== '/e/grupo' || cap.grupo) && (c.route !== '/e/incorpora' || cap.incorpora),
+    );
+  });
   /** Identidad mostrada en el shell: la Emprendedora en /e/, la Líder en el resto. */
-  protected readonly u = computed(() => (this.esCes() ? USUARIA_CES : USUARIA));
+  protected readonly u = computed(() =>
+    this.esCes()
+      ? { ...USUARIA_CES, rol: PERFILES[this.estatusSrv.estatus()].nombreNivel }
+      : USUARIA,
+  );
   protected readonly homeRoute = computed(() =>
     this.esCes() ? '/e/inicio' : this.version.nueva() ? '/n/inicio' : '/inicio',
   );

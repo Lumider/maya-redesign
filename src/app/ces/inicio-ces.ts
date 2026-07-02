@@ -1,17 +1,19 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../shared/icon';
 import { Reveal } from '../shared/reveal';
-import { CAMPANA_CES, GRUPO_CES, INCORPORADAS_CES, USUARIA_CES } from '../data/mock-ces';
+import { EstatusService } from '../shared/estatus';
+import { CAMPANA_CES, GRUPO_CES, PERFILES, USUARIA_CES } from '../data/mock-ces';
 
 /**
- * Inicio (CES) — cabina de triage de la Emprendedora Senior. Igual que en la vista
- * Líder, NO es dueño de los datos: espeja lo urgente y enruta. Cada cifra vive en
- * un solo lugar:
- *  · Los 3 críticos (calificación · venta GP · cierre) viven solo en el encabezado.
+ * Inicio (Emprendedora) — cabina de triage. NO es dueño de los datos: espeja lo
+ * urgente y enruta. Toda la página se deriva del PERFIL del estatus activo
+ * (conmutador demo): críticos, alerta, acciones y áreas visibles cambian al
+ * encarnar CNS, CEM, CES o ASP. Cada cifra vive en un solo lugar:
+ *  · Los 3 críticos (calificación · venta · cierre) viven solo en el encabezado.
  *  · El detalle de Ganamás/morosidad/crédito vive en Mi campaña.
- *  · El detalle de requisitos CES vive en Mi camino.
+ *  · El detalle de requisitos del paso vive en Mi camino.
  */
 @Component({
   selector: 'app-inicio-ces',
@@ -26,24 +28,34 @@ import { CAMPANA_CES, GRUPO_CES, INCORPORADAS_CES, USUARIA_CES } from '../data/m
         <!-- Los 3 (y solo 3) indicadores críticos -->
         <div class="crit">
           <div class="crit__i card">
-            <span class="crit__top"
-              ><span class="crit__label">Estás calificando como</span
-              ><span class="sem sem--warn"></span
-            ></span>
-            <span class="crit__v warn">{{ u.calificandoComo }}</span>
-            <span class="tiny"
-              >Tu título es {{ u.titulo }} — recupera tu calificación esta campaña</span
-            >
+            <span class="crit__top">
+              <span class="crit__label">Estás calificando como</span>
+              <span class="sem" [class]="calificaBien() ? 'sem--ok' : 'sem--warn'"></span>
+            </span>
+            <span class="crit__v" [class.warn]="!calificaBien()">{{ p().calificandoComo }}</span>
+            <span class="tiny">
+              @if (calificaBien()) {
+                Tu título {{ p().estatus }} está al día — sigue así
+              } @else {
+                Tu título es {{ p().estatus }} — recupera tu calificación esta campaña
+              }
+            </span>
           </div>
           <div class="crit__i card">
-            <span class="crit__top"><span class="crit__label">Venta de tu grupo</span></span>
-            <span class="crit__v">S/ {{ c.ventaGP | number: '1.0-0' }}</span>
-            <div class="progress" style="margin:8px 0 4px">
-              <div class="progress__fill" [style.width.%]="ventaPct"></div>
-            </div>
-            <span class="tiny"
-              >{{ ventaPct }}% de la meta CES (S/ {{ c.metaVentaGP | number }})</span
-            >
+            @if (p().ventaGP; as gp) {
+              <span class="crit__top"><span class="crit__label">Venta de tu grupo</span></span>
+              <span class="crit__v">S/ {{ gp.actual | number: '1.0-0' }}</span>
+              <div class="progress" style="margin:8px 0 4px">
+                <div class="progress__fill" [style.width.%]="ventaPct()"></div>
+              </div>
+              <span class="tiny">{{ ventaPct() }}% de la {{ gp.etiquetaMeta }}</span>
+            } @else {
+              <span class="crit__top"><span class="crit__label">Tu venta personal</span></span>
+              <span class="crit__v">S/ {{ p().ventaPersonal | number: '1.0-0' }}</span>
+              <span class="tiny"
+                >Nivel {{ p().nivelGanamas }} Ganamás · {{ p().descuento }}% de descuento</span
+              >
+            }
           </div>
           <div class="crit__i card">
             <span class="crit__top"><span class="crit__label">Cierre de campaña</span></span>
@@ -57,15 +69,20 @@ import { CAMPANA_CES, GRUPO_CES, INCORPORADAS_CES, USUARIA_CES } from '../data/m
 
       <div class="v2-grid">
         <main>
-          <!-- Una sola narrativa: recuperar la calificación CES -->
-          <section class="card pad alerta" appReveal>
-            <span class="sem sem--warn" style="margin-top:5px"></span>
+          <!-- Una sola narrativa por estatus: el paso que está jugando -->
+          <section
+            class="card pad alerta"
+            [class.alerta--ok]="p().alerta.tone === 'success'"
+            appReveal
+          >
+            <span
+              class="sem"
+              [class]="p().alerta.tone === 'success' ? 'sem--ok' : 'sem--warn'"
+              style="margin-top:5px"
+            ></span>
             <div>
-              <strong>Recupera tu calificación CES esta campaña.</strong>
-              <p class="muted">
-                Te faltan {{ ppedFaltan }} primeros pedidos directos y {{ activasFaltan }} activas
-                directas — sin la calificación no cobras el 4% de tus hijas ni el 2% de tus nietas.
-              </p>
+              <strong>{{ p().alerta.titulo }}</strong>
+              <p class="muted">{{ p().alerta.texto }}</p>
             </div>
             <a class="btn btn--soft btn--sm" routerLink="/e/camino">Ver mi camino</a>
           </section>
@@ -73,7 +90,7 @@ import { CAMPANA_CES, GRUPO_CES, INCORPORADAS_CES, USUARIA_CES } from '../data/m
           <section class="v2-section" appReveal>
             <h2 class="v2-h"><app-icon name="check" [size]="18" /> Qué hacer esta semana</h2>
             <div class="feed">
-              @for (a of pendientes; track a.id) {
+              @for (a of p().acciones; track a.texto) {
                 <a
                   class="feed__item card"
                   [class.feed__item--urgent]="a.urgente"
@@ -91,9 +108,9 @@ import { CAMPANA_CES, GRUPO_CES, INCORPORADAS_CES, USUARIA_CES } from '../data/m
           </section>
 
           <section class="v2-section" appReveal>
-            <h2 class="v2-h"><app-icon name="sparkles" [size]="18" /> Un vistazo a tus 4 áreas</h2>
+            <h2 class="v2-h"><app-icon name="sparkles" [size]="18" /> Un vistazo a tus áreas</h2>
             <div class="areas">
-              @for (ar of areas; track ar.ruta) {
+              @for (ar of areas(); track ar.ruta) {
                 <a class="area card card--hover" [routerLink]="ar.ruta">
                   <div class="area__top">
                     <app-icon [name]="ar.icon" [size]="22" /><span
@@ -110,7 +127,7 @@ import { CAMPANA_CES, GRUPO_CES, INCORPORADAS_CES, USUARIA_CES } from '../data/m
         </main>
 
         <aside class="v2-aside">
-          <!-- Único lugar del sueño de carrera en el inicio -->
+          <!-- Único lugar del paso de carrera en el inicio -->
           <a class="card camino" routerLink="/e/camino" appReveal>
             <img
               class="camino__img"
@@ -122,35 +139,54 @@ import { CAMPANA_CES, GRUPO_CES, INCORPORADAS_CES, USUARIA_CES } from '../data/m
             />
             <div class="camino__body">
               <span class="badge badge--brand">Mi camino</span>
-              <strong>De {{ u.titulo }} a Directora</strong>
-              <span class="tiny">1 de 4 requisitos CES cumplidos · ver qué te falta →</span>
+              <strong>{{ p().paso.titulo }}</strong>
+              <span class="tiny"
+                >{{ cumplidos() }} de {{ p().paso.requisitos.length }} requisitos cumplidos · ver
+                qué te falta →</span
+              >
             </div>
           </a>
 
-          <div class="card pad" appReveal [revealDelay]="80">
-            <h3 class="v2-h" style="font-size:15px">
-              <app-icon name="users" [size]="16" /> Mi grupo por trabajar
-            </h3>
-            @for (s of grupoTop; track s.label) {
-              <a class="row-eq" [class.row-eq--accent]="s.accent" routerLink="/e/grupo">
-                <span class="sem" [class]="'sem--' + s.tone"></span>
-                <span class="row-eq__label">{{ s.label }}</span>
-                <strong>{{ s.count }}</strong>
-              </a>
-            }
-          </div>
-
-          <div class="card pad iyg" appReveal [revealDelay]="140">
-            <img src="icons/megaphone.png" alt="" aria-hidden="true" width="44" height="44" />
-            <div>
-              <strong>Incorpora y Gana</strong>
-              <p class="tiny" style="margin:2px 0 0">
-                S/ {{ gananciaIyg | number }} ganados · {{ sinPedido }} incorporadas aún sin primer
-                pedido
-              </p>
-              <a class="nlink" routerLink="/e/incorpora">Ver mi seguimiento →</a>
+          @if (p().capacidades.grupo) {
+            <div class="card pad" appReveal [revealDelay]="80">
+              <h3 class="v2-h" style="font-size:15px">
+                <app-icon name="users" [size]="16" /> Mi grupo por trabajar
+              </h3>
+              @for (s of grupoTop; track s.label) {
+                <a class="row-eq" [class.row-eq--accent]="s.accent" routerLink="/e/grupo">
+                  <span class="sem" [class]="'sem--' + s.tone"></span>
+                  <span class="row-eq__label">{{ s.label }}</span>
+                  <strong>{{ s.count }}</strong>
+                </a>
+              }
             </div>
-          </div>
+          }
+
+          @if (p().capacidades.incorpora) {
+            <div class="card pad iyg" appReveal [revealDelay]="140">
+              <img src="icons/megaphone.png" alt="" aria-hidden="true" width="44" height="44" />
+              <div>
+                <strong>Incorpora y Gana</strong>
+                <p class="tiny" style="margin:2px 0 0">
+                  S/ {{ p().ganancia.incorporaYGana | number }} este {{ c.actual }} — cada
+                  incorporada activa al N1 son S/ 50 por campaña.
+                </p>
+                <a class="nlink" routerLink="/e/incorpora">Ver mi seguimiento →</a>
+              </div>
+            </div>
+          } @else {
+            <div class="card pad iyg iyg--up" appReveal [revealDelay]="140">
+              <img src="icons/megaphone.png" alt="" aria-hidden="true" width="44" height="44" />
+              <div>
+                <strong>¿Sabías que puedes ganar por incorporar?</strong>
+                <p class="tiny" style="margin:2px 0 0">
+                  Tu primera incorporada activa te convierte en CEM: S/ 50 por campaña por persona,
+                  hasta S/ 150 por cada una.
+                </p>
+                <a class="nlink" routerLink="/e/camino">Cómo funciona →</a>
+              </div>
+            </div>
+          }
         </aside>
       </div>
     </div>
@@ -196,6 +232,9 @@ import { CAMPANA_CES, GRUPO_CES, INCORPORADAS_CES, USUARIA_CES } from '../data/m
         align-items: flex-start;
         border-color: var(--warning);
         margin-bottom: 22px;
+      }
+      .alerta--ok {
+        border-color: var(--success);
       }
       .alerta p {
         margin: 4px 0 0;
@@ -307,6 +346,10 @@ import { CAMPANA_CES, GRUPO_CES, INCORPORADAS_CES, USUARIA_CES } from '../data/m
         gap: 12px;
         align-items: flex-start;
       }
+      .iyg--up {
+        border-color: var(--brand-200);
+        background: var(--brand-50);
+      }
       .nlink {
         display: inline-block;
         font-size: 13px;
@@ -327,86 +370,63 @@ import { CAMPANA_CES, GRUPO_CES, INCORPORADAS_CES, USUARIA_CES } from '../data/m
   ],
 })
 export class InicioCes {
-  protected readonly u = USUARIA_CES;
+  private readonly estatusSrv = inject(EstatusService);
+
   protected readonly c = CAMPANA_CES;
   protected readonly nombre = USUARIA_CES.nombre.split(' ')[0];
 
-  protected readonly ventaPct = Math.round((CAMPANA_CES.ventaGP / CAMPANA_CES.metaVentaGP) * 100); // 50
-  protected readonly ppedFaltan = CAMPANA_CES.metaPped - CAMPANA_CES.ppedDirectos; // 2
-  protected readonly activasFaltan = CAMPANA_CES.metaActivasDirectas - CAMPANA_CES.activasDirectas; // 2
+  /** Perfil del estatus encarnado — de aquí sale TODO lo variable de la página. */
+  protected readonly p = computed(() => PERFILES[this.estatusSrv.estatus()]);
+  protected readonly calificaBien = computed(() => this.p().calificandoComo === this.p().estatus);
+  protected readonly ventaPct = computed(() => {
+    const gp = this.p().ventaGP;
+    return gp ? Math.round((gp.actual / gp.meta) * 100) : 0;
+  });
+  protected readonly cumplidos = computed(
+    () => this.p().paso.requisitos.filter((r) => r.cumple).length,
+  );
 
-  protected readonly gananciaIyg = INCORPORADAS_CES.reduce((s, i) => s + i.gananciaAcumulada, 0);
-  protected readonly sinPedido = INCORPORADAS_CES.filter((i) => !i.primerPedido).length;
-
-  /** Acciones concretas y con impacto, ordenadas por urgencia. */
-  protected readonly pendientes = [
-    {
-      id: 'a1',
-      emoji: '💳',
-      texto: 'Acompaña a Hermelinda a pagar S/ 111.15',
-      impacto: 'Tu IM baja de 5.14% a 5.00% — dentro del límite',
-      ruta: '/e/campana',
-      urgente: true,
-    },
-    {
-      id: 'a2',
-      emoji: '🎯',
-      texto: 'Asegura el primer pedido de Carolina y Diego',
-      impacto: 'PPED directos +2 de 2 · recuperas tu calificación CES',
-      ruta: '/e/grupo',
-      urgente: false,
-    },
-    {
-      id: 'a3',
-      emoji: '📞',
-      texto: 'Llama a Emilia: solo lleva 1 campaña inactiva',
-      impacto: 'Reactivada +1 · te acerca a las 5 activas directas',
-      ruta: '/e/grupo',
-      urgente: false,
-    },
-    {
-      id: 'a4',
-      emoji: '🛍️',
-      texto: 'Completa S/ 379.50 en tu pedido para el nivel N4',
-      impacto: 'Más premios Ganamás en producto',
-      ruta: '/e/campana',
-      urgente: false,
-    },
-  ];
-
-  /** Cifra de apoyo de cada área — vive SOLO aquí. */
-  protected readonly areas = [
-    {
-      titulo: 'Mi campaña',
-      icon: 'target',
-      tone: 'warn',
-      resumen: `Venta GP S/ 3,029 · IM 5.14% · ganancia oculta 👁`,
-      ruta: '/e/campana',
-    },
-    {
-      titulo: 'Mi grupo',
-      icon: 'users',
-      tone: 'warn',
-      resumen: `${GRUPO_CES.length} personas · 3 activas · 4 por reactivar`,
-      ruta: '/e/grupo',
-    },
-    {
-      titulo: 'Incorpora y Gana',
-      icon: 'heart-plus',
-      tone: 'info',
-      resumen: `${INCORPORADAS_CES.length} en programa · S/ ${this.gananciaIyg} ganados`,
-      ruta: '/e/incorpora',
-    },
-    {
+  /** Áreas visibles según capacidades del estatus, con su cifra de apoyo. */
+  protected readonly areas = computed(() => {
+    const p = this.p();
+    const out = [
+      {
+        titulo: 'Mi campaña',
+        icon: 'target',
+        tone: 'warn',
+        resumen: `Venta personal S/ ${p.ventaPersonal.toLocaleString('es-PE')} · nivel ${p.nivelGanamas} · ganancia oculta 👁`,
+        ruta: '/e/campana',
+      },
+    ];
+    if (p.capacidades.grupo) {
+      out.push({
+        titulo: 'Mi grupo',
+        icon: 'users',
+        tone: 'warn',
+        resumen: `${GRUPO_CES.length} personas · 3 activas · 4 por reactivar`,
+        ruta: '/e/grupo',
+      });
+    }
+    if (p.capacidades.incorpora) {
+      out.push({
+        titulo: 'Incorpora y Gana',
+        icon: 'heart-plus',
+        tone: 'info',
+        resumen: `S/ ${p.ganancia.incorporaYGana} este ${this.c.actual} · sigue motivando primeros pedidos`,
+        ruta: '/e/incorpora',
+      });
+    }
+    out.push({
       titulo: 'Mi camino',
       icon: 'star',
-      tone: 'warn',
-      resumen: 'Título CES · calificando como CNS',
+      tone: this.calificaBien() ? 'ok' : 'warn',
+      resumen: p.paso.titulo,
       ruta: '/e/camino',
-    },
-  ];
+    });
+    return out;
+  });
 
-  /** Lista corta priorizada: deuda (acento) → reactivar → sin 1er pedido. */
+  /** Lista corta priorizada del grupo (solo estatus con GP). */
   protected readonly grupoTop = [
     { label: 'Con deuda vencida', count: 1, tone: 'bad', accent: true },
     { label: 'Por reactivar', count: 4, tone: 'warn', accent: false },
