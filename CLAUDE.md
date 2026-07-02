@@ -66,6 +66,10 @@ Assets de `public/` se referencian desde la raíz: `/icons/check.png`, `/brand/l
 - `docs/calendario-campanas.md` — cómo se dividen las campañas del año: 13 campañas × 4 semanas (sáb→vie), C13 cruza Año Nuevo y a veces dura 5 semanas. Fechas 2024–2026.
 - `docs/referencia-vista-ces.md` — levantamiento de la Maya real vista por una CES.
 
+## Acceso a la demo publicada
+
+La demo (GitHub Pages) tiene una puerta de clave en el frontend (`shared/acceso.ts` + `shared/acceso-gate.ts`). Es cortesía para datos ficticios, no seguridad real. Para cambiar la clave: `echo -n "nueva-clave" | shasum -a 256` y reemplazar `CLAVE_HASH` en `acceso.ts`. La sesión se recuerda por dispositivo (localStorage `maya-acceso`).
+
 ## Flujo de trabajo
 
 - Rama principal: `main`. Remoto SSH: `git@github.com:Lumider/maya-redesign.git`.

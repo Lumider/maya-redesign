@@ -12,6 +12,8 @@ import { Icon } from './shared/icon';
 import { Loader } from './shared/loader';
 import { ThemeService } from './shared/theme';
 import { VersionService } from './shared/version';
+import { AccesoService } from './shared/acceso';
+import { AccesoGate } from './shared/acceso-gate';
 import { EstatusDirService, EstatusService } from './shared/estatus';
 import { EstatusSwitch } from './shared/estatus-switch';
 import { EstatusDirSwitch } from './shared/estatus-dir-switch';
@@ -87,9 +89,14 @@ const MENU_LINKS: MenuLink[] = [
     Loader,
     EstatusSwitch,
     EstatusDirSwitch,
+    AccesoGate,
   ],
   template: `
-    @if (!entered()) {
+    <!-- Puerta de la demo: cubre todo hasta ingresar la clave; el loader
+         arranca recién al autorizar para no perder su animación de entrada -->
+    @if (!acceso.autorizado()) {
+      <app-acceso-gate />
+    } @else if (!entered()) {
       <app-loader (done)="entered.set(true)" />
     }
 
@@ -914,6 +921,7 @@ export class App implements OnInit {
   protected readonly entered = signal(false);
   protected readonly theme = inject(ThemeService);
   protected readonly version = inject(VersionService);
+  protected readonly acceso = inject(AccesoService);
   protected readonly estatusSrv = inject(EstatusService);
   protected readonly estatusDirSrv = inject(EstatusDirService);
   private readonly router = inject(Router);
