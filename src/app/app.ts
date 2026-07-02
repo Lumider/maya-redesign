@@ -12,10 +12,12 @@ import { Icon } from './shared/icon';
 import { Loader } from './shared/loader';
 import { ThemeService } from './shared/theme';
 import { VersionService } from './shared/version';
-import { EstatusService } from './shared/estatus';
+import { EstatusDirService, EstatusService } from './shared/estatus';
 import { EstatusSwitch } from './shared/estatus-switch';
+import { EstatusDirSwitch } from './shared/estatus-dir-switch';
 import { USUARIA } from './data/mock';
 import { PERFILES, USUARIA_CES } from './data/mock-ces';
+import { PERFILES_DIR } from './data/mock-dir';
 
 interface Cat {
   label: string;
@@ -77,7 +79,15 @@ const MENU_LINKS: MenuLink[] = [
 @Component({
   selector: 'app-root',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, Icon, Loader, EstatusSwitch],
+  imports: [
+    RouterOutlet,
+    RouterLink,
+    RouterLinkActive,
+    Icon,
+    Loader,
+    EstatusSwitch,
+    EstatusDirSwitch,
+  ],
   template: `
     @if (!entered()) {
       <app-loader (done)="entered.set(true)" />
@@ -121,6 +131,9 @@ const MENU_LINKS: MenuLink[] = [
             @if (esCes()) {
               <span class="ctxpill__div"></span>
               <span class="ctxpill__rol">{{ estatusSrv.estatus() }}</span>
+            } @else {
+              <span class="ctxpill__div"></span>
+              <span class="ctxpill__rol">{{ estatusDirSrv.estatus() }}</span>
             }
           </span>
         } @else {
@@ -348,9 +361,11 @@ const MENU_LINKS: MenuLink[] = [
       </nav>
     }
 
-    <!-- Conmutador de estatus (demo) — solo en la vista Emprendedora -->
+    <!-- Conmutadores de estatus (demo): Emprendedora en /e/, Directora en /n/ -->
     @if (esCes()) {
       <app-estatus-switch />
+    } @else if (version.nueva()) {
+      <app-estatus-dir-switch />
     }
   `,
   styles: [
@@ -900,6 +915,7 @@ export class App implements OnInit {
   protected readonly theme = inject(ThemeService);
   protected readonly version = inject(VersionService);
   protected readonly estatusSrv = inject(EstatusService);
+  protected readonly estatusDirSrv = inject(EstatusDirService);
   private readonly router = inject(Router);
 
   /** La vista CES vive en /e/… — se detecta por ruta (no por preferencia persistida):
@@ -909,21 +925,33 @@ export class App implements OnInit {
   );
   /** Vistas con el header/nav moderno (nueva beta y CES). */
   protected readonly moderna = computed(() => this.version.nueva() || this.esCes());
-  /** Nav activa. En la vista Emprendedora, las secciones dependen del estatus:
-   *  "Mi grupo" existe desde CES; "Incorpora y Gana" desde CEM. */
+  /** Nav activa. En las vistas demo, las secciones dependen del estatus encarnado:
+   *  Emprendedora: "Mi grupo" desde CES, "Incorpora y Gana" desde CEM.
+   *  Líder: "Mi equipo" existe desde SNR (JNR aún no tiene hijas directoras). */
   protected readonly activeCats = computed<Cat[]>(() => {
-    if (!this.esCes()) return this.version.nueva() ? NEW_CATS : CATS;
-    const cap = PERFILES[this.estatusSrv.estatus()].capacidades;
-    return CES_CATS.filter(
-      (c) => (c.route !== '/e/grupo' || cap.grupo) && (c.route !== '/e/incorpora' || cap.incorpora),
-    );
+    if (this.esCes()) {
+      const cap = PERFILES[this.estatusSrv.estatus()].capacidades;
+      return CES_CATS.filter(
+        (c) =>
+          (c.route !== '/e/grupo' || cap.grupo) && (c.route !== '/e/incorpora' || cap.incorpora),
+      );
+    }
+    if (this.version.nueva()) {
+      const cap = PERFILES_DIR[this.estatusDirSrv.estatus()].capacidades;
+      return NEW_CATS.filter((c) => c.route !== '/n/equipo' || cap.equipo);
+    }
+    return CATS;
   });
-  /** Identidad mostrada en el shell: la Emprendedora en /e/, la Líder en el resto. */
-  protected readonly u = computed(() =>
-    this.esCes()
-      ? { ...USUARIA_CES, rol: PERFILES[this.estatusSrv.estatus()].nombreNivel }
-      : USUARIA,
-  );
+  /** Identidad mostrada en el shell, con el rol del estatus encarnado. */
+  protected readonly u = computed(() => {
+    if (this.esCes()) {
+      return { ...USUARIA_CES, rol: PERFILES[this.estatusSrv.estatus()].nombreNivel };
+    }
+    if (this.version.nueva()) {
+      return { ...USUARIA, rol: PERFILES_DIR[this.estatusDirSrv.estatus()].nombreNivel };
+    }
+    return USUARIA;
+  });
   protected readonly homeRoute = computed(() =>
     this.esCes() ? '/e/inicio' : this.version.nueva() ? '/n/inicio' : '/inicio',
   );

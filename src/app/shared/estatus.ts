@@ -35,3 +35,33 @@ export class EstatusService {
     return 'CES';
   }
 }
+
+const STORAGE_KEY_DIR = 'maya-estatus-dir';
+
+/**
+ * Estatus activo de la vista Líder (demo) — Audiencia Directoras.
+ * Mismo patrón que EstatusService pero para la escalera JNR → SNR → SSE → REG.
+ */
+@Injectable({ providedIn: 'root' })
+export class EstatusDirService {
+  readonly estatus = signal<'JNR' | 'SNR' | 'SSE' | 'REG'>(this.read());
+
+  set(e: 'JNR' | 'SNR' | 'SSE' | 'REG'): void {
+    this.estatus.set(e);
+    try {
+      localStorage.setItem(STORAGE_KEY_DIR, e);
+    } catch {
+      /* almacenamiento no disponible */
+    }
+  }
+
+  private read(): 'JNR' | 'SNR' | 'SSE' | 'REG' {
+    try {
+      const v = localStorage.getItem(STORAGE_KEY_DIR);
+      if (v === 'JNR' || v === 'SNR' || v === 'SSE' || v === 'REG') return v;
+    } catch {
+      /* almacenamiento no disponible */
+    }
+    return 'SSE';
+  }
+}

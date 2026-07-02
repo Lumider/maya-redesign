@@ -1,12 +1,19 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../shared/icon';
 import { Reveal } from '../shared/reveal';
 import { Anchor } from '../shared/anchor';
+import { EstatusDirService } from '../shared/estatus';
 import { CAMPANA, PAR_ESTRELLAS, RECONOCIMIENTOS } from '../data/mock';
+import { PERFILES_DIR } from '../data/mock-dir';
 
-/** Mi carrera (aspira): PAR+ Sueño, reconocimientos/medallas, ascensos y autos. */
+/**
+ * Mi carrera (aspira): PAR+ Sueño, reconocimientos/medallas, ascensos y autos.
+ * Reacciona al estatus Directora encarnado (conmutador demo): la Estrella
+ * objetivo, sus requisitos, la ganancia, la escalera de ascensos y el auto
+ * son los del estatus (cifras del PAR+ 2026 Perú).
+ */
 @Component({
   selector: 'app-carrera',
   changeDetection: ChangeDetectionStrategy.OnPush,
@@ -16,7 +23,9 @@ import { CAMPANA, PAR_ESTRELLAS, RECONOCIMIENTOS } from '../data/mock';
       <header class="v2-head" appReveal>
         <nav class="crumbs tiny"><a routerLink="/n/inicio">Inicio</a> / Mi carrera</nav>
         <h1 class="v2-title">Mi carrera</h1>
-        <p class="v2-sub">A dónde vas: tu sueño PAR+, tus reconocimientos y tu siguiente estatus.</p>
+        <p class="v2-sub">
+          A dónde vas: tu sueño PAR+, tus reconocimientos y tu siguiente estatus.
+        </p>
         <nav class="anchors" aria-label="Secciones">
           <a class="anchor" appAnchor="sueno">Sueño PAR+</a>
           <a class="anchor" appAnchor="recon">Reconocimientos</a>
@@ -63,23 +72,32 @@ import { CAMPANA, PAR_ESTRELLAS, RECONOCIMIENTOS } from '../data/mock';
 
             <div class="par-hero__content">
               <div class="par-hero__left">
-                <span class="par-hero__kicker">{{ par.nivel }}</span>
-                <h2 class="par-hero__title">{{ par.sueno }}</h2>
+                <span class="par-hero__kicker">{{ perfil().par.kicker }}</span>
+                <h2 class="par-hero__title">{{ perfil().par.premio }}</h2>
               </div>
               <div class="par-hero__card">
                 <span class="par-hero__cap">Progreso del sueño</span>
-                <div class="par-hero__pct">{{ suenoPct }}%</div>
-                <div class="progress"><div class="progress__fill" [style.width.%]="suenoPct"></div></div>
-                <span class="par-hero__cap">venta \${{ par.ventaC6 | number }} de \${{ par.metaSueno | number }}</span>
+                <div class="par-hero__pct">{{ suenoPct() }}%</div>
+                <div class="progress">
+                  <div class="progress__fill" [style.width.%]="suenoPct()"></div>
+                </div>
+                <span class="par-hero__cap"
+                  >crecimiento S/ {{ perfil().par.crecimientoActual | number }} de S/
+                  {{ perfil().par.crecimientoMeta | number }}</span
+                >
               </div>
             </div>
           </section>
 
-          <!-- Estrellas y requisitos (debajo del hero, sin cambios funcionales) -->
+          <!-- Estrellas y requisitos (la Estrella objetivo es la del estatus) -->
           <section class="card pad v2-section" appReveal>
             <div class="stars">
               @for (e of estrellas; track e.n) {
-                <div class="star" [class.star--done]="e.n < estrellaActual" [class.star--cur]="e.n === objetivoEstrella">
+                <div
+                  class="star"
+                  [class.star--done]="e.n < estrellaActual"
+                  [class.star--cur]="e.n === perfil().par.estrella"
+                >
                   <span class="star__ic">★</span>
                   <span class="star__n">Estrella {{ e.n }}</span>
                   <span class="tiny">{{ e.hito }}</span>
@@ -87,50 +105,127 @@ import { CAMPANA, PAR_ESTRELLAS, RECONOCIMIENTOS } from '../data/mock';
               }
             </div>
             <div class="reqs">
-              <span class="tiny" style="font-weight:700">Para tu Estrella {{ objetivoEstrella }} necesitas:</span>
-              @for (req of par.requisitos; track req) {
-                <div class="req"><span class="sem sem--warn"></span><span>{{ req }}</span></div>
+              <span class="tiny" style="font-weight:700"
+                >Para tu Estrella {{ perfil().par.estrella }} necesitas:</span
+              >
+              @for (req of perfil().par.requisitos; track req) {
+                <div class="req">
+                  <span class="sem sem--warn"></span><span>{{ req }}</span>
+                </div>
               }
             </div>
+          </section>
+
+          <!-- Ganancia del estatus: cuánto y de dónde -->
+          <section class="card pad v2-section" appReveal>
+            <h2 class="v2-h">
+              <app-icon name="trending" [size]="18" /> Tu ganancia como {{ perfil().nombreNivel }}
+            </h2>
+            <div class="gan-total">
+              ~S/ {{ perfil().ganancia.total | number }}
+              <span class="tiny">/campaña (referencial)</span>
+            </div>
+            @for (f of perfil().ganancia.fuentes; track f.label) {
+              <div class="gan-row">
+                <span class="gan-row__l">{{ f.label }}</span>
+                <div class="gan-row__bar" aria-hidden="true">
+                  <div class="gan-row__fill" [style.width.%]="barraGan(f.monto)"></div>
+                </div>
+                <strong>S/ {{ f.monto | number }}</strong>
+              </div>
+            }
+            @if (perfil().norte; as n) {
+              <p class="muted" style="margin:12px 0 0; font-size:13.5px">
+                🎯 <strong>{{ n.titulo }}.</strong> {{ n.detalle }}
+              </p>
+            }
           </section>
 
           <section id="recon" class="v2-section" appReveal>
             <h2 class="v2-h"><app-icon name="star" [size]="18" /> Reconocimientos</h2>
             <div class="medals">
               <div class="medal card pad">
-                <img class="medal__ill" [class]="'medal__ill--' + r.excelenciaGP.medalla.toLowerCase()" src="icons/medal-01.png" alt="" />
+                <img
+                  class="medal__ill"
+                  [class]="'medal__ill--' + r.excelenciaGP.medalla.toLowerCase()"
+                  src="icons/medal-01.png"
+                  alt=""
+                />
                 <strong>Excelencia GP</strong>
                 <span class="badge badge--brand">{{ r.excelenciaGP.medalla }}</span>
-                <span class="tiny">{{ r.excelenciaGP.cumplidas }}/{{ r.excelenciaGP.de }} campañas en Cuadrante A</span>
+                <span class="tiny"
+                  >{{ r.excelenciaGP.cumplidas }}/{{ r.excelenciaGP.de }} campañas en Cuadrante
+                  A</span
+                >
               </div>
               <div class="medal card pad">
                 <img class="medal__ill medal__ill--plata" src="icons/medal-01.png" alt="" />
                 <strong>Liderazgo</strong>
                 <span class="badge badge--brand">{{ r.liderazgo.medalla }}</span>
-                <span class="tiny">{{ r.liderazgo.hijasEnA }}% de hijas en Cuadrante A (meta {{ r.liderazgo.meta }}%)</span>
+                <span class="tiny"
+                  >{{ r.liderazgo.hijasEnA }}% de hijas en Cuadrante A (meta
+                  {{ r.liderazgo.meta }}%)</span
+                >
               </div>
             </div>
             <div class="card pad poderosa" [class.poderosa--on]="r.liderPoderosa" appReveal>
               <span class="medal__ic">👑</span>
-              <div><strong>Líder Poderosa</strong><p class="tiny" style="margin:2px 0 0">{{ r.liderPoderosa ? '¡Lo lograste!' : 'Te falta: Medalla Oro de Liderazgo + Hito PAR+ 3 o más.' }}</p></div>
+              <div>
+                <strong>Líder Poderosa</strong>
+                <p class="tiny" style="margin:2px 0 0">
+                  {{
+                    r.liderPoderosa
+                      ? '¡Lo lograste!'
+                      : 'Te falta: Medalla Oro de Liderazgo + Hito PAR+ 3 o más.'
+                  }}
+                </p>
+              </div>
             </div>
           </section>
         </main>
 
         <aside class="v2-aside">
           <div id="ascensos" class="card pad" appReveal>
-            <h3 class="v2-h" style="font-size:15px"><app-icon name="trending" [size]="16" /> Ascensos</h3>
+            <h3 class="v2-h" style="font-size:15px">
+              <app-icon name="trending" [size]="16" /> Ascensos
+            </h3>
             <div class="ladder">
-              <div class="rung rung--done"><span>SSE</span><span class="tiny">Eres aquí</span></div>
-              <div class="rung rung--next"><span>REG</span><span class="tiny">Forma 1 hija más</span></div>
-              <div class="rung"><span>EST</span><span class="tiny">Líder de líderes</span></div>
+              @for (r of perfil().escalera; track r.sigla) {
+                <div
+                  class="rung"
+                  [class.rung--done]="r.estado === 'aqui'"
+                  [class.rung--next]="r.estado === 'siguiente'"
+                >
+                  <span>{{ r.sigla }}</span
+                  ><span class="tiny">{{ r.nota }}</span>
+                </div>
+              }
             </div>
           </div>
           <div class="card pad" appReveal [revealDelay]="80">
             <h3 class="v2-h" style="font-size:15px">🚗 Auto Yanbal</h3>
-            <span class="tiny">Disponible desde SSE. Un auto por estatus — meta camioneta.</span>
-            <div class="progress" style="margin-top:10px"><div class="progress__fill" style="width:35%"></div></div>
-            <span class="tiny">Conteo en paralelo con tu ascenso</span>
+            @if (perfil().auto; as auto) {
+              <span class="tiny"
+                >Tu conteo del <strong>{{ auto.modelo }}</strong> — en paralelo con tu
+                ascenso.</span
+              >
+              <div class="progress" style="margin-top:10px">
+                <div class="progress__fill" [style.width.%]="auto.avance"></div>
+              </div>
+              <span class="tiny">{{ auto.avance }}% del conteo</span>
+            } @else {
+              <span class="tiny"
+                >Disponible desde SSE (Toyota Raize).
+                {{
+                  perfil().estatus === 'SNR'
+                    ? 'Te faltan 2 hijas directoras para entrar al programa.'
+                    : 'Forma directoras para llegar: es el máximo símbolo del éxito Yanbal.'
+                }}</span
+              >
+              <div class="progress" style="margin-top:10px" aria-hidden="true">
+                <div class="progress__fill" style="width:0%"></div>
+              </div>
+            }
           </div>
         </aside>
       </div>
@@ -138,8 +233,15 @@ import { CAMPANA, PAR_ESTRELLAS, RECONOCIMIENTOS } from '../data/mock';
   `,
   styles: [
     `
-      .crumbs { margin-bottom: 6px; } .crumbs a { color: var(--ink-2); }
-      .pad { padding: 18px 20px; }
+      .crumbs {
+        margin-bottom: 6px;
+      }
+      .crumbs a {
+        color: var(--ink-2);
+      }
+      .pad {
+        padding: 18px 20px;
+      }
 
       /* ----- Hero del sueño (full-bleed, estilo editorial) ----- */
       .par-hero {
@@ -182,7 +284,12 @@ import { CAMPANA, PAR_ESTRELLAS, RECONOCIMIENTOS } from '../data/mock';
       .par-hero__overlay {
         position: absolute;
         inset: 0;
-        background: linear-gradient(to top, rgba(0, 0, 0, 0.85) 0%, rgba(0, 0, 0, 0.45) 45%, rgba(0, 0, 0, 0.12) 100%);
+        background: linear-gradient(
+          to top,
+          rgba(0, 0, 0, 0.85) 0%,
+          rgba(0, 0, 0, 0.45) 45%,
+          rgba(0, 0, 0, 0.12) 100%
+        );
       }
       .par-hero__content {
         position: relative;
@@ -194,7 +301,10 @@ import { CAMPANA, PAR_ESTRELLAS, RECONOCIMIENTOS } from '../data/mock';
         justify-content: space-between;
         gap: 22px;
       }
-      .par-hero__left { flex: 1; min-width: 0; }
+      .par-hero__left {
+        flex: 1;
+        min-width: 0;
+      }
       .par-hero__kicker {
         display: inline-block;
         font-size: 12px;
@@ -227,57 +337,219 @@ import { CAMPANA, PAR_ESTRELLAS, RECONOCIMIENTOS } from '../data/mock';
         padding: 16px 18px;
         color: #fff;
       }
-      .par-hero__pct { font-family: var(--font-display); font-weight: 800; font-size: 34px; line-height: 1; margin: 4px 0 2px; }
-      .par-hero__card .progress { background: rgba(255, 255, 255, 0.22); margin: 6px 0 8px; }
-      .par-hero__cap { display: block; font-size: 12px; color: rgba(255, 255, 255, 0.82); }
+      .par-hero__pct {
+        font-family: var(--font-display);
+        font-weight: 800;
+        font-size: 34px;
+        line-height: 1;
+        margin: 4px 0 2px;
+      }
+      .par-hero__card .progress {
+        background: rgba(255, 255, 255, 0.22);
+        margin: 6px 0 8px;
+      }
+      .par-hero__cap {
+        display: block;
+        font-size: 12px;
+        color: rgba(255, 255, 255, 0.82);
+      }
 
       /* ----- Estrellas y requisitos ----- */
-      .stars { display: grid; grid-template-columns: repeat(6, 1fr); gap: 8px; margin: 0 0 18px; }
-      .star { text-align: center; padding: 10px 6px; border-radius: var(--radius-s); background: var(--sand); opacity: 0.6; }
-      .star__ic { font-size: 18px; display: block; color: var(--ink-3); }
-      .star__n { font-size: 11px; font-weight: 700; display: block; margin-top: 2px; }
-      .star--done { opacity: 1; } .star--done .star__ic { color: var(--brand-500); }
-      .star--cur { opacity: 1; outline: 2px solid var(--brand-500); background: var(--brand-50); }
-      .star--cur .star__ic { color: var(--brand-600); }
-      .reqs { display: flex; flex-direction: column; gap: 8px; border-top: 1px solid var(--line); padding-top: 14px; }
-      .req { display: flex; align-items: center; gap: 8px; font-size: 13.5px; }
+      .stars {
+        display: grid;
+        grid-template-columns: repeat(6, 1fr);
+        gap: 8px;
+        margin: 0 0 18px;
+      }
+      .star {
+        text-align: center;
+        padding: 10px 6px;
+        border-radius: var(--radius-s);
+        background: var(--sand);
+        opacity: 0.6;
+      }
+      .star__ic {
+        font-size: 18px;
+        display: block;
+        color: var(--ink-3);
+      }
+      .star__n {
+        font-size: 11px;
+        font-weight: 700;
+        display: block;
+        margin-top: 2px;
+      }
+      .star--done {
+        opacity: 1;
+      }
+      .star--done .star__ic {
+        color: var(--brand-500);
+      }
+      .star--cur {
+        opacity: 1;
+        outline: 2px solid var(--brand-500);
+        background: var(--brand-50);
+      }
+      .star--cur .star__ic {
+        color: var(--brand-600);
+      }
+      .reqs {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        border-top: 1px solid var(--line);
+        padding-top: 14px;
+      }
+      .req {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 13.5px;
+      }
 
-      .medals { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-      .medal { display: flex; flex-direction: column; gap: 5px; align-items: flex-start; }
-      .medal__ic { font-size: 30px; filter: grayscale(0.1); }
-      .medal__ill { width: 40px; height: 40px; object-fit: contain; }
-      .medal__ill--plata { filter: grayscale(0.6) brightness(1.15); }
-      .poderosa { display: flex; gap: 14px; align-items: center; margin-top: 12px; opacity: 0.85; }
-      .poderosa--on { outline: 2px solid var(--brand-500); opacity: 1; }
-      .ladder { display: flex; flex-direction: column; gap: 8px; }
-      .rung { display: flex; justify-content: space-between; align-items: center; padding: 11px 14px; border-radius: var(--radius-s); background: var(--sand); font-weight: 700; }
-      .rung--done { background: var(--success-bg); color: var(--success); }
-      .rung--next { outline: 2px solid var(--brand-500); background: var(--brand-50); }
+      /* Ganancia por estatus */
+      .gan-total {
+        font-family: var(--font-display);
+        font-size: 26px;
+        font-weight: 800;
+        margin-bottom: 10px;
+      }
+      .gan-row {
+        display: grid;
+        grid-template-columns: minmax(0, 1.4fr) 1fr auto;
+        gap: 10px;
+        align-items: center;
+        padding: 7px 0;
+        font-size: 13px;
+      }
+      .gan-row__l {
+        color: var(--ink-2);
+      }
+      .gan-row__bar {
+        height: 8px;
+        border-radius: 99px;
+        background: var(--sand);
+        overflow: hidden;
+      }
+      .gan-row__fill {
+        height: 100%;
+        border-radius: 99px;
+        background: var(--brand-grad);
+      }
+
+      .medals {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+      }
+      .medal {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+        align-items: flex-start;
+      }
+      .medal__ic {
+        font-size: 30px;
+        filter: grayscale(0.1);
+      }
+      .medal__ill {
+        width: 40px;
+        height: 40px;
+        object-fit: contain;
+      }
+      .medal__ill--plata {
+        filter: grayscale(0.6) brightness(1.15);
+      }
+      .poderosa {
+        display: flex;
+        gap: 14px;
+        align-items: center;
+        margin-top: 12px;
+        opacity: 0.85;
+      }
+      .poderosa--on {
+        outline: 2px solid var(--brand-500);
+        opacity: 1;
+      }
+      .ladder {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+      }
+      .rung {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 11px 14px;
+        border-radius: var(--radius-s);
+        background: var(--sand);
+        font-weight: 700;
+      }
+      .rung--done {
+        background: var(--success-bg);
+        color: var(--success);
+      }
+      .rung--next {
+        outline: 2px solid var(--brand-500);
+        background: var(--brand-50);
+      }
 
       /* Seguridad extra: con reduce-motion, nunca mostrar media en movimiento */
       @media (prefers-reduced-motion: reduce) {
-        .par-hero__yt, .par-hero__media { display: none; }
+        .par-hero__yt,
+        .par-hero__media {
+          display: none;
+        }
       }
 
       @media (max-width: 560px) {
-        .par-hero { min-height: 60vh; }
-        .par-hero__content { flex-direction: column; align-items: stretch; gap: 14px; padding: 22px 18px; }
-        .par-hero__left { max-width: 100%; }
-        .par-hero__title { font-size: clamp(32px, 11vw, 56px); }
-        .par-hero__card { width: 100%; }
-        .medals { grid-template-columns: 1fr; }
-        .stars { grid-template-columns: repeat(3, 1fr); }
+        .par-hero {
+          min-height: 60vh;
+        }
+        .par-hero__content {
+          flex-direction: column;
+          align-items: stretch;
+          gap: 14px;
+          padding: 22px 18px;
+        }
+        .par-hero__left {
+          max-width: 100%;
+        }
+        .par-hero__title {
+          font-size: clamp(32px, 11vw, 56px);
+        }
+        .par-hero__card {
+          width: 100%;
+        }
+        .medals {
+          grid-template-columns: 1fr;
+        }
+        .stars {
+          grid-template-columns: repeat(3, 1fr);
+        }
       }
     `,
   ],
 })
 export class Carrera {
+  private readonly estatusDirSrv = inject(EstatusDirService);
+
   protected readonly par = CAMPANA.par;
   protected readonly estrellas = PAR_ESTRELLAS;
   protected readonly r = RECONOCIMIENTOS;
   protected readonly estrellaActual = CAMPANA.par.estrellaActual;
-  protected readonly objetivoEstrella = 3;
-  protected readonly suenoPct = Math.round((CAMPANA.par.ventaC6 / CAMPANA.par.metaSueno) * 100);
+
+  /** Perfil del estatus Directora encarnado (conmutador demo). */
+  protected readonly perfil = computed(() => PERFILES_DIR[this.estatusDirSrv.estatus()]);
+  protected readonly suenoPct = computed(() =>
+    Math.round((this.perfil().par.crecimientoActual / this.perfil().par.crecimientoMeta) * 100),
+  );
+
+  /** Ancho de barra relativo a la fuente mayor de la ganancia del estatus. */
+  protected barraGan(monto: number): number {
+    const max = Math.max(...this.perfil().ganancia.fuentes.map((f) => f.monto));
+    return Math.round((monto / max) * 100);
+  }
 
   /** Camino preferido = <video> propio; YouTube solo de referencia/ejemplo. */
   protected readonly usarYoutube = true;
