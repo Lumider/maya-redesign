@@ -98,13 +98,13 @@ import { CAMPANA, PAR_ESTRELLAS, RECONOCIMIENTOS } from '../data/mock';
             <h2 class="v2-h"><app-icon name="star" [size]="18" /> Reconocimientos</h2>
             <div class="medals">
               <div class="medal card pad">
-                <span class="medal__ic" [class]="'medal__ic--' + r.excelenciaGP.medalla.toLowerCase()">🏅</span>
+                <img class="medal__ill" [class]="'medal__ill--' + r.excelenciaGP.medalla.toLowerCase()" src="icons/medal-01.png" alt="" />
                 <strong>Excelencia GP</strong>
                 <span class="badge badge--brand">{{ r.excelenciaGP.medalla }}</span>
                 <span class="tiny">{{ r.excelenciaGP.cumplidas }}/{{ r.excelenciaGP.de }} campañas en Cuadrante A</span>
               </div>
               <div class="medal card pad">
-                <span class="medal__ic medal__ic--plata">🏅</span>
+                <img class="medal__ill medal__ill--plata" src="icons/medal-01.png" alt="" />
                 <strong>Liderazgo</strong>
                 <span class="badge badge--brand">{{ r.liderazgo.medalla }}</span>
                 <span class="tiny">{{ r.liderazgo.hijasEnA }}% de hijas en Cuadrante A (meta {{ r.liderazgo.meta }}%)</span>
@@ -245,7 +245,8 @@ import { CAMPANA, PAR_ESTRELLAS, RECONOCIMIENTOS } from '../data/mock';
       .medals { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
       .medal { display: flex; flex-direction: column; gap: 5px; align-items: flex-start; }
       .medal__ic { font-size: 30px; filter: grayscale(0.1); }
-      .medal__ic--plata { filter: grayscale(0.5) brightness(1.1); }
+      .medal__ill { width: 40px; height: 40px; object-fit: contain; }
+      .medal__ill--plata { filter: grayscale(0.6) brightness(1.15); }
       .poderosa { display: flex; gap: 14px; align-items: center; margin-top: 12px; opacity: 0.85; }
       .poderosa--on { outline: 2px solid var(--brand-500); opacity: 1; }
       .ladder { display: flex; flex-direction: column; gap: 8px; }

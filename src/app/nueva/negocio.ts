@@ -43,6 +43,7 @@ import { CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../data/mock';
               <h2 class="hero-estado__t">Cuadrante {{ c.cuadrante.actual }} · sin MRM ni PPED</h2>
               <p class="muted">Sube a Cuadrante A y gana tu bono de \${{ c.cuadrante.bono | number }} — te faltan \${{ c.cuadrante.faltaVenta | number }} de venta y {{ c.cuadrante.ppedRequeridos }} primeros pedidos.</p>
             </div>
+            <img class="hero-estado__ill" src="icons/alert-02.png" alt="" />
           </section>
 
           <!-- Matriz (posición) + anillo del MRM (único % grande) + puntos PPED -->
@@ -135,6 +136,7 @@ import { CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../data/mock';
           </div>
 
           <a class="card pad ext" appReveal [revealDelay]="140">
+            <img class="ext__ill" src="icons/file.png" alt="" />
             <span class="badge badge--neutral">Externo</span>
             <strong style="margin-top:6px;display:block">Reportes PAR+</strong>
             <span class="tiny">Detalle de ventas, recaudo y comisiones ↗</span>
@@ -152,6 +154,7 @@ import { CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../data/mock';
 
       /* Hero de estado */
       .hero-estado { display: flex; gap: 18px; align-items: center; border-color: var(--danger); }
+      .hero-estado__ill { width: 56px; height: 56px; object-fit: contain; margin-left: auto; flex-shrink: 0; }
       .hero-estado__q {
         flex-shrink: 0; width: 84px; height: 84px; border-radius: var(--radius);
         display: grid; place-items: center; font-family: var(--font-display);
@@ -196,7 +199,9 @@ import { CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../data/mock';
       .acc { display: flex; flex-direction: column; gap: 2px; margin-top: 4px; border-top: 1px solid var(--line); padding-top: 8px; }
       .acc__link { display: flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 600; color: var(--ink); padding: 7px 0; }
       .acc__link:hover { color: var(--brand-600); }
-      .ext { display: block; }
+      .ext { display: block; position: relative; }
+      .ext__ill { position: absolute; top: 14px; right: 16px; width: 34px; height: 34px; object-fit: contain; }
+      @media (max-width: 560px) { .hero-estado__ill { display: none; } }
 
       @media (max-width: 720px) {
         .ind-grid { grid-template-columns: 1fr; }

@@ -71,7 +71,11 @@ import { CAMPANA, CREDITOS_PENDIENTES, DIRECTORAS, USUARIA } from '../data/mock'
               }
               @for (a of pendientes; track a.id) {
                 <a class="feed__item card" [routerLink]="a.ruta">
-                  <span class="feed__ic">{{ a.emoji }}</span>
+                  @if (a.icon) {
+                    <img class="feed__ill" [src]="a.icon" alt="" />
+                  } @else {
+                    <span class="feed__ic">{{ a.emoji }}</span>
+                  }
                   <div class="feed__body"><strong>{{ a.texto }}</strong><span class="tiny">{{ a.impacto }}</span></div>
                   <app-icon name="chevron-right" [size]="18" />
                 </a>
@@ -151,6 +155,7 @@ import { CAMPANA, CREDITOS_PENDIENTES, DIRECTORAS, USUARIA } from '../data/mock'
       .feed__item { display: flex; align-items: center; gap: 12px; padding: 14px 16px; }
       .feed__item--urgent { border-color: var(--danger); }
       .feed__ic { font-size: 22px; }
+      .feed__ill { width: 30px; height: 30px; object-fit: contain; flex-shrink: 0; }
       .feed__body { flex: 1; display: flex; flex-direction: column; gap: 2px; }
 
       .areas { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
@@ -211,9 +216,9 @@ export class InicioN {
     (this.hijas.filter((d) => d.cuadrante === 'A').length / this.hijas.length) * 100,
   );
 
-  protected readonly pendientes = [
+  protected readonly pendientes: { id: string; emoji: string; icon?: string; texto: string; impacto: string; ruta: string }[] = [
     { id: 'a1', emoji: '📞', texto: 'Llama a 5 consultoras por reactivar', impacto: 'Reactivadas +5 · ~$14,000 de venta', ruta: '/n/equipo' },
-    { id: 'a2', emoji: '🎯', texto: 'Asegura 2 primeros pedidos antes del cierre', impacto: 'PPED +2 de 4 · acerca el Cuadrante A', ruta: '/n/campana' },
+    { id: 'a2', emoji: '🎯', icon: 'icons/goals.png', texto: 'Asegura 2 primeros pedidos antes del cierre', impacto: 'PPED +2 de 4 · acerca el Cuadrante A', ruta: '/n/campana' },
     { id: 'a3', emoji: '🛍️', texto: 'Pasa tu pedido personal al N1 Gana Más ($400)', impacto: 'Mantienes tu calificación y premios', ruta: '/n/campana' },
   ];
 

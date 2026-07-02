@@ -110,7 +110,7 @@ import {
 
           <aside class="v2-aside">
             <div class="card pad" appReveal>
-              <h3 class="v2-h" style="font-size:15px">🌱 Crecer e incorporar</h3>
+              <h3 class="v2-h" style="font-size:15px"><img class="h-ill" src="icons/growth.png" alt="" /> Crecer e incorporar</h3>
               <a class="grow" routerLink="/n/equipo"><span>Incorpora y Gana</span><span class="tiny">~$15 USD por nueva activa · máx 3 campañas →</span></a>
               <a class="grow" routerLink="/n/equipo"><span>Elige Crecer</span><span class="tiny">$50 / $100 / $200 por crecimiento de activas →</span></a>
               <p class="tiny" style="margin:10px 0 0">Los prospectos <strong>Incorporables</strong> se gestionan en la vista Incorporar.</p>
@@ -255,6 +255,7 @@ import {
     `
       .crumbs { margin-bottom: 6px; } .crumbs a { color: var(--ink-2); }
       .pad { padding: 18px 20px; }
+      .h-ill { width: 22px; height: 22px; object-fit: contain; }
       .bad { color: var(--danger); }
 
       /* Toggle de los dos grupos */

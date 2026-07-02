@@ -64,7 +64,7 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
                   <p class="tiny">Cumple los 2 checkpoints y aseguras tu Bono de Desempeño.</p>
                 </div>
                 <div class="reward" [class.reward--locked]="!cuadranteListo()">
-                  <span class="reward__emoji">🏆</span>
+                  <img class="reward__ill" src="icons/money-01.png" alt="" />
                   <div>
                     <div class="reward__val">\${{ c.cuadrante.bono | number }}</div>
                     <div class="tiny">Bono de Desempeño</div>
@@ -133,7 +133,7 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
 
               <!-- Ancla al sueño: cada campaña en A acerca el sueño -->
               <a class="dream" routerLink="/n/carrera">
-                <span>🌴</span>
+                <img class="dream__ill" src="icons/airplane-01.png" alt="" />
                 <p>Cada campaña en Cuadrante A te acerca a tu sueño: <strong>{{ c.par.sueno }}</strong>. Míralo en Mi carrera.</p>
                 <app-icon name="arrow-right" [size]="16" />
               </a>
@@ -149,7 +149,7 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
                 <div><strong>Reto de la semana</strong><div class="tiny">{{ hechas() }}/{{ plan.acciones.length }} acciones hechas</div></div>
               </a>
               <div class="card pad prog">
-                <span class="trophy">🥇</span>
+                <img class="trophy" src="icons/medal-01.png" alt="" />
                 <div><strong>Medalla Excelencia GP</strong><div class="tiny">{{ recon.excelenciaGP.medalla }} · {{ recon.excelenciaGP.cumplidas }}/{{ recon.excelenciaGP.de }} campañas del año</div></div>
               </div>
             </div>
@@ -243,7 +243,7 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
       .mission__head .tiny { margin: 0; }
 
       .reward { display: flex; align-items: center; gap: 10px; background: var(--brand-grad-strong); color: #fff; border-radius: var(--radius); padding: 12px 16px; position: relative; }
-      .reward__emoji { font-size: 26px; }
+      .reward__ill { width: 42px; height: 42px; object-fit: contain; flex-shrink: 0; }
       .reward__val { font-family: var(--font-display); font-size: 20px; font-weight: 800; line-height: 1; }
       .reward .tiny { color: rgba(255, 255, 255, 0.85); }
       .reward--locked { filter: saturate(0.7) brightness(0.92); }
@@ -279,12 +279,12 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
       .prog strong { font-size: 14px; }
       a.prog { transition: box-shadow 0.18s ease, transform 0.18s ease; }
       a.prog:hover { box-shadow: var(--shadow); transform: translateY(-2px); }
-      .trophy { font-size: 30px; }
+      .trophy { width: 44px; height: 44px; object-fit: contain; flex-shrink: 0; }
 
       /* Ancla al sueño */
       .dream { display: flex; align-items: center; gap: 12px; margin-top: 16px; padding: 12px 16px; border-radius: var(--radius); background: var(--brand-100); color: var(--ink); transition: filter 0.15s ease; }
       .dream:hover { filter: brightness(0.97); }
-      .dream span { font-size: 24px; }
+      .dream__ill { width: 36px; height: 36px; object-fit: contain; flex-shrink: 0; }
       .dream p { margin: 0; font-size: 13px; }
       .dream app-icon { margin-left: auto; color: var(--brand-700); }
 
