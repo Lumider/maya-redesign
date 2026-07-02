@@ -4,7 +4,10 @@ export const routes: Routes = [
   { path: '', pathMatch: 'full', redirectTo: 'inicio' },
   { path: 'inicio', loadComponent: () => import('./pages/inicio').then((m) => m.InicioPage) },
   { path: 'mi-plan', loadComponent: () => import('./pages/mi-plan').then((m) => m.MiPlanPage) },
-  { path: 'mi-campana', loadComponent: () => import('./pages/mi-campana').then((m) => m.MiCampanaPage) },
+  {
+    path: 'mi-campana',
+    loadComponent: () => import('./pages/mi-campana').then((m) => m.MiCampanaPage),
+  },
   {
     path: 'incorpora-y-gana',
     loadComponent: () => import('./pages/incorpora-gana').then((m) => m.IncorporaGanaPage),
@@ -13,9 +16,18 @@ export const routes: Routes = [
     path: 'grupo-personal',
     loadComponent: () => import('./pages/grupo-personal').then((m) => m.GrupoPersonalPage),
   },
-  { path: 'cuadrante', loadComponent: () => import('./pages/cuadrante').then((m) => m.CuadrantePage) },
-  { path: 'herramientas', loadComponent: () => import('./pages/herramientas').then((m) => m.HerramientasPage) },
-  { path: 'externa/:slug', loadComponent: () => import('./pages/externa').then((m) => m.ExternaPage) },
+  {
+    path: 'cuadrante',
+    loadComponent: () => import('./pages/cuadrante').then((m) => m.CuadrantePage),
+  },
+  {
+    path: 'herramientas',
+    loadComponent: () => import('./pages/herramientas').then((m) => m.HerramientasPage),
+  },
+  {
+    path: 'externa/:slug',
+    loadComponent: () => import('./pages/externa').then((m) => m.ExternaPage),
+  },
 
   // Vista nueva (beta) — rutas paralelas; la versión actual queda intacta
   { path: 'n/inicio', loadComponent: () => import('./nueva/inicio-n').then((m) => m.InicioN) },
@@ -23,7 +35,21 @@ export const routes: Routes = [
   { path: 'n/campana', loadComponent: () => import('./nueva/campana-n').then((m) => m.CampanaN) },
   { path: 'n/equipo', loadComponent: () => import('./nueva/equipo').then((m) => m.Equipo) },
   { path: 'n/carrera', loadComponent: () => import('./nueva/carrera').then((m) => m.Carrera) },
-  { path: 'n/herramientas', loadComponent: () => import('./pages/herramientas').then((m) => m.HerramientasPage) },
+  {
+    path: 'n/herramientas',
+    loadComponent: () => import('./pages/herramientas').then((m) => m.HerramientasPage),
+  },
+
+  // Vista CES (demo) — la app vista por una Consultora Emprendedora Senior.
+  // Rutas paralelas bajo /e/ (emprendedora); las otras dos vistas quedan intactas.
+  { path: 'e/inicio', loadComponent: () => import('./ces/inicio-ces').then((m) => m.InicioCes) },
+  { path: 'e/campana', loadComponent: () => import('./ces/campana-ces').then((m) => m.CampanaCes) },
+  { path: 'e/grupo', loadComponent: () => import('./ces/grupo-ces').then((m) => m.GrupoCes) },
+  {
+    path: 'e/incorpora',
+    loadComponent: () => import('./ces/incorpora-ces').then((m) => m.IncorporaCes),
+  },
+  { path: 'e/camino', loadComponent: () => import('./ces/camino-ces').then((m) => m.CaminoCes) },
 
   { path: '**', redirectTo: 'inicio' },
 ];
