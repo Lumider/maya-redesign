@@ -16,7 +16,9 @@ const CATEGORIAS = [
   template: `
     <div class="page">
       <h1 class="page-title">Mis Herramientas</h1>
-      <p class="muted" style="margin: 6px 0 22px">Materiales listos para compartir y hacer crecer tu negocio.</p>
+      <p class="muted" style="margin: 6px 0 22px">
+        Materiales listos para compartir y hacer crecer tu negocio.
+      </p>
 
       <label class="search">
         <app-icon name="search" [size]="18" />
@@ -32,7 +34,11 @@ const CATEGORIAS = [
       <!-- Categorías -->
       <div class="cats">
         @for (c of categorias; track c.nombre) {
-          <button class="cat card card--hover" [class.cat--active]="categoria() === c.nombre" (click)="categoria.set(c.nombre)">
+          <button
+            class="cat card card--hover"
+            [class.cat--active]="categoria() === c.nombre"
+            (click)="categoria.set(c.nombre)"
+          >
             <span class="cat__emoji">{{ c.emoji }}</span>
             <span class="cat__name">{{ c.nombre }}</span>
             @if (c.tag) {
@@ -45,7 +51,9 @@ const CATEGORIAS = [
       <!-- Subcategorías -->
       <div class="subcats">
         @for (s of subcategorias; track s) {
-          <button class="chip" [class.chip--active]="subcategoria() === s" (click)="toggleSub(s)">{{ s }}</button>
+          <button class="chip" [class.chip--active]="subcategoria() === s" (click)="toggleSub(s)">
+            {{ s }}
+          </button>
         }
       </div>
 
@@ -80,12 +88,29 @@ const CATEGORIAS = [
         padding: 12px 18px;
         color: var(--ink-3);
         margin-bottom: 18px;
-        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        transition:
+          border-color 0.15s ease,
+          box-shadow 0.15s ease;
       }
-      .search:focus-within { border-color: var(--brand-400); box-shadow: 0 0 0 3px var(--brand-100); }
-      .search input { border: 0; outline: 0; background: none; font: inherit; color: var(--ink); width: 100%; }
+      .search:focus-within {
+        border-color: var(--brand-400);
+        box-shadow: 0 0 0 3px var(--brand-100);
+      }
+      .search input {
+        border: 0;
+        outline: 0;
+        background: none;
+        font: inherit;
+        color: var(--ink);
+        width: 100%;
+      }
 
-      .cats { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; margin-bottom: 16px; }
+      .cats {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+        margin-bottom: 16px;
+      }
       .cat {
         display: flex;
         align-items: center;
@@ -96,8 +121,13 @@ const CATEGORIAS = [
         color: var(--ink-2);
         cursor: pointer;
       }
-      .cat__emoji { font-size: 22px; }
-      .cat__name { flex: 1; text-align: left; }
+      .cat__emoji {
+        font-size: 22px;
+      }
+      .cat__name {
+        flex: 1;
+        text-align: left;
+      }
       .cat--active {
         border-color: var(--brand-500);
         background: var(--brand-50);
@@ -105,10 +135,22 @@ const CATEGORIAS = [
         box-shadow: 0 0 0 3px var(--brand-100);
       }
 
-      .subcats { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 24px; }
+      .subcats {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin-bottom: 24px;
+      }
 
-      .gallery { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px; }
-      .item { border-radius: var(--radius); cursor: pointer; }
+      .gallery {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+        gap: 16px;
+      }
+      .item {
+        border-radius: var(--radius);
+        cursor: pointer;
+      }
       .item__cover {
         height: 190px;
         border-radius: var(--radius);
@@ -117,15 +159,33 @@ const CATEGORIAS = [
         font-size: 44px;
         box-shadow: var(--shadow-s);
       }
-      .item__title { font-size: 13.5px; font-weight: 700; margin: 10px 0 2px; padding: 0 4px; }
-      .item .tiny { padding: 0 4px; }
+      .item__title {
+        font-size: 13.5px;
+        font-weight: 700;
+        margin: 10px 0 2px;
+        padding: 0 4px;
+      }
+      .item .tiny {
+        padding: 0 4px;
+      }
 
-      .empty { grid-column: 1 / -1; padding: 48px; text-align: center; color: var(--ink-2); }
-      .empty span { font-size: 34px; }
-      .empty p { margin: 8px 0 0; }
+      .empty {
+        grid-column: 1 / -1;
+        padding: 48px;
+        text-align: center;
+        color: var(--ink-2);
+      }
+      .empty span {
+        font-size: 34px;
+      }
+      .empty p {
+        margin: 8px 0 0;
+      }
 
       @media (max-width: 900px) {
-        .cats { grid-template-columns: repeat(2, 1fr); }
+        .cats {
+          grid-template-columns: repeat(2, 1fr);
+        }
       }
     `,
   ],

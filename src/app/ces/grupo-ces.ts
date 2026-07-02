@@ -19,7 +19,7 @@ import { GRUPO_CES, SEGMENTOS_CES, USUARIA_CES, type IntegranteCes } from '../da
   template: `
     <div class="v2">
       <header class="v2-head" appReveal>
-        <nav class="crumbs tiny"><a routerLink="/e/inicio">Inicio</a> / Mi grupo</nav>
+        <nav class="crumbs tiny"><a routerLink="/n/inicio">Inicio</a> / Mi grupo</nav>
         <h1 class="v2-title">Mi grupo</h1>
         <p class="v2-sub">Las {{ total }} personas de tu red y lo que cada una necesita hoy.</p>
 
@@ -129,7 +129,7 @@ import { GRUPO_CES, SEGMENTOS_CES, USUARIA_CES, type IntegranteCes } from '../da
             <img src="icons/megaphone.png" alt="" aria-hidden="true" width="40" height="40" />
             <p class="tiny" style="margin:0">
               ¿Conociste a alguien con perfil?
-              <a class="link" routerLink="/e/incorpora">Incorpórala y gana S/ 50 por campaña</a>.
+              <a class="link" routerLink="/n/incorpora">Incorpórala y gana S/ 50 por campaña</a>.
             </p>
           </div>
         </aside>

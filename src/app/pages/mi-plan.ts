@@ -17,14 +17,24 @@ import { PLAN_CAMPANA } from '../data/mock';
     <div class="page">
       <header class="head">
         <div>
-          <nav class="crumbs" aria-label="Ruta de navegación"><a routerLink="/inicio">Inicio</a> / Mi Plan</nav>
+          <nav class="crumbs" aria-label="Ruta de navegación">
+            <a routerLink="/inicio">Inicio</a> / Mi Plan
+          </nav>
           <h1 class="page-title">Mi Plan · {{ plan.campana }}</h1>
         </div>
         <div class="tabs">
-          <button class="tabs__tab" [class.tabs__tab--active]="vista() === 'seguimiento'" (click)="vista.set('seguimiento')">
+          <button
+            class="tabs__tab"
+            [class.tabs__tab--active]="vista() === 'seguimiento'"
+            (click)="vista.set('seguimiento')"
+          >
             Seguimiento
           </button>
-          <button class="tabs__tab" [class.tabs__tab--active]="vista() === 'plan'" (click)="vista.set('plan')">
+          <button
+            class="tabs__tab"
+            [class.tabs__tab--active]="vista() === 'plan'"
+            (click)="vista.set('plan')"
+          >
             Mi plan
           </button>
         </div>
@@ -42,15 +52,23 @@ import { PLAN_CAMPANA } from '../data/mock';
         </div>
         <div class="status__main">
           <div class="status__row">
-            <strong>{{ plan.estado === 'en-riesgo' ? 'Vas por debajo del ritmo' : '¡Vas en ritmo!' }}</strong>
-            <span class="badge" [class]="plan.estado === 'en-riesgo' ? 'badge badge--warning' : 'badge badge--success'">
+            <strong>{{
+              plan.estado === 'en-riesgo' ? 'Vas por debajo del ritmo' : '¡Vas en ritmo!'
+            }}</strong>
+            <span
+              class="badge"
+              [class]="
+                plan.estado === 'en-riesgo' ? 'badge badge--warning' : 'badge badge--success'
+              "
+            >
               {{ plan.estado === 'en-riesgo' ? 'En riesgo' : 'En ritmo' }}
             </span>
           </div>
           <p class="muted">
             Tu sueño: <strong>“{{ plan.sueno }}”</strong> — necesita una ganancia de
-            <strong>\${{ plan.gananciaObjetivo | number }}</strong> esta campaña.
-            Al ritmo actual proyectas <strong>\${{ plan.gananciaProyectada | number }}</strong>.
+            <strong>\${{ plan.gananciaObjetivo | number }}</strong> esta campaña. Al ritmo actual
+            proyectas <strong>\${{ plan.gananciaProyectada | number }}</strong
+            >.
           </p>
           <div
             class="progress status__bar"
@@ -59,9 +77,16 @@ import { PLAN_CAMPANA } from '../data/mock';
             [attr.aria-valuenow]="pct(plan.gananciaProyectada, plan.gananciaObjetivo)"
             aria-valuemin="0"
             aria-valuemax="100"
-            [attr.aria-label]="'Ganancia proyectada: ' + pct(plan.gananciaProyectada, plan.gananciaObjetivo) + '% del objetivo'"
+            [attr.aria-label]="
+              'Ganancia proyectada: ' +
+              pct(plan.gananciaProyectada, plan.gananciaObjetivo) +
+              '% del objetivo'
+            "
           >
-            <div class="progress__fill" [style.width.%]="pct(plan.gananciaProyectada, plan.gananciaObjetivo)"></div>
+            <div
+              class="progress__fill"
+              [style.width.%]="pct(plan.gananciaProyectada, plan.gananciaObjetivo)"
+            ></div>
           </div>
         </div>
         <div class="status__gain">
@@ -73,7 +98,9 @@ import { PLAN_CAMPANA } from '../data/mock';
 
       @if (vista() === 'seguimiento') {
         <!-- Metas con marcador de ritmo -->
-        <h2 class="section-title">Tus metas <span class="tiny">la línea negra marca dónde deberías ir hoy</span></h2>
+        <h2 class="section-title">
+          Tus metas <span class="tiny">la línea negra marca dónde deberías ir hoy</span>
+        </h2>
         <div class="goals">
           @for (m of plan.metas; track m.id) {
             <article class="goal card">
@@ -90,7 +117,11 @@ import { PLAN_CAMPANA } from '../data/mock';
                 </div>
                 <div class="pace__marker" [style.left.%]="m.esperadoHoy * 100"></div>
               </div>
-              <div class="goal__delta" [class.goal__delta--bad]="detras(m)" [class.goal__delta--ok]="!detras(m)">
+              <div
+                class="goal__delta"
+                [class.goal__delta--bad]="detras(m)"
+                [class.goal__delta--ok]="!detras(m)"
+              >
                 @if (detras(m)) {
                   ▼ {{ deltaPuntos(m) }} pts detrás del ritmo
                 } @else {
@@ -138,8 +169,16 @@ import { PLAN_CAMPANA } from '../data/mock';
             @for (s of plan.semanas; track s.n) {
               <div class="week" [class.week--current]="s.n === plan.semanaActual">
                 <div class="week__bars">
-                  <div class="week__bar week__bar--plan" [style.height.%]="alto(s.plan)" title="Plan"></div>
-                  <div class="week__bar week__bar--real" [style.height.%]="alto(s.logrado)" title="Logrado"></div>
+                  <div
+                    class="week__bar week__bar--plan"
+                    [style.height.%]="alto(s.plan)"
+                    title="Plan"
+                  ></div>
+                  <div
+                    class="week__bar week__bar--real"
+                    [style.height.%]="alto(s.logrado)"
+                    title="Logrado"
+                  ></div>
                 </div>
                 <div class="week__label">S{{ s.n }}</div>
                 <div class="tiny">
@@ -210,12 +249,41 @@ import { PLAN_CAMPANA } from '../data/mock';
   `,
   styles: [
     `
-      .head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
-      .crumbs { font-size: 12.5px; color: var(--ink-3); margin-bottom: 4px; }
-      .crumbs a:hover { color: var(--brand-600); }
-      .tabs { display: inline-flex; background: var(--sand); border-radius: 99px; padding: 4px; }
-      .tabs__tab { border: 0; background: none; border-radius: 99px; padding: 8px 20px; font-size: 13.5px; font-weight: 700; color: var(--ink-2); }
-      .tabs__tab--active { background: var(--ink); color: var(--on-ink); }
+      .head {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+      .crumbs {
+        font-size: 12.5px;
+        color: var(--ink-3);
+        margin-bottom: 4px;
+      }
+      .crumbs a:hover {
+        color: var(--brand-600);
+      }
+      .tabs {
+        display: inline-flex;
+        background: var(--sand);
+        border-radius: 99px;
+        padding: 4px;
+      }
+      .tabs__tab {
+        border: 0;
+        background: none;
+        border-radius: 99px;
+        padding: 8px 20px;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--ink-2);
+      }
+      .tabs__tab--active {
+        background: var(--ink);
+        color: var(--on-ink);
+      }
 
       /* Estado */
       .status {
@@ -227,10 +295,21 @@ import { PLAN_CAMPANA } from '../data/mock';
         flex-wrap: wrap;
       }
       /* El banner adopta el color del estado: ámbar si va en riesgo, verde si va en ritmo */
-      .status--risk { border-color: var(--warning); background: linear-gradient(120deg, var(--warning-bg), var(--surface)); }
-      .status--ok { border-color: var(--success); background: linear-gradient(120deg, var(--success-bg), var(--surface)); }
-      .status__bar { max-width: 460px; margin-top: 12px; }
-      .status__week { text-align: center; }
+      .status--risk {
+        border-color: var(--warning);
+        background: linear-gradient(120deg, var(--warning-bg), var(--surface));
+      }
+      .status--ok {
+        border-color: var(--success);
+        background: linear-gradient(120deg, var(--success-bg), var(--surface));
+      }
+      .status__bar {
+        max-width: 460px;
+        margin-top: 12px;
+      }
+      .status__week {
+        text-align: center;
+      }
       .status__weeknum {
         font-size: 28px;
         font-weight: 800;
@@ -242,20 +321,59 @@ import { PLAN_CAMPANA } from '../data/mock';
         background: var(--brand-grad);
         color: #fff;
       }
-      .status__main { flex: 1; min-width: 260px; }
-      .status__row { display: flex; align-items: center; gap: 10px; font-size: 16px; margin-bottom: 4px; }
-      .status__main p { margin: 0; font-size: 13.5px; }
-      .status__gain { text-align: right; }
-      .status__gainval { font-size: 24px; font-weight: 800; color: var(--brand-600); }
+      .status__main {
+        flex: 1;
+        min-width: 260px;
+      }
+      .status__row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 16px;
+        margin-bottom: 4px;
+      }
+      .status__main p {
+        margin: 0;
+        font-size: 13.5px;
+      }
+      .status__gain {
+        text-align: right;
+      }
+      .status__gainval {
+        font-size: 24px;
+        font-weight: 800;
+        color: var(--brand-600);
+      }
 
-      .section-title .tiny { font-weight: 500; }
+      .section-title .tiny {
+        font-weight: 500;
+      }
 
       /* Metas con ritmo */
-      .goals { display: grid; grid-template-columns: repeat(2, 1fr); gap: 14px; margin-bottom: 30px; }
-      .goal { padding: 16px 18px; }
-      .goal__head { display: flex; justify-content: space-between; align-items: baseline; gap: 10px; margin-bottom: 10px; }
-      .goal__nums { font-weight: 800; font-size: 15px; }
-      .pace { position: relative; padding: 3px 0; }
+      .goals {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 14px;
+        margin-bottom: 30px;
+      }
+      .goal {
+        padding: 16px 18px;
+      }
+      .goal__head {
+        display: flex;
+        justify-content: space-between;
+        align-items: baseline;
+        gap: 10px;
+        margin-bottom: 10px;
+      }
+      .goal__nums {
+        font-weight: 800;
+        font-size: 15px;
+      }
+      .pace {
+        position: relative;
+        padding: 3px 0;
+      }
       .pace__marker {
         position: absolute;
         top: -2px;
@@ -276,13 +394,26 @@ import { PLAN_CAMPANA } from '../data/mock';
         color: var(--ink-2);
         letter-spacing: 0.04em;
       }
-      .goal__delta { font-size: 12.5px; font-weight: 700; margin-top: 12px; }
-      .goal__delta--bad { color: var(--danger); }
-      .goal__delta--ok { color: var(--success); }
-      .goal__delta .tiny { font-weight: 500; }
+      .goal__delta {
+        font-size: 12.5px;
+        font-weight: 700;
+        margin-top: 12px;
+      }
+      .goal__delta--bad {
+        color: var(--danger);
+      }
+      .goal__delta--ok {
+        color: var(--success);
+      }
+      .goal__delta .tiny {
+        font-weight: 500;
+      }
 
       /* Acciones */
-      .todo { padding: 6px 0; margin-bottom: 30px; }
+      .todo {
+        padding: 6px 0;
+        margin-bottom: 30px;
+      }
       .todo__item {
         display: flex;
         align-items: center;
@@ -290,7 +421,9 @@ import { PLAN_CAMPANA } from '../data/mock';
         padding: 13px 18px;
         border-bottom: 1px solid var(--line);
       }
-      .todo__item:last-child { border-bottom: 0; }
+      .todo__item:last-child {
+        border-bottom: 0;
+      }
       .todo__check {
         width: 24px;
         height: 24px;
@@ -303,11 +436,25 @@ import { PLAN_CAMPANA } from '../data/mock';
         color: #fff;
         transition: all 0.15s ease;
       }
-      .todo__check:hover { border-color: var(--brand-500); }
-      .todo__check--on { background: var(--fill-success); border-color: var(--fill-success); }
-      .todo__body { flex: 1; min-width: 0; }
-      .todo__text { font-size: 14px; font-weight: 600; }
-      .todo__item--done .todo__text { text-decoration: line-through; color: var(--ink-3); }
+      .todo__check:hover {
+        border-color: var(--brand-500);
+      }
+      .todo__check--on {
+        background: var(--fill-success);
+        border-color: var(--fill-success);
+      }
+      .todo__body {
+        flex: 1;
+        min-width: 0;
+      }
+      .todo__text {
+        font-size: 14px;
+        font-weight: 600;
+      }
+      .todo__item--done .todo__text {
+        text-decoration: line-through;
+        color: var(--ink-3);
+      }
       .todo__go {
         display: grid;
         place-items: center;
@@ -317,28 +464,96 @@ import { PLAN_CAMPANA } from '../data/mock';
         color: var(--ink-2);
         transition: background 0.15s ease;
       }
-      .todo__go:hover { background: var(--sand); color: var(--brand-600); }
+      .todo__go:hover {
+        background: var(--sand);
+        color: var(--brand-600);
+      }
 
       /* Ritmo semanal */
-      .pad { padding: 20px; }
-      .weeks { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; align-items: end; }
-      .week { text-align: center; border-radius: var(--radius-s); padding: 10px 6px 8px; }
-      .week--current { background: var(--brand-50); outline: 1.5px solid var(--brand-200); }
-      .week__bars { display: flex; gap: 5px; align-items: flex-end; justify-content: center; height: 110px; margin-bottom: 8px; }
-      .week__bar { width: 22px; border-radius: 6px 6px 2px 2px; }
-      .week__bar--plan { background: var(--brand-100); }
-      .week__bar--real { background: var(--brand-grad); }
-      .week__label { font-weight: 800; font-size: 13px; }
-      .week__hit { display: block; font-size: 11px; font-weight: 700; color: var(--success); margin-top: 3px; }
-      .legendline { display: flex; align-items: center; gap: 8px; margin-top: 14px; }
-      .dotk { width: 10px; height: 10px; border-radius: 3px; display: inline-block; }
-      .dotk--plan { background: var(--brand-100); }
-      .dotk--real { background: var(--brand-500); margin-left: 12px; }
+      .pad {
+        padding: 20px;
+      }
+      .weeks {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 14px;
+        align-items: end;
+      }
+      .week {
+        text-align: center;
+        border-radius: var(--radius-s);
+        padding: 10px 6px 8px;
+      }
+      .week--current {
+        background: var(--brand-50);
+        outline: 1.5px solid var(--brand-200);
+      }
+      .week__bars {
+        display: flex;
+        gap: 5px;
+        align-items: flex-end;
+        justify-content: center;
+        height: 110px;
+        margin-bottom: 8px;
+      }
+      .week__bar {
+        width: 22px;
+        border-radius: 6px 6px 2px 2px;
+      }
+      .week__bar--plan {
+        background: var(--brand-100);
+      }
+      .week__bar--real {
+        background: var(--brand-grad);
+      }
+      .week__label {
+        font-weight: 800;
+        font-size: 13px;
+      }
+      .week__hit {
+        display: block;
+        font-size: 11px;
+        font-weight: 700;
+        color: var(--success);
+        margin-top: 3px;
+      }
+      .legendline {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        margin-top: 14px;
+      }
+      .dotk {
+        width: 10px;
+        height: 10px;
+        border-radius: 3px;
+        display: inline-block;
+      }
+      .dotk--plan {
+        background: var(--brand-100);
+      }
+      .dotk--real {
+        background: var(--brand-500);
+        margin-left: 12px;
+      }
 
       /* Cadena del plan */
-      .chain { display: flex; align-items: stretch; gap: 8px; flex-wrap: wrap; }
-      .chain__step { flex: 1; min-width: 160px; position: relative; padding-top: 18px; }
-      .chain__step h3 { font-size: 15px; margin: 6px 0 4px; }
+      .chain {
+        display: flex;
+        align-items: stretch;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .chain__step {
+        flex: 1;
+        min-width: 160px;
+        position: relative;
+        padding-top: 18px;
+      }
+      .chain__step h3 {
+        font-size: 15px;
+        margin: 6px 0 4px;
+      }
       .chain__num {
         width: 26px;
         height: 26px;
@@ -350,16 +565,38 @@ import { PLAN_CAMPANA } from '../data/mock';
         font-weight: 800;
         font-size: 13px;
       }
-      .chain__value { font-size: 18px; font-weight: 800; margin: 0 0 6px; color: var(--brand-600); }
-      .chain__step .tiny { line-height: 1.45; }
-      .chain__arrow { align-self: center; color: var(--ink-3); flex: 0 0 auto; }
+      .chain__value {
+        font-size: 18px;
+        font-weight: 800;
+        margin: 0 0 6px;
+        color: var(--brand-600);
+      }
+      .chain__step .tiny {
+        line-height: 1.45;
+      }
+      .chain__arrow {
+        align-self: center;
+        color: var(--ink-3);
+        flex: 0 0 auto;
+      }
 
       @media (max-width: 860px) {
-        .goals { grid-template-columns: 1fr; }
-        .status__gain { text-align: left; }
-        .chain { flex-direction: column; }
-        .chain__arrow { transform: rotate(90deg); margin: 0 auto; }
-        .weeks { gap: 6px; }
+        .goals {
+          grid-template-columns: 1fr;
+        }
+        .status__gain {
+          text-align: left;
+        }
+        .chain {
+          flex-direction: column;
+        }
+        .chain__arrow {
+          transform: rotate(90deg);
+          margin: 0 auto;
+        }
+        .weeks {
+          gap: 6px;
+        }
       }
     `,
   ],
@@ -375,7 +612,9 @@ export class MiPlanPage {
 
   protected readonly hechas = computed(() => this.hechasSet().size);
 
-  protected readonly maxSemana = Math.max(...PLAN_CAMPANA.semanas.flatMap((s) => [s.plan, s.logrado]));
+  protected readonly maxSemana = Math.max(
+    ...PLAN_CAMPANA.semanas.flatMap((s) => [s.plan, s.logrado]),
+  );
 
   protected estaHecha(id: string): boolean {
     return this.hechasSet().has(id);

@@ -25,10 +25,18 @@ const ESTADO_FILTRO: Record<Exclude<Filtro, 'Todas'>, Consultora['estado']> = {
           <p class="muted">{{ filtradas().length }} consultoras · campaña C6</p>
         </div>
         <div class="tabs">
-          <button class="tabs__tab" [class.tabs__tab--active]="vista() === 'estructura'" (click)="vista.set('estructura')">
+          <button
+            class="tabs__tab"
+            [class.tabs__tab--active]="vista() === 'estructura'"
+            (click)="vista.set('estructura')"
+          >
             <app-icon name="users" [size]="16" /> Mi estructura
           </button>
-          <button class="tabs__tab" [class.tabs__tab--active]="vista() === 'reportes'" (click)="vista.set('reportes')">
+          <button
+            class="tabs__tab"
+            [class.tabs__tab--active]="vista() === 'reportes'"
+            (click)="vista.set('reportes')"
+          >
             <app-icon name="file" [size]="16" /> Reportes
           </button>
         </div>
@@ -48,12 +56,15 @@ const ESTADO_FILTRO: Record<Exclude<Filtro, 'Todas'>, Consultora['estado']> = {
         </label>
         <div class="filters">
           @for (f of filtros; track f) {
-            <button class="chip" [class.chip--active]="filtro() === f" (click)="filtro.set(f)">{{ f }}</button>
+            <button class="chip" [class.chip--active]="filtro() === f" (click)="filtro.set(f)">
+              {{ f }}
+            </button>
           }
         </div>
         <p class="legend tiny">
-          <strong>CNS</strong> Consultora · <strong>CEM</strong> Emprendedora · <strong>CES</strong> CEM Senior ·
-          <strong>ASP</strong> Aspirante — tu Grupo Personal nunca incluye Directoras.
+          <strong>CNS</strong> Consultora · <strong>CEM</strong> Emprendedora ·
+          <strong>CES</strong> CEM Senior · <strong>ASP</strong> Aspirante — tu Grupo Personal nunca
+          incluye Directoras.
         </p>
       </div>
 
@@ -74,9 +85,13 @@ const ESTADO_FILTRO: Record<Exclude<Filtro, 'Todas'>, Consultora['estado']> = {
                   }
                 </div>
                 <div class="row__sales">
-                  <span>Venta personal: <strong>\${{ c.ventaPersonal | number }}</strong></span>
+                  <span
+                    >Venta personal: <strong>\${{ c.ventaPersonal | number }}</strong></span
+                  >
                   @if (c.ventaGrupal) {
-                    <span>Venta grupal: <strong>\${{ c.ventaGrupal | number }}</strong></span>
+                    <span
+                      >Venta grupal: <strong>\${{ c.ventaGrupal | number }}</strong></span
+                    >
                   }
                 </div>
               </div>
@@ -115,9 +130,17 @@ const ESTADO_FILTRO: Record<Exclude<Filtro, 'Todas'>, Consultora['estado']> = {
         flex-wrap: wrap;
         margin-bottom: 20px;
       }
-      .head p { margin: 4px 0 0; }
+      .head p {
+        margin: 4px 0 0;
+      }
 
-      .tabs { display: inline-flex; background: var(--sand); border-radius: 99px; padding: 4px; gap: 2px; }
+      .tabs {
+        display: inline-flex;
+        background: var(--sand);
+        border-radius: 99px;
+        padding: 4px;
+        gap: 2px;
+      }
       .tabs__tab {
         display: inline-flex;
         align-items: center;
@@ -130,9 +153,17 @@ const ESTADO_FILTRO: Record<Exclude<Filtro, 'Todas'>, Consultora['estado']> = {
         font-weight: 700;
         color: var(--ink-2);
       }
-      .tabs__tab--active { background: var(--ink); color: var(--on-ink); }
+      .tabs__tab--active {
+        background: var(--ink);
+        color: var(--on-ink);
+      }
 
-      .toolbar { display: flex; flex-direction: column; gap: 12px; margin-bottom: 18px; }
+      .toolbar {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        margin-bottom: 18px;
+      }
       .search {
         display: flex;
         align-items: center;
@@ -142,9 +173,14 @@ const ESTADO_FILTRO: Record<Exclude<Filtro, 'Todas'>, Consultora['estado']> = {
         border-radius: 99px;
         padding: 11px 18px;
         color: var(--ink-3);
-        transition: border-color 0.15s ease, box-shadow 0.15s ease;
+        transition:
+          border-color 0.15s ease,
+          box-shadow 0.15s ease;
       }
-      .search:focus-within { border-color: var(--brand-400); box-shadow: 0 0 0 3px var(--brand-100); }
+      .search:focus-within {
+        border-color: var(--brand-400);
+        box-shadow: 0 0 0 3px var(--brand-100);
+      }
       .search input {
         border: 0;
         outline: 0;
@@ -153,11 +189,23 @@ const ESTADO_FILTRO: Record<Exclude<Filtro, 'Todas'>, Consultora['estado']> = {
         color: var(--ink);
         width: 100%;
       }
-      .filters { display: flex; gap: 8px; flex-wrap: wrap; }
-      .legend { margin: 0; }
-      .legend strong { color: var(--ink-2); }
+      .filters {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+      }
+      .legend {
+        margin: 0;
+      }
+      .legend strong {
+        color: var(--ink-2);
+      }
 
-      .list { display: flex; flex-direction: column; gap: 10px; }
+      .list {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
       .row {
         display: flex;
         align-items: center;
@@ -166,10 +214,18 @@ const ESTADO_FILTRO: Record<Exclude<Filtro, 'Todas'>, Consultora['estado']> = {
         border-left: 4px solid var(--line);
         cursor: pointer;
       }
-      .row--activa { border-left-color: var(--success); }
-      .row--riesgo { border-left-color: var(--warning); }
-      .row--nueva { border-left-color: var(--violet); }
-      .row--deuda { border-left-color: var(--danger); }
+      .row--activa {
+        border-left-color: var(--success);
+      }
+      .row--riesgo {
+        border-left-color: var(--warning);
+      }
+      .row--nueva {
+        border-left-color: var(--violet);
+      }
+      .row--deuda {
+        border-left-color: var(--danger);
+      }
 
       .row__avatar {
         width: 42px;
@@ -183,7 +239,9 @@ const ESTADO_FILTRO: Record<Exclude<Filtro, 'Todas'>, Consultora['estado']> = {
         font-weight: 700;
         font-size: 14px;
       }
-      .row__main { min-width: 0; }
+      .row__main {
+        min-width: 0;
+      }
       .row__name {
         display: flex;
         align-items: center;
@@ -192,15 +250,43 @@ const ESTADO_FILTRO: Record<Exclude<Filtro, 'Todas'>, Consultora['estado']> = {
         font-weight: 700;
         font-size: 14.5px;
       }
-      .row__sales { display: flex; gap: 18px; font-size: 13px; color: var(--ink-2); margin-top: 3px; flex-wrap: wrap; }
-      .row__arrow { margin-left: auto; color: var(--ink-3); }
+      .row__sales {
+        display: flex;
+        gap: 18px;
+        font-size: 13px;
+        color: var(--ink-2);
+        margin-top: 3px;
+        flex-wrap: wrap;
+      }
+      .row__arrow {
+        margin-left: auto;
+        color: var(--ink-3);
+      }
 
-      .empty { padding: 48px; text-align: center; color: var(--ink-2); }
-      .empty span { font-size: 34px; }
-      .empty p { margin: 8px 0 0; }
+      .empty {
+        padding: 48px;
+        text-align: center;
+        color: var(--ink-2);
+      }
+      .empty span {
+        font-size: 34px;
+      }
+      .empty p {
+        margin: 8px 0 0;
+      }
 
-      .reports { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 12px; }
-      .report { display: flex; align-items: center; gap: 14px; padding: 16px 18px; cursor: pointer; }
+      .reports {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+        gap: 12px;
+      }
+      .report {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+        padding: 16px 18px;
+        cursor: pointer;
+      }
       .report__icon {
         display: grid;
         place-items: center;
@@ -210,7 +296,10 @@ const ESTADO_FILTRO: Record<Exclude<Filtro, 'Todas'>, Consultora['estado']> = {
         background: var(--brand-50);
         color: var(--brand-600);
       }
-      .report__title { font-weight: 700; font-size: 14px; }
+      .report__title {
+        font-weight: 700;
+        font-size: 14px;
+      }
     `,
   ],
 })
@@ -248,10 +337,14 @@ export class GrupoPersonalPage {
 
   protected nivelBadge(nivel: Consultora['nivel']): string {
     switch (nivel) {
-      case 'CEM': return 'badge--warning';
-      case 'CES': return 'badge--info';
-      case 'ASP': return 'badge--violet';
-      default: return 'badge--teal';
+      case 'CEM':
+        return 'badge--warning';
+      case 'CES':
+        return 'badge--info';
+      case 'ASP':
+        return 'badge--violet';
+      default:
+        return 'badge--teal';
     }
   }
 }

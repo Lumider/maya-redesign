@@ -29,27 +29,33 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/externa').then((m) => m.ExternaPage),
   },
 
-  // Vista nueva (beta) — rutas paralelas; la versión actual queda intacta
-  { path: 'n/inicio', loadComponent: () => import('./nueva/inicio-n').then((m) => m.InicioN) },
+  // Vista nueva (beta) — TODA la carrera vive bajo /n/. El estatus encarnado
+  // (conmutador demo) decide qué se muestra: Inicio y Mi campaña alternan por
+  // audiencia (hubs); el resto de secciones pertenece a una sola audiencia.
+  { path: 'n/inicio', loadComponent: () => import('./nueva/hubs').then((m) => m.InicioHub) },
+  { path: 'n/campana', loadComponent: () => import('./nueva/hubs').then((m) => m.CampanaHub) },
+  // — Audiencia Directoras (JNR → REG)
   { path: 'n/negocio', loadComponent: () => import('./nueva/negocio').then((m) => m.Negocio) },
-  { path: 'n/campana', loadComponent: () => import('./nueva/campana-n').then((m) => m.CampanaN) },
   { path: 'n/equipo', loadComponent: () => import('./nueva/equipo').then((m) => m.Equipo) },
   { path: 'n/carrera', loadComponent: () => import('./nueva/carrera').then((m) => m.Carrera) },
+  // — Audiencia Emprendedoras (CNS → ASP)
+  { path: 'n/grupo', loadComponent: () => import('./ces/grupo-ces').then((m) => m.GrupoCes) },
+  {
+    path: 'n/incorpora',
+    loadComponent: () => import('./ces/incorpora-ces').then((m) => m.IncorporaCes),
+  },
+  { path: 'n/camino', loadComponent: () => import('./ces/camino-ces').then((m) => m.CaminoCes) },
   {
     path: 'n/herramientas',
     loadComponent: () => import('./pages/herramientas').then((m) => m.HerramientasPage),
   },
 
-  // Vista CES (demo) — la app vista por una Consultora Emprendedora Senior.
-  // Rutas paralelas bajo /e/ (emprendedora); las otras dos vistas quedan intactas.
-  { path: 'e/inicio', loadComponent: () => import('./ces/inicio-ces').then((m) => m.InicioCes) },
-  { path: 'e/campana', loadComponent: () => import('./ces/campana-ces').then((m) => m.CampanaCes) },
-  { path: 'e/grupo', loadComponent: () => import('./ces/grupo-ces').then((m) => m.GrupoCes) },
-  {
-    path: 'e/incorpora',
-    loadComponent: () => import('./ces/incorpora-ces').then((m) => m.IncorporaCes),
-  },
-  { path: 'e/camino', loadComponent: () => import('./ces/camino-ces').then((m) => m.CaminoCes) },
+  // Rutas /e/ retiradas: redirigen a /n/ (compatibilidad con links compartidos)
+  { path: 'e/inicio', redirectTo: 'n/inicio' },
+  { path: 'e/campana', redirectTo: 'n/campana' },
+  { path: 'e/grupo', redirectTo: 'n/grupo' },
+  { path: 'e/incorpora', redirectTo: 'n/incorpora' },
+  { path: 'e/camino', redirectTo: 'n/camino' },
 
   { path: '**', redirectTo: 'inicio' },
 ];

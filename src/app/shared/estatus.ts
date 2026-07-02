@@ -32,7 +32,42 @@ export class EstatusService {
     } catch {
       /* almacenamiento no disponible */
     }
-    return 'CES';
+    // La vista nueva arranca desde el inicio de la carrera: Consultora.
+    return 'CNS';
+  }
+}
+
+const STORAGE_KEY_AUD = 'maya-audiencia';
+
+export type Audiencia = 'emprendedora' | 'directora';
+
+/**
+ * Audiencia encarnada en la vista nueva (/n/): decide qué familia de páginas
+ * y navegación se muestra. Cambia al elegir un estatus en el conmutador:
+ * CNS–ASP → emprendedora · JNR–REG → directora. Por defecto, emprendedora
+ * (la carrera se recorre desde CNS).
+ */
+@Injectable({ providedIn: 'root' })
+export class AudienciaService {
+  readonly tipo = signal<Audiencia>(this.read());
+
+  set(a: Audiencia): void {
+    this.tipo.set(a);
+    try {
+      localStorage.setItem(STORAGE_KEY_AUD, a);
+    } catch {
+      /* almacenamiento no disponible */
+    }
+  }
+
+  private read(): Audiencia {
+    try {
+      const v = localStorage.getItem(STORAGE_KEY_AUD);
+      if (v === 'emprendedora' || v === 'directora') return v;
+    } catch {
+      /* almacenamiento no disponible */
+    }
+    return 'emprendedora';
   }
 }
 

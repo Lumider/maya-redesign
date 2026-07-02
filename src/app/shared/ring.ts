@@ -9,19 +9,39 @@ import { ChangeDetectionStrategy, Component, computed, input } from '@angular/co
   changeDetection: ChangeDetectionStrategy.OnPush,
   template: `
     <div class="ring" [style.width.px]="size()" [style.height.px]="size()">
-      <svg [attr.width]="size()" [attr.height]="size()" [attr.viewBox]="'0 0 ' + size() + ' ' + size()" aria-hidden="true">
-        <circle [attr.cx]="c()" [attr.cy]="c()" [attr.r]="r()" fill="none" stroke="var(--line)" [attr.stroke-width]="stroke()" />
+      <svg
+        [attr.width]="size()"
+        [attr.height]="size()"
+        [attr.viewBox]="'0 0 ' + size() + ' ' + size()"
+        aria-hidden="true"
+      >
         <circle
-          [attr.cx]="c()" [attr.cy]="c()" [attr.r]="r()" fill="none" [attr.stroke]="color()"
-          [attr.stroke-width]="stroke()" stroke-linecap="round"
-          [attr.stroke-dasharray]="circ()" [attr.stroke-dashoffset]="offset()"
+          [attr.cx]="c()"
+          [attr.cy]="c()"
+          [attr.r]="r()"
+          fill="none"
+          stroke="var(--line)"
+          [attr.stroke-width]="stroke()"
+        />
+        <circle
+          [attr.cx]="c()"
+          [attr.cy]="c()"
+          [attr.r]="r()"
+          fill="none"
+          [attr.stroke]="color()"
+          [attr.stroke-width]="stroke()"
+          stroke-linecap="round"
+          [attr.stroke-dasharray]="circ()"
+          [attr.stroke-dashoffset]="offset()"
           [attr.transform]="'rotate(-90 ' + c() + ' ' + c() + ')'"
           style="transition: stroke-dashoffset 0.7s cubic-bezier(0.22,1,0.36,1)"
         />
       </svg>
       <div class="ring__txt">
         <div class="ring__pct">{{ pct() }}%</div>
-        @if (label()) { <div class="ring__cap">{{ label() }}</div> }
+        @if (label()) {
+          <div class="ring__cap">{{ label() }}</div>
+        }
       </div>
     </div>
   `,
@@ -37,7 +57,9 @@ export class Ring {
   protected readonly c = computed(() => this.size() / 2);
   protected readonly r = computed(() => this.c() - this.stroke() / 2 - 1);
   protected readonly circ = computed(() => 2 * Math.PI * this.r());
-  protected readonly offset = computed(() => this.circ() * (1 - Math.min(100, Math.max(0, this.pct())) / 100));
+  protected readonly offset = computed(
+    () => this.circ() * (1 - Math.min(100, Math.max(0, this.pct())) / 100),
+  );
   protected readonly color = computed(() => {
     const p = this.pct();
     const e = this.expected();

@@ -23,7 +23,7 @@ import { CAMINO_CES, PERFILES } from '../data/mock-ces';
   template: `
     <div class="v2">
       <header class="v2-head" appReveal>
-        <nav class="crumbs tiny"><a routerLink="/e/inicio">Inicio</a> / Mi camino</nav>
+        <nav class="crumbs tiny"><a routerLink="/n/inicio">Inicio</a> / Mi camino</nav>
         <h1 class="v2-title">Mi camino</h1>
         <p class="v2-sub">De Consultora a Directora: dónde estás y qué sigue.</p>
       </header>
@@ -85,7 +85,7 @@ import { CAMINO_CES, PERFILES } from '../data/mock-ces';
             }
             <a
               class="btn btn--primary btn--sm"
-              [routerLink]="p().capacidades.grupo ? '/e/grupo' : '/e/campana'"
+              [routerLink]="p().capacidades.grupo ? '/n/grupo' : '/n/campana'"
               style="margin-top:8px"
               >{{ p().capacidades.grupo ? 'Trabajar con mi grupo' : 'Trabajar mi campaña' }}</a
             >

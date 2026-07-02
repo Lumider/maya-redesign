@@ -84,7 +84,7 @@ import { CAMPANA_CES, GRUPO_CES, PERFILES, USUARIA_CES } from '../data/mock-ces'
               <strong>{{ p().alerta.titulo }}</strong>
               <p class="muted">{{ p().alerta.texto }}</p>
             </div>
-            <a class="btn btn--soft btn--sm" routerLink="/e/camino">Ver mi camino</a>
+            <a class="btn btn--soft btn--sm" routerLink="/n/camino">Ver mi camino</a>
           </section>
 
           <section class="v2-section" appReveal>
@@ -128,7 +128,7 @@ import { CAMPANA_CES, GRUPO_CES, PERFILES, USUARIA_CES } from '../data/mock-ces'
 
         <aside class="v2-aside">
           <!-- Único lugar del paso de carrera en el inicio -->
-          <a class="card camino" routerLink="/e/camino" appReveal>
+          <a class="card camino" routerLink="/n/camino" appReveal>
             <img
               class="camino__img"
               src="icons/growth.png"
@@ -153,7 +153,7 @@ import { CAMPANA_CES, GRUPO_CES, PERFILES, USUARIA_CES } from '../data/mock-ces'
                 <app-icon name="users" [size]="16" /> Mi grupo por trabajar
               </h3>
               @for (s of grupoTop; track s.label) {
-                <a class="row-eq" [class.row-eq--accent]="s.accent" routerLink="/e/grupo">
+                <a class="row-eq" [class.row-eq--accent]="s.accent" routerLink="/n/grupo">
                   <span class="sem" [class]="'sem--' + s.tone"></span>
                   <span class="row-eq__label">{{ s.label }}</span>
                   <strong>{{ s.count }}</strong>
@@ -171,7 +171,7 @@ import { CAMPANA_CES, GRUPO_CES, PERFILES, USUARIA_CES } from '../data/mock-ces'
                   S/ {{ p().ganancia.incorporaYGana | number }} este {{ c.actual }} — cada
                   incorporada activa al N1 son S/ 50 por campaña.
                 </p>
-                <a class="nlink" routerLink="/e/incorpora">Ver mi seguimiento →</a>
+                <a class="nlink" routerLink="/n/incorpora">Ver mi seguimiento →</a>
               </div>
             </div>
           } @else {
@@ -183,7 +183,7 @@ import { CAMPANA_CES, GRUPO_CES, PERFILES, USUARIA_CES } from '../data/mock-ces'
                   Tu primera incorporada activa te convierte en CEM: S/ 50 por campaña por persona,
                   hasta S/ 150 por cada una.
                 </p>
-                <a class="nlink" routerLink="/e/camino">Cómo funciona →</a>
+                <a class="nlink" routerLink="/n/camino">Cómo funciona →</a>
               </div>
             </div>
           }
@@ -395,7 +395,7 @@ export class InicioCes {
         icon: 'target',
         tone: 'warn',
         resumen: `Venta personal S/ ${p.ventaPersonal.toLocaleString('es-PE')} · nivel ${p.nivelGanamas} · ganancia oculta 👁`,
-        ruta: '/e/campana',
+        ruta: '/n/campana',
       },
     ];
     if (p.capacidades.grupo) {
@@ -404,7 +404,7 @@ export class InicioCes {
         icon: 'users',
         tone: 'warn',
         resumen: `${GRUPO_CES.length} personas · 3 activas · 4 por reactivar`,
-        ruta: '/e/grupo',
+        ruta: '/n/grupo',
       });
     }
     if (p.capacidades.incorpora) {
@@ -413,7 +413,7 @@ export class InicioCes {
         icon: 'heart-plus',
         tone: 'info',
         resumen: `S/ ${p.ganancia.incorporaYGana} este ${this.c.actual} · sigue motivando primeros pedidos`,
-        ruta: '/e/incorpora',
+        ruta: '/n/incorpora',
       });
     }
     out.push({
@@ -421,7 +421,7 @@ export class InicioCes {
       icon: 'star',
       tone: this.calificaBien() ? 'ok' : 'warn',
       resumen: p.paso.titulo,
-      ruta: '/e/camino',
+      ruta: '/n/camino',
     });
     return out;
   });

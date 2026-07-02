@@ -2,7 +2,14 @@ import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../shared/icon';
 import { Icon3d } from '../shared/icon3d';
-import { ANUNCIOS, INDICADORES, MATERIALES, PEDIDO_PERSONAL, SEGMENTOS_GP, USUARIA } from '../data/mock';
+import {
+  ANUNCIOS,
+  INDICADORES,
+  MATERIALES,
+  PEDIDO_PERSONAL,
+  SEGMENTOS_GP,
+  USUARIA,
+} from '../data/mock';
 
 const ACCESOS = [
   { label: 'Reportes', icon: 'chart', route: '/externa/reportes' },
@@ -23,7 +30,9 @@ const ACCESOS = [
       <header class="hero">
         <div>
           <h1 class="page-title">¡Hola, {{ nombreCorto }}! 👋</h1>
-          <p class="muted">Así va tu negocio en la campaña {{ usuaria.campana }} · semana {{ usuaria.semana }}.</p>
+          <p class="muted">
+            Así va tu negocio en la campaña {{ usuaria.campana }} · semana {{ usuaria.semana }}.
+          </p>
           <a class="planlink" routerLink="/mi-plan">
             <span class="planlink__dot"></span>
             Tu plan {{ usuaria.campana }} va por debajo del ritmo — ver acciones de la semana
@@ -44,10 +53,15 @@ const ACCESOS = [
                 para mantener tu calificación y premios.
               </p>
               <div class="progress">
-                <div class="progress__fill" [style.width.%]="(pedido.ventaActual / pedido.metaN1) * 100"></div>
+                <div
+                  class="progress__fill"
+                  [style.width.%]="(pedido.ventaActual / pedido.metaN1) * 100"
+                ></div>
               </div>
             </div>
-            <a class="btn btn--primary task__cta" routerLink="/externa/mis-pedidos">Realizar pedido</a>
+            <a class="btn btn--primary task__cta" routerLink="/externa/mis-pedidos"
+              >Realizar pedido</a
+            >
           </aside>
         } @else {
           <aside class="task task--done card">
@@ -88,7 +102,9 @@ const ACCESOS = [
       <!-- Gestión de Grupo Personal -->
       <h2 class="section-title">
         Gestión de tu Grupo Personal
-        <a routerLink="/grupo-personal" class="see-all">Ver grupo <app-icon name="arrow-right" [size]="15" /></a>
+        <a routerLink="/grupo-personal" class="see-all"
+          >Ver grupo <app-icon name="arrow-right" [size]="15"
+        /></a>
       </h2>
       <div class="segments">
         @for (s of segmentos; track s.label) {
@@ -119,7 +135,9 @@ const ACCESOS = [
       <!-- Material campañal -->
       <h2 class="section-title">
         Material Campañal
-        <a routerLink="/herramientas" class="see-all">Ver todo <app-icon name="arrow-right" [size]="15" /></a>
+        <a routerLink="/herramientas" class="see-all"
+          >Ver todo <app-icon name="arrow-right" [size]="15"
+        /></a>
       </h2>
       <div class="materials">
         @for (m of materiales; track m.titulo) {
@@ -127,7 +145,9 @@ const ACCESOS = [
             <div class="material__cover" [style.background]="m.gradiente">
               <span>{{ m.emoji }}</span>
               @if (m.tag) {
-                <span class="material__tag" [class.material__tag--new]="m.tag === 'Nuevo'">{{ m.tag }}</span>
+                <span class="material__tag" [class.material__tag--new]="m.tag === 'Nuevo'">{{
+                  m.tag
+                }}</span>
               }
             </div>
             <div class="material__title">{{ m.titulo }}</div>
@@ -146,7 +166,9 @@ const ACCESOS = [
         margin-bottom: 24px;
         flex-wrap: wrap;
       }
-      .hero p { margin: 6px 0 0; }
+      .hero p {
+        margin: 6px 0 0;
+      }
       .planlink {
         display: inline-flex;
         align-items: center;
@@ -161,7 +183,9 @@ const ACCESOS = [
         padding: 7px 14px;
         transition: background 0.15s ease;
       }
-      .planlink:hover { background: var(--brand-100); }
+      .planlink:hover {
+        background: var(--brand-100);
+      }
       .planlink__dot {
         width: 8px;
         height: 8px;
@@ -178,11 +202,31 @@ const ACCESOS = [
         padding: 14px 18px;
         max-width: 560px;
       }
-      .task__body { min-width: 0; flex: 1; }
-      .task__head { display: flex; align-items: center; gap: 8px; font-size: 14px; }
-      .task__body p { margin: 3px 0 8px; font-size: 12.5px; color: var(--ink-2); line-height: 1.4; }
-      .task__cta { padding: 9px 16px; font-size: 13px; white-space: nowrap; }
-      .task--done { border-color: var(--success); background: var(--success-bg); }
+      .task__body {
+        min-width: 0;
+        flex: 1;
+      }
+      .task__head {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        font-size: 14px;
+      }
+      .task__body p {
+        margin: 3px 0 8px;
+        font-size: 12.5px;
+        color: var(--ink-2);
+        line-height: 1.4;
+      }
+      .task__cta {
+        padding: 9px 16px;
+        font-size: 13px;
+        white-space: nowrap;
+      }
+      .task--done {
+        border-color: var(--success);
+        background: var(--success-bg);
+      }
       .task__check {
         display: grid;
         place-items: center;
@@ -204,7 +248,9 @@ const ACCESOS = [
         font-weight: 700;
         color: var(--brand-600);
       }
-      .see-all:hover { color: var(--brand-700); }
+      .see-all:hover {
+        color: var(--brand-700);
+      }
 
       /* Accesos rápidos */
       .quick {
@@ -238,33 +284,57 @@ const ACCESOS = [
         gap: 12px;
         margin-bottom: 36px;
       }
-      .stat { position: relative; padding: 16px; overflow: hidden; }
+      .stat {
+        position: relative;
+        padding: 16px;
+        overflow: hidden;
+      }
       .stat::after {
         content: '';
         position: absolute;
         inset: 0 0 auto;
         height: 3px;
       }
-      .stat--brand::after { background: var(--brand-500); }
-      .stat--success::after { background: var(--success); }
-      .stat--warning::after { background: var(--warning); }
-      .stat--danger::after { background: var(--danger); }
-      .stat--info::after { background: var(--info); }
+      .stat--brand::after {
+        background: var(--brand-500);
+      }
+      .stat--success::after {
+        background: var(--success);
+      }
+      .stat--warning::after {
+        background: var(--warning);
+      }
+      .stat--danger::after {
+        background: var(--danger);
+      }
+      .stat--info::after {
+        background: var(--info);
+      }
       .stat__icon {
         position: absolute;
         top: 14px;
         right: 14px;
         color: var(--ink-3);
       }
-      .stat__label { font-size: 12.5px; font-weight: 600; color: var(--ink-2); }
+      .stat__label {
+        font-size: 12.5px;
+        font-weight: 600;
+        color: var(--ink-2);
+      }
       .stat__value {
         font-family: var(--font-display);
         font-size: 26px;
         font-weight: 700;
         margin-top: 2px;
       }
-      .stat--danger .stat__value { color: var(--danger); }
-      .stat__hint { font-size: 11.5px; color: var(--ink-3); margin-top: 4px; }
+      .stat--danger .stat__value {
+        color: var(--danger);
+      }
+      .stat__hint {
+        font-size: 11.5px;
+        color: var(--ink-3);
+        margin-top: 4px;
+      }
 
       /* Segmentos */
       .segments {
@@ -279,9 +349,19 @@ const ACCESOS = [
         gap: 12px;
         padding: 14px 16px;
       }
-      .segment__count { font-size: 13px; min-width: 36px; justify-content: center; }
-      .segment__label { font-weight: 700; font-size: 14px; }
-      .segment__arrow { margin-left: auto; color: var(--ink-3); }
+      .segment__count {
+        font-size: 13px;
+        min-width: 36px;
+        justify-content: center;
+      }
+      .segment__label {
+        font-weight: 700;
+        font-size: 14px;
+      }
+      .segment__arrow {
+        margin-left: auto;
+        color: var(--ink-3);
+      }
 
       /* Anuncios */
       .banners {
@@ -298,7 +378,9 @@ const ACCESOS = [
         min-height: 150px;
         overflow: hidden;
         cursor: pointer;
-        transition: transform 0.2s ease, box-shadow 0.2s ease;
+        transition:
+          transform 0.2s ease,
+          box-shadow 0.2s ease;
       }
       /* Scrim: oscurece donde va el texto (izquierda) y se desvanece hacia el
          color vibrante (derecha) para garantizar contraste AA del texto blanco. */
@@ -306,14 +388,37 @@ const ACCESOS = [
         content: '';
         position: absolute;
         inset: 0;
-        background: linear-gradient(90deg, rgba(0, 0, 0, 0.45) 0%, rgba(0, 0, 0, 0.3) 60%, rgba(0, 0, 0, 0.05) 100%);
+        background: linear-gradient(
+          90deg,
+          rgba(0, 0, 0, 0.45) 0%,
+          rgba(0, 0, 0, 0.3) 60%,
+          rgba(0, 0, 0, 0.05) 100%
+        );
         pointer-events: none;
       }
-      .banner > * { position: relative; z-index: 1; }
-      .banner:hover { transform: translateY(-3px); box-shadow: var(--shadow-l); }
-      .banner h3 { font-size: 21px; color: #fff; }
-      .banner p { font-size: 13px; margin: 6px 0 14px; max-width: 30ch; }
-      .banner__cta { font-size: 13px; font-weight: 700; border-bottom: 1.5px solid rgba(255,255,255,.7); padding-bottom: 2px; }
+      .banner > * {
+        position: relative;
+        z-index: 1;
+      }
+      .banner:hover {
+        transform: translateY(-3px);
+        box-shadow: var(--shadow-l);
+      }
+      .banner h3 {
+        font-size: 21px;
+        color: #fff;
+      }
+      .banner p {
+        font-size: 13px;
+        margin: 6px 0 14px;
+        max-width: 30ch;
+      }
+      .banner__cta {
+        font-size: 13px;
+        font-weight: 700;
+        border-bottom: 1.5px solid rgba(255, 255, 255, 0.7);
+        padding-bottom: 2px;
+      }
       .banner__emoji {
         position: absolute;
         right: 14px;
@@ -332,7 +437,10 @@ const ACCESOS = [
         padding-bottom: 8px;
         scroll-snap-type: x mandatory;
       }
-      .material { scroll-snap-align: start; border-radius: var(--radius); }
+      .material {
+        scroll-snap-align: start;
+        border-radius: var(--radius);
+      }
       .material__cover {
         position: relative;
         height: 210px;
@@ -355,7 +463,10 @@ const ACCESOS = [
         border-radius: 99px;
         padding: 3px 9px;
       }
-      .material__tag--new { background: var(--fill-brand); color: #fff; }
+      .material__tag--new {
+        background: var(--fill-brand);
+        color: #fff;
+      }
       .material__title {
         font-size: 13px;
         font-weight: 600;
@@ -364,11 +475,17 @@ const ACCESOS = [
       }
 
       @media (max-width: 1100px) {
-        .quick { grid-template-columns: repeat(4, 1fr); }
-        .banners { grid-template-columns: 1fr; }
+        .quick {
+          grid-template-columns: repeat(4, 1fr);
+        }
+        .banners {
+          grid-template-columns: 1fr;
+        }
       }
       @media (max-width: 640px) {
-        .quick { grid-template-columns: repeat(2, 1fr); }
+        .quick {
+          grid-template-columns: repeat(2, 1fr);
+        }
       }
     `,
   ],

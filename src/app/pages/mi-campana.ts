@@ -12,12 +12,16 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
     <div class="page">
       <header class="head">
         <div>
-          <nav class="crumbs" aria-label="Ruta de navegación"><a routerLink="/inicio">Inicio</a> / Mi Campaña</nav>
+          <nav class="crumbs" aria-label="Ruta de navegación">
+            <a routerLink="/inicio">Inicio</a> / Mi Campaña
+          </nav>
           <h1 class="page-title">Mi Campaña</h1>
         </div>
         <div class="tabs">
           @for (t of data.tabs; track t) {
-            <button class="tabs__tab" [class.tabs__tab--active]="tab() === t" (click)="tab.set(t)">{{ t }}</button>
+            <button class="tabs__tab" [class.tabs__tab--active]="tab() === t" (click)="tab.set(t)">
+              {{ t }}
+            </button>
           }
         </div>
       </header>
@@ -28,7 +32,9 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
           <!-- Meta de venta -->
           <section class="card pad">
             <div class="row-between">
-              <h2 class="card-title">🎯 Meta de venta {{ tab() }} <span class="muted-light">(MRM)</span></h2>
+              <h2 class="card-title">
+                🎯 Meta de venta {{ tab() }} <span class="muted-light">(MRM)</span>
+              </h2>
               <button class="btn btn--ghost btn--sm">Detalle de meta</button>
             </div>
             <div class="meta">
@@ -45,31 +51,57 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
                 <div class="big big--muted">\${{ data.meta | number }}</div>
               </div>
             </div>
-            <div class="progress"><div class="progress__fill" [style.width.%]="avanceMeta()"></div></div>
+            <div class="progress">
+              <div class="progress__fill" [style.width.%]="avanceMeta()"></div>
+            </div>
             <div class="tiny" style="margin-top:6px">{{ avanceMeta() }}% de avance</div>
           </section>
 
           <!-- Activas -->
           <section class="card pad card--activas">
             <div class="row-between">
-              <h2 class="card-title">👩🏽‍🤝‍👩🏻 Activas GP: {{ data.activas.total }} <span class="muted-light">/ meta {{ data.activas.meta }}</span></h2>
+              <h2 class="card-title">
+                👩🏽‍🤝‍👩🏻 Activas GP: {{ data.activas.total }}
+                <span class="muted-light">/ meta {{ data.activas.meta }}</span>
+              </h2>
               <span class="badge badge--neutral">{{ data.activas.estatus }}</span>
             </div>
             <div class="trio">
               <a class="trio__item" routerLink="/grupo-personal">
                 <div class="trio__label">Retenidas</div>
-                <div class="trio__value">{{ data.retenidas.valor }} <span>/ {{ data.retenidas.meta }}</span></div>
-                <div class="progress"><div class="progress__fill" [style.width.%]="pct(data.retenidas.valor, data.retenidas.meta)"></div></div>
+                <div class="trio__value">
+                  {{ data.retenidas.valor }} <span>/ {{ data.retenidas.meta }}</span>
+                </div>
+                <div class="progress">
+                  <div
+                    class="progress__fill"
+                    [style.width.%]="pct(data.retenidas.valor, data.retenidas.meta)"
+                  ></div>
+                </div>
               </a>
               <a class="trio__item" routerLink="/grupo-personal">
                 <div class="trio__label">Reactivadas</div>
-                <div class="trio__value">{{ data.reactivadas.valor }} <span>/ {{ data.reactivadas.meta }}</span></div>
-                <div class="progress"><div class="progress__fill" [style.width.%]="pct(data.reactivadas.valor, data.reactivadas.meta)"></div></div>
+                <div class="trio__value">
+                  {{ data.reactivadas.valor }} <span>/ {{ data.reactivadas.meta }}</span>
+                </div>
+                <div class="progress">
+                  <div
+                    class="progress__fill"
+                    [style.width.%]="pct(data.reactivadas.valor, data.reactivadas.meta)"
+                  ></div>
+                </div>
               </a>
               <a class="trio__item" routerLink="/grupo-personal">
                 <div class="trio__label">Primeros pedidos</div>
-                <div class="trio__value">{{ data.primerosPedidos.valor }} <span>/ {{ data.primerosPedidos.meta }}</span></div>
-                <div class="progress"><div class="progress__fill" [style.width.%]="pct(data.primerosPedidos.valor, data.primerosPedidos.meta)"></div></div>
+                <div class="trio__value">
+                  {{ data.primerosPedidos.valor }} <span>/ {{ data.primerosPedidos.meta }}</span>
+                </div>
+                <div class="progress">
+                  <div
+                    class="progress__fill"
+                    [style.width.%]="pct(data.primerosPedidos.valor, data.primerosPedidos.meta)"
+                  ></div>
+                </div>
               </a>
             </div>
           </section>
@@ -89,8 +121,13 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
             </div>
             <div class="subcard">
               <div class="row-between">
-                <span>Mis premios {{ tab() }}: <strong>{{ data.premios.misPremios }}</strong></span>
-                <span>Venta personal: <strong>\${{ data.premios.ventaPersonal | number }}</strong></span>
+                <span
+                  >Mis premios {{ tab() }}: <strong>{{ data.premios.misPremios }}</strong></span
+                >
+                <span
+                  >Venta personal:
+                  <strong>\${{ data.premios.ventaPersonal | number }}</strong></span
+                >
               </div>
               <div class="alert alert--warning">
                 <app-icon name="alert" [size]="16" />
@@ -102,21 +139,34 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
           <!-- Cuadrante -->
           <section class="card pad">
             <div class="row-between">
-              <h2 class="card-title">📊 Cuadrante actual: <span class="q-badge">{{ data.cuadrante.actual }}</span></h2>
-              <a class="see-all" routerLink="/cuadrante">Ver detalle <app-icon name="arrow-right" [size]="14" /></a>
+              <h2 class="card-title">
+                📊 Cuadrante actual: <span class="q-badge">{{ data.cuadrante.actual }}</span>
+              </h2>
+              <a class="see-all" routerLink="/cuadrante"
+                >Ver detalle <app-icon name="arrow-right" [size]="14"
+              /></a>
             </div>
             <p class="muted">
               Para subir a Cuadrante A y ganar el Bono de Desempeño de
-              <strong>\${{ data.cuadrante.bono | number }}</strong>, necesitas:
+              <strong>\${{ data.cuadrante.bono | number }}</strong
+              >, necesitas:
             </p>
             <div class="duo">
               <div class="duo__col">
-                <div class="tiny">MRM (venta requerida): \${{ data.cuadrante.ventaRequerida | number }}</div>
-                <div class="pill pill--danger">Te falta \${{ data.cuadrante.faltaVenta | number }} para lograrlo</div>
+                <div class="tiny">
+                  MRM (venta requerida): \${{ data.cuadrante.ventaRequerida | number }}
+                </div>
+                <div class="pill pill--danger">
+                  Te falta \${{ data.cuadrante.faltaVenta | number }} para lograrlo
+                </div>
               </div>
               <div class="duo__col">
-                <div class="tiny">Primeros pedidos (PPED) requeridos: {{ data.cuadrante.ppedRequeridos }}</div>
-                <div class="pill pill--danger">Necesitas {{ data.cuadrante.ppedFaltantes }} PPED más para calificar</div>
+                <div class="tiny">
+                  Primeros pedidos (PPED) requeridos: {{ data.cuadrante.ppedRequeridos }}
+                </div>
+                <div class="pill pill--danger">
+                  Necesitas {{ data.cuadrante.ppedFaltantes }} PPED más para calificar
+                </div>
               </div>
             </div>
           </section>
@@ -125,7 +175,9 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
           <section class="card pad">
             <div class="row-between">
               <h2 class="card-title">🟠 Morosidad y deuda</h2>
-              <button class="btn btn--ghost btn--sm">Contactar deudoras ({{ data.morosidad.deudoras }})</button>
+              <button class="btn btn--ghost btn--sm">
+                Contactar deudoras ({{ data.morosidad.deudoras }})
+              </button>
             </div>
             <div class="meta">
               <div>
@@ -139,12 +191,19 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
             </div>
             <div class="alert alert--warning">
               <app-icon name="alert" [size]="16" />
-              Tu grupo necesita pagar \${{ data.morosidad.pagoNecesario | number }} para lograr un IM saludable.
+              Tu grupo necesita pagar \${{ data.morosidad.pagoNecesario | number }} para lograr un
+              IM saludable.
             </div>
             <div class="links">
-              <button class="link-row"><strong>Mejora tu IM</strong> y protege tu ganancia <span>Ver calculadora ↗</span></button>
-              <button class="link-row">Revisa el estado de las deudas <span>Estado de deuda ↗</span></button>
-              <button class="link-row">Mi deuda: <strong>\${{ data.morosidad.miDeuda | number }}</strong> <span>→</span></button>
+              <button class="link-row">
+                <strong>Mejora tu IM</strong> y protege tu ganancia <span>Ver calculadora ↗</span>
+              </button>
+              <button class="link-row">
+                Revisa el estado de las deudas <span>Estado de deuda ↗</span>
+              </button>
+              <button class="link-row">
+                Mi deuda: <strong>\${{ data.morosidad.miDeuda | number }}</strong> <span>→</span>
+              </button>
             </div>
           </section>
 
@@ -166,16 +225,23 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
               </div>
             </div>
             <div class="progress progress--success">
-              <div class="progress__fill" [style.width.%]="pct(data.credito.utilizado, data.credito.total)"></div>
+              <div
+                class="progress__fill"
+                [style.width.%]="pct(data.credito.utilizado, data.credito.total)"
+              ></div>
             </div>
-            <div class="tiny" style="margin-top:6px">Crédito total: \${{ data.credito.total | number }}</div>
+            <div class="tiny" style="margin-top:6px">
+              Crédito total: \${{ data.credito.total | number }}
+            </div>
           </section>
 
           <!-- Productivas -->
           <section class="card pad card--celebrate">
             <div>
               <h2 class="card-title">Consultoras Productivas: {{ data.productivas.valor }}</h2>
-              <span class="badge badge--success">Meta: {{ data.productivas.meta }} · ¡Lo lograste! 🎉</span>
+              <span class="badge badge--success"
+                >Meta: {{ data.productivas.meta }} · ¡Lo lograste! 🎉</span
+              >
             </div>
             <div class="celebrate-emoji">💪🏽</div>
           </section>
@@ -203,7 +269,10 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
                   <strong>\${{ data.par.metaSueno | number }}</strong>
                 </div>
                 <div class="progress">
-                  <div class="progress__fill" [style.width.%]="pct(data.par.ventaC6, data.par.metaSueno)"></div>
+                  <div
+                    class="progress__fill"
+                    [style.width.%]="pct(data.par.ventaC6, data.par.metaSueno)"
+                  ></div>
                 </div>
               </div>
 
@@ -221,7 +290,9 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
                 }
               </ul>
 
-              <div class="tiny" style="margin-top:14px">Niveles de Estrella 2026 (excluyentes):</div>
+              <div class="tiny" style="margin-top:14px">
+                Niveles de Estrella 2026 (excluyentes):
+              </div>
               <div class="par__trail">
                 @for (e of estrellas; track e.n) {
                   <div class="par__star" [class.par__star--target]="e.n === 3" [title]="e.hito">
@@ -248,8 +319,14 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
         flex-wrap: wrap;
         margin-bottom: 22px;
       }
-      .crumbs { font-size: 12.5px; color: var(--ink-3); margin-bottom: 4px; }
-      .crumbs a:hover { color: var(--brand-600); }
+      .crumbs {
+        font-size: 12.5px;
+        color: var(--ink-3);
+        margin-bottom: 4px;
+      }
+      .crumbs a:hover {
+        color: var(--brand-600);
+      }
 
       .tabs {
         display: inline-flex;
@@ -268,7 +345,11 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
         color: var(--ink-2);
         transition: all 0.15s ease;
       }
-      .tabs__tab--active { background: var(--ink); color: var(--on-ink); box-shadow: var(--shadow-s); }
+      .tabs__tab--active {
+        background: var(--ink);
+        color: var(--on-ink);
+        box-shadow: var(--shadow-s);
+      }
 
       .grid {
         display: grid;
@@ -276,20 +357,58 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
         gap: 18px;
         align-items: start;
       }
-      .col { display: flex; flex-direction: column; gap: 16px; min-width: 0; }
+      .col {
+        display: flex;
+        flex-direction: column;
+        gap: 16px;
+        min-width: 0;
+      }
 
-      .pad { padding: 20px; }
-      .card-title { font-size: 17px; margin: 0 0 4px; }
-      .row-between { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-      .muted-light { color: var(--ink-3); font-size: 14px; font-weight: 500; }
+      .pad {
+        padding: 20px;
+      }
+      .card-title {
+        font-size: 17px;
+        margin: 0 0 4px;
+      }
+      .row-between {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
+      .muted-light {
+        color: var(--ink-3);
+        font-size: 14px;
+        font-weight: 500;
+      }
 
-      .meta { display: flex; gap: 36px; flex-wrap: wrap; margin: 12px 0 14px; }
-      .big { font-family: var(--font-display); font-size: 24px; font-weight: 700; }
-      .big--muted { color: var(--ink-2); }
-      .big--danger { color: var(--danger); }
-      .big--success { color: var(--success); }
+      .meta {
+        display: flex;
+        gap: 36px;
+        flex-wrap: wrap;
+        margin: 12px 0 14px;
+      }
+      .big {
+        font-family: var(--font-display);
+        font-size: 24px;
+        font-weight: 700;
+      }
+      .big--muted {
+        color: var(--ink-2);
+      }
+      .big--danger {
+        color: var(--danger);
+      }
+      .big--success {
+        color: var(--success);
+      }
 
-      .btn--sm { padding: 7px 14px; font-size: 13px; }
+      .btn--sm {
+        padding: 7px 14px;
+        font-size: 13px;
+      }
 
       /* Naranjas fijos (no dependen del tema) para garantizar texto blanco AA en claro y oscuro */
       .card--activas {
@@ -297,11 +416,24 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
         border: 0;
         color: #fff;
       }
-      .card--activas .card-title, .card--activas h2 { color: #fff; }
+      .card--activas .card-title,
+      .card--activas h2 {
+        color: #fff;
+      }
       /* El "/ meta N" usa var(--ink-3) (gris) que no contrasta sobre el naranja */
-      .card--activas .muted-light { color: rgba(255, 255, 255, 0.9); }
-      .card--activas .badge--neutral { background: rgba(0, 0, 0, 0.28); color: #fff; }
-      .trio { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 14px; }
+      .card--activas .muted-light {
+        color: rgba(255, 255, 255, 0.9);
+      }
+      .card--activas .badge--neutral {
+        background: rgba(0, 0, 0, 0.28);
+        color: #fff;
+      }
+      .trio {
+        display: grid;
+        grid-template-columns: repeat(3, 1fr);
+        gap: 10px;
+        margin-top: 14px;
+      }
       /* Tarjetas blancas fijas (blanco sobre el naranja en ambos temas):
          el texto debe ser oscuro fijo, no tokens que se aclaran en oscuro. */
       .trio__item {
@@ -311,12 +443,31 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
         color: #222222;
         transition: transform 0.15s ease;
       }
-      .trio__item:hover { transform: translateY(-2px); }
-      .trio__label { font-size: 12px; font-weight: 600; color: #5f5f5f; }
-      .trio__value { font-size: 19px; font-weight: 800; margin: 2px 0 8px; }
-      .trio__value span { font-size: 13px; font-weight: 600; color: #6e6e6e; }
+      .trio__item:hover {
+        transform: translateY(-2px);
+      }
+      .trio__label {
+        font-size: 12px;
+        font-weight: 600;
+        color: #5f5f5f;
+      }
+      .trio__value {
+        font-size: 19px;
+        font-weight: 800;
+        margin: 2px 0 8px;
+      }
+      .trio__value span {
+        font-size: 13px;
+        font-weight: 600;
+        color: #6e6e6e;
+      }
 
-      .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin: 10px 0; }
+      .duo {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 14px;
+        margin: 10px 0;
+      }
       .duo__item {
         display: flex;
         flex-direction: column;
@@ -327,10 +478,24 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
         font-size: 13px;
         color: var(--ink-2);
       }
-      .duo__item strong { font-size: 18px; color: var(--ink); }
-      .duo__col { display: flex; flex-direction: column; gap: 6px; }
+      .duo__item strong {
+        font-size: 18px;
+        color: var(--ink);
+      }
+      .duo__col {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+      }
 
-      .subcard { background: var(--bg); border-radius: var(--radius-s); padding: 12px 14px; display: flex; flex-direction: column; gap: 10px; }
+      .subcard {
+        background: var(--bg);
+        border-radius: var(--radius-s);
+        padding: 12px 14px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+      }
 
       .q-badge {
         display: inline-grid;
@@ -350,11 +515,26 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
         border-radius: 8px;
         padding: 8px 12px;
       }
-      .pill--danger { background: var(--danger-bg); color: var(--danger); }
+      .pill--danger {
+        background: var(--danger-bg);
+        color: var(--danger);
+      }
 
-      .see-all { display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 700; color: var(--brand-600); }
+      .see-all {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-size: 13px;
+        font-weight: 700;
+        color: var(--brand-600);
+      }
 
-      .links { display: flex; flex-direction: column; gap: 6px; margin-top: 12px; }
+      .links {
+        display: flex;
+        flex-direction: column;
+        gap: 6px;
+        margin-top: 12px;
+      }
       .link-row {
         display: flex;
         justify-content: space-between;
@@ -369,8 +549,14 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
         color: var(--ink-2);
         transition: background 0.15s ease;
       }
-      .link-row:hover { background: var(--sand); }
-      .link-row span { color: var(--brand-600); font-weight: 700; white-space: nowrap; }
+      .link-row:hover {
+        background: var(--sand);
+      }
+      .link-row span {
+        color: var(--brand-600);
+        font-weight: 700;
+        white-space: nowrap;
+      }
 
       .card--celebrate {
         display: flex;
@@ -378,11 +564,18 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
         justify-content: space-between;
         background: linear-gradient(120deg, var(--brand-100), var(--brand-50));
       }
-      .celebrate-emoji { font-size: 42px; }
+      .celebrate-emoji {
+        font-size: 42px;
+      }
 
       /* PAR+ */
-      .side { position: sticky; top: 150px; }
-      .par { overflow: hidden; }
+      .side {
+        position: sticky;
+        top: 150px;
+      }
+      .par {
+        overflow: hidden;
+      }
       .par__cover {
         height: 110px;
         display: grid;
@@ -390,12 +583,36 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
         font-size: 48px;
         background: linear-gradient(120deg, #0e7490, #06b6d4 60%, #facc15);
       }
-      .par__body { padding: 18px; }
-      .par__body h3 { font-size: 20px; margin: 2px 0 12px; }
-      .par__stats { display: flex; flex-direction: column; gap: 8px; font-size: 13px; color: var(--ink-2); margin-bottom: 12px; }
-      .par__stats strong { color: var(--ink); }
-      .par__req { margin: 6px 0 0; padding-left: 18px; font-size: 13px; color: var(--ink-2); }
-      .par__trail { display: flex; flex-direction: column; gap: 4px; margin-top: 6px; }
+      .par__body {
+        padding: 18px;
+      }
+      .par__body h3 {
+        font-size: 20px;
+        margin: 2px 0 12px;
+      }
+      .par__stats {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        font-size: 13px;
+        color: var(--ink-2);
+        margin-bottom: 12px;
+      }
+      .par__stats strong {
+        color: var(--ink);
+      }
+      .par__req {
+        margin: 6px 0 0;
+        padding-left: 18px;
+        font-size: 13px;
+        color: var(--ink-2);
+      }
+      .par__trail {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        margin-top: 6px;
+      }
       .par__star {
         display: flex;
         align-items: baseline;
@@ -405,21 +622,40 @@ import { CAMPANA, PAR_ESTRELLAS } from '../data/mock';
         padding: 4px 8px;
         border-radius: 8px;
       }
-      .par__star span { font-weight: 700; white-space: nowrap; }
-      .par__star small { font-size: 12px; }
+      .par__star span {
+        font-weight: 700;
+        white-space: nowrap;
+      }
+      .par__star small {
+        font-size: 12px;
+      }
       .par__star--target {
         background: var(--brand-50);
         color: var(--brand-700);
         border: 1px solid var(--brand-200);
       }
-      .par__cta { width: 100%; justify-content: center; margin-top: 16px; }
+      .par__cta {
+        width: 100%;
+        justify-content: center;
+        margin-top: 16px;
+      }
 
       @media (max-width: 1000px) {
-        .grid { grid-template-columns: 1fr; }
-        .side { position: static; }
-        .trio { grid-template-columns: 1fr; }
-        .duo { grid-template-columns: 1fr; }
-        .meta { gap: 20px; }
+        .grid {
+          grid-template-columns: 1fr;
+        }
+        .side {
+          position: static;
+        }
+        .trio {
+          grid-template-columns: 1fr;
+        }
+        .duo {
+          grid-template-columns: 1fr;
+        }
+        .meta {
+          gap: 20px;
+        }
       }
     `,
   ],

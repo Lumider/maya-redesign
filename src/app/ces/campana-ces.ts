@@ -24,7 +24,7 @@ import { CAMPANA_CES, GANAMAS_NIVELES, PERFILES } from '../data/mock-ces';
   template: `
     <div class="v2">
       <header class="v2-head" appReveal>
-        <nav class="crumbs tiny"><a routerLink="/e/inicio">Inicio</a> / Mi campaña</nav>
+        <nav class="crumbs tiny"><a routerLink="/n/inicio">Inicio</a> / Mi campaña</nav>
         <h1 class="v2-title">Mi campaña</h1>
         <p class="v2-sub">
           Cómo va tu {{ c.actual }} — semana {{ c.semana }} de {{ c.totalSemanas }}.
@@ -146,7 +146,7 @@ import { CAMPANA_CES, GANAMAS_NIVELES, PERFILES } from '../data/mock-ces';
                 En tu grupo:
                 <strong>{{ c.bonifGP.calificadas }} consultoras ya calificaron</strong> su
                 bonificación y {{ c.bonifGP.cerca }} están cerca —
-                <a routerLink="/e/grupo" class="link">ayúdalas a llegar</a>.
+                <a routerLink="/n/grupo" class="link">ayúdalas a llegar</a>.
               </p>
             }
           </section>
@@ -168,7 +168,7 @@ import { CAMPANA_CES, GANAMAS_NIVELES, PERFILES } from '../data/mock-ces';
                   <div class="im__n">S/ {{ c.morosidad.deudaGP | number: '1.0-2' }}</div>
                   <span class="tiny">{{ c.morosidad.deudoras }} deudora</span>
                 </div>
-                <a class="btn btn--ghost btn--sm" routerLink="/e/grupo"
+                <a class="btn btn--ghost btn--sm" routerLink="/n/grupo"
                   >Contactar deudoras ({{ c.morosidad.deudoras }})</a
                 >
               </div>
@@ -249,13 +249,13 @@ import { CAMPANA_CES, GANAMAS_NIVELES, PERFILES } from '../data/mock-ces';
             @if (verGanancia() && p().capacidades.incorpora && p().ganancia.incorporaYGana === 0) {
               <p class="muted" style="margin:10px 0 0; font-size:13px">
                 💡 Aún no sumas por Incorpora y Gana este {{ c.actual }} —
-                <a class="link" routerLink="/e/incorpora">un primer pedido pagado son S/ 50</a>.
+                <a class="link" routerLink="/n/incorpora">un primer pedido pagado son S/ 50</a>.
               </p>
             }
             @if (verGanancia() && !p().capacidades.incorpora) {
               <p class="muted" style="margin:10px 0 0; font-size:13px">
                 💡 Como CEM sumarías S/ 50 por cada incorporada activa —
-                <a class="link" routerLink="/e/camino">mira cómo dar el paso</a>.
+                <a class="link" routerLink="/n/camino">mira cómo dar el paso</a>.
               </p>
             }
           </section>
@@ -285,7 +285,7 @@ import { CAMPANA_CES, GANAMAS_NIVELES, PERFILES } from '../data/mock-ces';
                   >
                 </div>
               </div>
-              <a class="link tiny" routerLink="/e/camino" style="display:block;margin-top:10px"
+              <a class="link tiny" routerLink="/n/camino" style="display:block;margin-top:10px"
                 >Ver los requisitos completos →</a
               >
             </div>
@@ -295,7 +295,7 @@ import { CAMPANA_CES, GANAMAS_NIVELES, PERFILES } from '../data/mock-ces';
                 <app-icon name="target" [size]="16" /> Mi paso actual
               </h3>
               <p class="tiny" style="margin:0 0 8px">{{ p().paso.titulo }}</p>
-              <a class="link tiny" routerLink="/e/camino">Ver mis requisitos →</a>
+              <a class="link tiny" routerLink="/n/camino">Ver mis requisitos →</a>
             </div>
           }
 

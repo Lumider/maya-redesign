@@ -19,7 +19,7 @@ import { INCORPORADAS_CES, USUARIA_CES } from '../data/mock-ces';
   template: `
     <div class="v2">
       <header class="v2-head" appReveal>
-        <nav class="crumbs tiny"><a routerLink="/e/inicio">Inicio</a> / Incorpora y Gana</nav>
+        <nav class="crumbs tiny"><a routerLink="/n/inicio">Inicio</a> / Incorpora y Gana</nav>
         <h1 class="v2-title">Incorpora y Gana</h1>
         <p class="v2-sub">
           S/ 50 por campaña por cada nueva consultora activa al N1 — hasta 3 campañas (S/ 150) por
@@ -147,7 +147,7 @@ import { INCORPORADAS_CES, USUARIA_CES } from '../data/mock-ces';
               <p class="tiny" style="margin:2px 0 8px">
                 2 primeros pedidos pagados = S/ 100 y recuperas tu calificación CES.
               </p>
-              <a class="btn btn--primary btn--sm" routerLink="/e/grupo">Ver a quién ayudar</a>
+              <a class="btn btn--primary btn--sm" routerLink="/n/grupo">Ver a quién ayudar</a>
             </div>
           </div>
         </aside>

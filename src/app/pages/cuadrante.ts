@@ -12,12 +12,26 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
     <div class="page">
       <header class="head">
         <div>
-          <nav class="crumbs" aria-label="Ruta de navegación"><a routerLink="/inicio">Inicio</a> / Cuadrante A</nav>
+          <nav class="crumbs" aria-label="Ruta de navegación">
+            <a routerLink="/inicio">Inicio</a> / Cuadrante A
+          </nav>
           <h1 class="page-title">Cuadrante A</h1>
         </div>
         <div class="tabs">
-          <button class="tabs__tab" [class.tabs__tab--active]="vista() === 'gp'" (click)="vista.set('gp')">Grupo Personal</button>
-          <button class="tabs__tab" [class.tabs__tab--active]="vista() === 'gen'" (click)="vista.set('gen')">Genealogía</button>
+          <button
+            class="tabs__tab"
+            [class.tabs__tab--active]="vista() === 'gp'"
+            (click)="vista.set('gp')"
+          >
+            Grupo Personal
+          </button>
+          <button
+            class="tabs__tab"
+            [class.tabs__tab--active]="vista() === 'gen'"
+            (click)="vista.set('gen')"
+          >
+            Genealogía
+          </button>
         </div>
       </header>
 
@@ -33,10 +47,17 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
             <div class="bar">
               <div class="bar__head">
                 <span>Venta · MRM</span>
-                <span class="tiny">MRM: \${{ data.cuadrante.ventaRequerida | number }} · faltan \${{ data.cuadrante.faltaVenta | number }}</span>
+                <span class="tiny"
+                  >MRM: \${{ data.cuadrante.ventaRequerida | number }} · faltan \${{
+                    data.cuadrante.faltaVenta | number
+                  }}</span
+                >
               </div>
               <div class="progress">
-                <div class="progress__fill" [style.width.%]="pct(data.ventaActual, data.cuadrante.ventaRequerida)"></div>
+                <div
+                  class="progress__fill"
+                  [style.width.%]="pct(data.ventaActual, data.cuadrante.ventaRequerida)"
+                ></div>
               </div>
               <div class="bar__value">\${{ data.ventaActual | number }}</div>
             </div>
@@ -44,7 +65,10 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
             <div class="bar">
               <div class="bar__head">
                 <span>Primeros pedidos · PPED</span>
-                <span class="tiny">Objetivo: {{ data.cuadrante.ppedRequeridos }} · faltan {{ data.cuadrante.ppedFaltantes }}</span>
+                <span class="tiny"
+                  >Objetivo: {{ data.cuadrante.ppedRequeridos }} · faltan
+                  {{ data.cuadrante.ppedFaltantes }}</span
+                >
               </div>
               <div class="pped">
                 @for (n of [1, 2, 3, 4]; track n) {
@@ -56,7 +80,9 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
 
           <div class="alert alert--warning">
             <app-icon name="alert" [size]="16" />
-            Sube a Cuadrante A esta campaña y gana el Bono de Desempeño de \${{ data.cuadrante.bono | number }}.
+            Sube a Cuadrante A esta campaña y gana el Bono de Desempeño de \${{
+              data.cuadrante.bono | number
+            }}.
           </div>
         </section>
 
@@ -91,12 +117,20 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
       <section class="card pad" style="margin-top: 16px">
         <div class="row-between">
           <h2 class="card-title">En este año</h2>
-          <span class="muted">Alcanzaste <strong>{{ vecesA }} de 6</strong> veces el cuadrante A</span>
+          <span class="muted"
+            >Alcanzaste <strong>{{ vecesA }} de 6</strong> veces el cuadrante A</span
+          >
         </div>
         <div class="medals tiny">
-          Medalla de Excelencia GP: 🥉 Bronce 9/13 · 🥈 Plata 11/13 · 🥇 Oro 13/13 campañas en A — llevas {{ vecesA }}.
+          Medalla de Excelencia GP: 🥉 Bronce 9/13 · 🥈 Plata 11/13 · 🥇 Oro 13/13 campañas en A —
+          llevas {{ vecesA }}.
         </div>
-        <div class="history" tabindex="0" role="region" aria-label="Historial de cuadrantes por campaña">
+        <div
+          class="history"
+          tabindex="0"
+          role="region"
+          aria-label="Historial de cuadrantes por campaña"
+        >
           @for (h of historia; track h.campana) {
             <div class="history__item">
               <div class="tiny">{{ h.campana }}</div>
@@ -122,23 +156,90 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
   `,
   styles: [
     `
-      .head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; flex-wrap: wrap; margin-bottom: 20px; }
-      .crumbs { font-size: 12.5px; color: var(--ink-3); margin-bottom: 4px; }
-      .crumbs a:hover { color: var(--brand-600); }
+      .head {
+        display: flex;
+        align-items: flex-end;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        margin-bottom: 20px;
+      }
+      .crumbs {
+        font-size: 12.5px;
+        color: var(--ink-3);
+        margin-bottom: 4px;
+      }
+      .crumbs a:hover {
+        color: var(--brand-600);
+      }
 
-      .tabs { display: inline-flex; background: var(--sand); border-radius: 99px; padding: 4px; }
-      .tabs__tab { border: 0; background: none; border-radius: 99px; padding: 8px 20px; font-size: 13.5px; font-weight: 700; color: var(--ink-2); }
-      .tabs__tab--active { background: var(--ink); color: var(--on-ink); }
+      .tabs {
+        display: inline-flex;
+        background: var(--sand);
+        border-radius: 99px;
+        padding: 4px;
+      }
+      .tabs__tab {
+        border: 0;
+        background: none;
+        border-radius: 99px;
+        padding: 8px 20px;
+        font-size: 13.5px;
+        font-weight: 700;
+        color: var(--ink-2);
+      }
+      .tabs__tab--active {
+        background: var(--ink);
+        color: var(--on-ink);
+      }
 
-      .grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; align-items: stretch; }
-      .pad { padding: 20px; }
-      .card-title { font-size: 17px; margin: 0 0 12px; }
-      .row-between { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+      .grid {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 16px;
+        align-items: stretch;
+      }
+      .pad {
+        padding: 20px;
+      }
+      .card-title {
+        font-size: 17px;
+        margin: 0 0 12px;
+      }
+      .row-between {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 10px;
+        flex-wrap: wrap;
+      }
 
-      .bars { display: flex; flex-direction: column; gap: 18px; margin: 16px 0; }
-      .bar__head { display: flex; justify-content: space-between; gap: 10px; font-weight: 700; font-size: 13.5px; margin-bottom: 7px; flex-wrap: wrap; }
-      .bar__value { font-family: var(--font-display); font-size: 20px; font-weight: 700; margin-top: 6px; }
-      .pped { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+      .bars {
+        display: flex;
+        flex-direction: column;
+        gap: 18px;
+        margin: 16px 0;
+      }
+      .bar__head {
+        display: flex;
+        justify-content: space-between;
+        gap: 10px;
+        font-weight: 700;
+        font-size: 13.5px;
+        margin-bottom: 7px;
+        flex-wrap: wrap;
+      }
+      .bar__value {
+        font-family: var(--font-display);
+        font-size: 20px;
+        font-weight: 700;
+        margin-top: 6px;
+      }
+      .pped {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+      }
       .pped__slot {
         height: 40px;
         display: grid;
@@ -169,12 +270,27 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
         min-height: 96px;
         position: relative;
       }
-      .matrix__cell p { margin: 8px 0 0; font-size: 12px; color: var(--ink-2); }
-      .matrix__cell--a { background: var(--success-bg); }
-      .matrix__cell--b { background: var(--brand-100); }
-      .matrix__cell--c { background: var(--warning-bg); }
-      .matrix__cell--d { background: var(--danger-bg); }
-      .matrix__cell--here { outline: 2.5px solid var(--danger); outline-offset: 2px; }
+      .matrix__cell p {
+        margin: 8px 0 0;
+        font-size: 12px;
+        color: var(--ink-2);
+      }
+      .matrix__cell--a {
+        background: var(--success-bg);
+      }
+      .matrix__cell--b {
+        background: var(--brand-100);
+      }
+      .matrix__cell--c {
+        background: var(--warning-bg);
+      }
+      .matrix__cell--d {
+        background: var(--danger-bg);
+      }
+      .matrix__cell--here {
+        outline: 2.5px solid var(--danger);
+        outline-offset: 2px;
+      }
       .here {
         position: absolute;
         top: 10px;
@@ -196,8 +312,17 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
         letter-spacing: 0.08em;
         text-transform: uppercase;
       }
-      .matrix__axis--x { bottom: 0; left: 50%; transform: translateX(-50%); }
-      .matrix__axis--y { left: 0; top: 50%; transform: rotate(-90deg) translateX(50%); transform-origin: left; }
+      .matrix__axis--x {
+        bottom: 0;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+      .matrix__axis--y {
+        left: 0;
+        top: 50%;
+        transform: rotate(-90deg) translateX(50%);
+        transform-origin: left;
+      }
 
       /* Historial */
       .medals {
@@ -206,8 +331,17 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
         border-radius: var(--radius-s);
         padding: 8px 12px;
       }
-      .history { display: flex; gap: 8px; overflow-x: auto; margin-top: 14px; padding-bottom: 4px; }
-      .history__item { text-align: center; flex: 0 0 52px; }
+      .history {
+        display: flex;
+        gap: 8px;
+        overflow-x: auto;
+        margin-top: 14px;
+        padding-bottom: 4px;
+      }
+      .history__item {
+        text-align: center;
+        flex: 0 0 52px;
+      }
       .history__box {
         height: 44px;
         display: grid;
@@ -218,11 +352,21 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
         color: var(--ink-3);
         margin-top: 4px;
       }
-      .history__box--a { border-color: var(--success); background: var(--success-bg); color: var(--success); }
-      .history__box--d { border-color: var(--danger); background: var(--danger-bg); color: var(--danger); }
+      .history__box--a {
+        border-color: var(--success);
+        background: var(--success-bg);
+        color: var(--success);
+      }
+      .history__box--d {
+        border-color: var(--danger);
+        background: var(--danger-bg);
+        color: var(--danger);
+      }
 
       @media (max-width: 900px) {
-        .grid { grid-template-columns: 1fr; }
+        .grid {
+          grid-template-columns: 1fr;
+        }
       }
     `,
   ],
@@ -231,7 +375,8 @@ export class CuadrantePage {
   protected readonly data = CAMPANA;
   protected readonly historia = CUADRANTE_HISTORIA;
   protected readonly vista = signal<'gp' | 'gen'>('gp');
-  protected readonly ppedLogrados = CAMPANA.cuadrante.ppedRequeridos - CAMPANA.cuadrante.ppedFaltantes;
+  protected readonly ppedLogrados =
+    CAMPANA.cuadrante.ppedRequeridos - CAMPANA.cuadrante.ppedFaltantes;
   protected readonly vecesA = CUADRANTE_HISTORIA.filter((h) => h.valor === 'A').length;
 
   protected pct(valor: number, meta: number): number {

@@ -79,12 +79,33 @@ const APPS: Record<string, AppExterna> = {
   `,
   styles: [
     `
-      .wrap { display: grid; place-items: center; min-height: 60vh; }
-      .box { max-width: 480px; padding: 40px; text-align: center; }
-      .box__emoji { font-size: 56px; }
-      .box h1 { font-size: 26px; margin: 12px 0 6px; }
-      .box p { margin: 0 0 10px; }
-      .box__actions { display: flex; gap: 10px; justify-content: center; margin-top: 20px; flex-wrap: wrap; }
+      .wrap {
+        display: grid;
+        place-items: center;
+        min-height: 60vh;
+      }
+      .box {
+        max-width: 480px;
+        padding: 40px;
+        text-align: center;
+      }
+      .box__emoji {
+        font-size: 56px;
+      }
+      .box h1 {
+        font-size: 26px;
+        margin: 12px 0 6px;
+      }
+      .box p {
+        margin: 0 0 10px;
+      }
+      .box__actions {
+        display: flex;
+        gap: 10px;
+        justify-content: center;
+        margin-top: 20px;
+        flex-wrap: wrap;
+      }
     `,
   ],
 })

@@ -9,13 +9,21 @@ import { PARTICIPANTES } from '../data/mock';
   imports: [RouterLink, Icon],
   template: `
     <div class="page">
-      <nav class="crumbs" aria-label="Ruta de navegación"><a routerLink="/inicio">Inicio</a> / <a routerLink="/mi-campana">Mi Campaña</a> / Incorpora y Gana</nav>
+      <nav class="crumbs" aria-label="Ruta de navegación">
+        <a routerLink="/inicio">Inicio</a> / <a routerLink="/mi-campana">Mi Campaña</a> / Incorpora
+        y Gana
+      </nav>
       <h1 class="page-title">Seguimiento del Incorpora y Gana</h1>
 
       <div class="banner">
         <div>
-          <strong>Gana por cada nueva consultora activa al N1 Gana Más — hasta 3 campañas por persona.</strong>
-          <span class="banner__detail">El pago llega una semana después del recaudo completo, en la campaña siguiente.</span>
+          <strong
+            >Gana por cada nueva consultora activa al N1 Gana Más — hasta 3 campañas por
+            persona.</strong
+          >
+          <span class="banner__detail"
+            >El pago llega una semana después del recaudo completo, en la campaña siguiente.</span
+          >
           <a class="banner__link">Conoce aquí <app-icon name="arrow-right" [size]="14" /></a>
         </div>
         <span class="banner__emoji">👭</span>
@@ -30,7 +38,9 @@ import { PARTICIPANTES } from '../data/mock';
             (click)="seleccionar(p.codigo)"
           >
             <span class="person__avatar">{{ p.iniciales }}</span>
-            <span class="person__name">{{ p.nombre.split(' ')[0] }} {{ p.nombre.split(' ')[1]?.[0] }}.</span>
+            <span class="person__name"
+              >{{ p.nombre.split(' ')[0] }} {{ p.nombre.split(' ')[1]?.[0] }}.</span
+            >
           </button>
         }
       </div>
@@ -47,12 +57,17 @@ import { PARTICIPANTES } from '../data/mock';
         <div class="alert alert--info">
           <app-icon name="alert" [size]="16" />
           <span>
-            <strong>¡Empieza a ganar!</strong> Motiva a que pase su Primer Pedido al N1 Gana Más, lo recaude
-            y gana por incorporar — válido hasta 3 campañas por persona.
+            <strong>¡Empieza a ganar!</strong> Motiva a que pase su Primer Pedido al N1 Gana Más, lo
+            recaude y gana por incorporar — válido hasta 3 campañas por persona.
           </span>
         </div>
 
-        <div class="table-wrap" tabindex="0" role="region" aria-label="Detalle de ganancia por campaña">
+        <div
+          class="table-wrap"
+          tabindex="0"
+          role="region"
+          aria-label="Detalle de ganancia por campaña"
+        >
           <table>
             <thead>
               <tr>
@@ -93,8 +108,14 @@ import { PARTICIPANTES } from '../data/mock';
   `,
   styles: [
     `
-      .crumbs { font-size: 12.5px; color: var(--ink-3); margin-bottom: 4px; }
-      .crumbs a:hover { color: var(--brand-600); }
+      .crumbs {
+        font-size: 12.5px;
+        color: var(--ink-3);
+        margin-bottom: 4px;
+      }
+      .crumbs a:hover {
+        color: var(--brand-600);
+      }
 
       .banner {
         display: flex;
@@ -107,8 +128,16 @@ import { PARTICIPANTES } from '../data/mock';
         background: linear-gradient(120deg, var(--info-bg), var(--surface));
         color: var(--info);
       }
-      .banner strong { display: block; font-size: 15px; }
-      .banner__detail { display: block; font-size: 13px; opacity: 0.85; margin-top: 2px; }
+      .banner strong {
+        display: block;
+        font-size: 15px;
+      }
+      .banner__detail {
+        display: block;
+        font-size: 13px;
+        opacity: 0.85;
+        margin-top: 2px;
+      }
       .banner__link {
         display: inline-flex;
         align-items: center;
@@ -119,7 +148,9 @@ import { PARTICIPANTES } from '../data/mock';
         color: var(--brand-600);
         cursor: pointer;
       }
-      .banner__emoji { font-size: 40px; }
+      .banner__emoji {
+        font-size: 40px;
+      }
 
       .people {
         display: flex;
@@ -143,7 +174,9 @@ import { PARTICIPANTES } from '../data/mock';
         color: var(--ink-2);
         transition: all 0.15s ease;
       }
-      .person:hover { border-color: var(--brand-300); }
+      .person:hover {
+        border-color: var(--brand-300);
+      }
       .person--active {
         border-color: var(--brand-500);
         background: var(--brand-50);
@@ -162,13 +195,37 @@ import { PARTICIPANTES } from '../data/mock';
         font-size: 13px;
       }
 
-      .pad { padding: 20px; }
-      .card-title { font-size: 17px; margin: 0; }
-      .row-between { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-bottom: 12px; }
-      .gain { font-family: var(--font-display); font-size: 30px; font-weight: 700; color: var(--ink-2); }
+      .pad {
+        padding: 20px;
+      }
+      .card-title {
+        font-size: 17px;
+        margin: 0;
+      }
+      .row-between {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-bottom: 12px;
+      }
+      .gain {
+        font-family: var(--font-display);
+        font-size: 30px;
+        font-weight: 700;
+        color: var(--ink-2);
+      }
 
-      .table-wrap { overflow-x: auto; margin-top: 14px; }
-      table { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+      .table-wrap {
+        overflow-x: auto;
+        margin-top: 14px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        font-size: 13.5px;
+      }
       th {
         text-align: left;
         font-size: 12px;
@@ -179,11 +236,24 @@ import { PARTICIPANTES } from '../data/mock';
         padding: 10px 14px;
         border-bottom: 1.5px solid var(--line);
       }
-      td { padding: 12px 14px; border-bottom: 1px solid var(--line); color: var(--ink-2); }
-      tbody tr:last-child td { border-bottom: 0; }
-      tbody tr:hover { background: var(--bg); }
+      td {
+        padding: 12px 14px;
+        border-bottom: 1px solid var(--line);
+        color: var(--ink-2);
+      }
+      tbody tr:last-child td {
+        border-bottom: 0;
+      }
+      tbody tr:hover {
+        background: var(--bg);
+      }
 
-      .duo { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-top: 12px; }
+      .duo {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 12px;
+        margin-top: 12px;
+      }
       .duo__item {
         display: flex;
         flex-direction: column;
@@ -193,7 +263,9 @@ import { PARTICIPANTES } from '../data/mock';
         padding: 14px 16px;
       }
       @media (max-width: 700px) {
-        .duo { grid-template-columns: 1fr; }
+        .duo {
+          grid-template-columns: 1fr;
+        }
       }
     `,
   ],

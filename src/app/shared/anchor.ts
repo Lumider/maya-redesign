@@ -24,6 +24,8 @@ export class Anchor {
 
   go(e: Event): void {
     e.preventDefault();
-    this.doc.getElementById(this.appAnchor())?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    this.doc
+      .getElementById(this.appAnchor())
+      ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
   }
 }

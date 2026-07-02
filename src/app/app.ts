@@ -6,17 +6,15 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
-import { filter } from 'rxjs';
+import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { Icon } from './shared/icon';
 import { Loader } from './shared/loader';
 import { ThemeService } from './shared/theme';
 import { VersionService } from './shared/version';
 import { AccesoService } from './shared/acceso';
 import { AccesoGate } from './shared/acceso-gate';
-import { EstatusDirService, EstatusService } from './shared/estatus';
-import { EstatusSwitch } from './shared/estatus-switch';
-import { EstatusDirSwitch } from './shared/estatus-dir-switch';
+import { AudienciaService, EstatusDirService, EstatusService } from './shared/estatus';
+import { EstatusSwitchGlobal } from './shared/estatus-switch-global';
 import { USUARIA } from './data/mock';
 import { PERFILES, USUARIA_CES } from './data/mock-ces';
 import { PERFILES_DIR } from './data/mock-dir';
@@ -38,13 +36,13 @@ const NEW_CATS: Cat[] = [
   { label: 'Mi carrera', icon: 'star', route: '/n/carrera', short: 'Carrera' },
 ];
 
-/** Navegación de la vista CES (demo): las 5 áreas de la Emprendedora Senior. */
-const CES_CATS: Cat[] = [
-  { label: 'Inicio', icon: 'home', route: '/e/inicio', short: 'Inicio' },
-  { label: 'Mi campaña', icon: 'target', route: '/e/campana', short: 'Campaña' },
-  { label: 'Mi grupo', icon: 'users', route: '/e/grupo', short: 'Grupo' },
-  { label: 'Incorpora y Gana', icon: 'heart-plus', route: '/e/incorpora', short: 'Incorpora' },
-  { label: 'Mi camino', icon: 'star', route: '/e/camino', short: 'Camino' },
+/** Navegación de la Audiencia Emprendedoras (CNS→ASP) dentro de la vista nueva. */
+const EMP_CATS: Cat[] = [
+  { label: 'Inicio', icon: 'home', route: '/n/inicio', short: 'Inicio' },
+  { label: 'Mi campaña', icon: 'target', route: '/n/campana', short: 'Campaña' },
+  { label: 'Mi grupo', icon: 'users', route: '/n/grupo', short: 'Grupo' },
+  { label: 'Incorpora y Gana', icon: 'heart-plus', route: '/n/incorpora', short: 'Incorpora' },
+  { label: 'Mi camino', icon: 'star', route: '/n/camino', short: 'Camino' },
 ];
 
 const CATS: Cat[] = [
@@ -87,8 +85,7 @@ const MENU_LINKS: MenuLink[] = [
     RouterLinkActive,
     Icon,
     Loader,
-    EstatusSwitch,
-    EstatusDirSwitch,
+    EstatusSwitchGlobal,
     AccesoGate,
   ],
   template: `
@@ -135,13 +132,10 @@ const MENU_LINKS: MenuLink[] = [
           <span class="ctxpill" aria-label="Contexto de campaña">
             <app-icon name="target" [size]="14" /> Campaña {{ u().campana }}
             <span class="ctxpill__div"></span> Semana {{ u().semana }}
-            @if (esCes()) {
-              <span class="ctxpill__div"></span>
-              <span class="ctxpill__rol">{{ estatusSrv.estatus() }}</span>
-            } @else {
-              <span class="ctxpill__div"></span>
-              <span class="ctxpill__rol">{{ estatusDirSrv.estatus() }}</span>
-            }
+            <span class="ctxpill__div"></span>
+            <span class="ctxpill__rol">{{
+              esEmp() ? estatusSrv.estatus() : estatusDirSrv.estatus()
+            }}</span>
           </span>
         } @else {
           <button class="searchpill" aria-label="Buscar en Maya">
@@ -177,7 +171,7 @@ const MENU_LINKS: MenuLink[] = [
               </a>
               <a
                 class="btn btn--ghost btn--sm hdr__inc"
-                [routerLink]="esCes() ? '/e/incorpora' : '/n/equipo'"
+                [routerLink]="esEmp() ? '/n/incorpora' : '/n/equipo'"
                 aria-label="Incorporar"
               >
                 <app-icon name="heart-plus" [size]="16" />
@@ -237,21 +231,19 @@ const MENU_LINKS: MenuLink[] = [
                 @if (moderna()) {
                   <!-- Ajustes (no acciones frecuentes): BETA arriba del todo + tema -->
                   <div class="dropdown__sep"></div>
-                  @if (!esCes()) {
-                    <button
-                      class="dropdown__toggle"
-                      (click)="toggleVersion()"
-                      role="switch"
-                      aria-checked="true"
+                  <button
+                    class="dropdown__toggle"
+                    (click)="toggleVersion()"
+                    role="switch"
+                    aria-checked="true"
+                  >
+                    <span class="dropdown__toggle-l"
+                      >Vista nueva <span class="vswitch__beta">beta</span></span
                     >
-                      <span class="dropdown__toggle-l"
-                        >Vista nueva <span class="vswitch__beta">beta</span></span
-                      >
-                      <span class="vswitch__track vswitch__track--on"
-                        ><span class="vswitch__knob"></span
-                      ></span>
-                    </button>
-                  }
+                    <span class="vswitch__track vswitch__track--on"
+                      ><span class="vswitch__knob"></span
+                    ></span>
+                  </button>
                   <button
                     class="dropdown__toggle"
                     (click)="theme.toggle()"
@@ -263,28 +255,11 @@ const MENU_LINKS: MenuLink[] = [
                     >
                   </button>
                   <div class="dropdown__sep"></div>
-                  <!-- Cambio de audiencia (demo): Líder ⇄ Emprendedora CES -->
-                  @if (esCes()) {
-                    <a
-                      class="dropdown__item dropdown__item--bold"
-                      routerLink="/n/inicio"
-                      (click)="menuOpen.set(false)"
-                      >Ver como Líder <span class="vswitch__beta">demo</span></a
-                    >
-                  } @else {
-                    <a
-                      class="dropdown__item dropdown__item--bold"
-                      routerLink="/e/inicio"
-                      (click)="menuOpen.set(false)"
-                      >Ver como Emprendedora CES <span class="vswitch__beta">demo</span></a
-                    >
-                  }
-                  <div class="dropdown__sep"></div>
                   <a class="dropdown__item" (click)="menuOpen.set(false)">Mi perfil</a>
                   <a class="dropdown__item" (click)="menuOpen.set(false)">Ajustes</a>
                   <a class="dropdown__item" (click)="menuOpen.set(false)">Notificaciones</a>
                   <div class="dropdown__sep"></div>
-                  @if (!esCes()) {
+                  @if (!esEmp()) {
                     <a
                       class="dropdown__item dropdown__item--bold"
                       routerLink="/n/herramientas"
@@ -368,11 +343,9 @@ const MENU_LINKS: MenuLink[] = [
       </nav>
     }
 
-    <!-- Conmutadores de estatus (demo): Emprendedora en /e/, Directora en /n/ -->
-    @if (esCes()) {
-      <app-estatus-switch />
-    } @else if (version.nueva()) {
-      <app-estatus-dir-switch />
+    <!-- Conmutador global (demo): toda la carrera CNS → REG en la vista nueva -->
+    @if (version.nueva()) {
+      <app-estatus-switch-global />
     }
   `,
   styles: [
@@ -916,43 +889,40 @@ export class App implements OnInit {
   protected readonly cats = CATS;
   protected readonly newCats = NEW_CATS;
   protected readonly menuLinks = MENU_LINKS;
-  protected readonly usuariaCes = USUARIA_CES;
   protected readonly menuOpen = signal(false);
   protected readonly entered = signal(false);
   protected readonly theme = inject(ThemeService);
   protected readonly version = inject(VersionService);
   protected readonly acceso = inject(AccesoService);
+  protected readonly audiencia = inject(AudienciaService);
   protected readonly estatusSrv = inject(EstatusService);
   protected readonly estatusDirSrv = inject(EstatusDirService);
   private readonly router = inject(Router);
 
-  /** La vista CES vive en /e/… — se detecta por ruta (no por preferencia persistida):
-   *  es una DEMO de otra audiencia, no una versión de la misma usuaria. */
-  protected readonly esCes = signal(
-    typeof location !== 'undefined' && location.pathname.includes('/e/'),
+  /** Vista con el header/nav moderno (la nueva beta). */
+  protected readonly moderna = computed(() => this.version.nueva());
+  /** Audiencia encarnada en la vista nueva: Emprendedora (CNS→ASP) o Directora. */
+  protected readonly esEmp = computed(
+    () => this.version.nueva() && this.audiencia.tipo() === 'emprendedora',
   );
-  /** Vistas con el header/nav moderno (nueva beta y CES). */
-  protected readonly moderna = computed(() => this.version.nueva() || this.esCes());
-  /** Nav activa. En las vistas demo, las secciones dependen del estatus encarnado:
+  /** Nav activa. En la vista nueva las secciones dependen del estatus encarnado:
    *  Emprendedora: "Mi grupo" desde CES, "Incorpora y Gana" desde CEM.
-   *  Líder: "Mi equipo" existe desde SNR (JNR aún no tiene hijas directoras). */
+   *  Directora: "Mi equipo" existe desde SNR (JNR aún no tiene hijas). */
   protected readonly activeCats = computed<Cat[]>(() => {
-    if (this.esCes()) {
+    if (!this.version.nueva()) return CATS;
+    if (this.esEmp()) {
       const cap = PERFILES[this.estatusSrv.estatus()].capacidades;
-      return CES_CATS.filter(
+      return EMP_CATS.filter(
         (c) =>
-          (c.route !== '/e/grupo' || cap.grupo) && (c.route !== '/e/incorpora' || cap.incorpora),
+          (c.route !== '/n/grupo' || cap.grupo) && (c.route !== '/n/incorpora' || cap.incorpora),
       );
     }
-    if (this.version.nueva()) {
-      const cap = PERFILES_DIR[this.estatusDirSrv.estatus()].capacidades;
-      return NEW_CATS.filter((c) => c.route !== '/n/equipo' || cap.equipo);
-    }
-    return CATS;
+    const cap = PERFILES_DIR[this.estatusDirSrv.estatus()].capacidades;
+    return NEW_CATS.filter((c) => c.route !== '/n/equipo' || cap.equipo);
   });
   /** Identidad mostrada en el shell, con el rol del estatus encarnado. */
   protected readonly u = computed(() => {
-    if (this.esCes()) {
+    if (this.esEmp()) {
       return { ...USUARIA_CES, rol: PERFILES[this.estatusSrv.estatus()].nombreNivel };
     }
     if (this.version.nueva()) {
@@ -960,27 +930,19 @@ export class App implements OnInit {
     }
     return USUARIA;
   });
-  protected readonly homeRoute = computed(() =>
-    this.esCes() ? '/e/inicio' : this.version.nueva() ? '/n/inicio' : '/inicio',
-  );
+  protected readonly homeRoute = computed(() => (this.version.nueva() ? '/n/inicio' : '/inicio'));
 
   ngOnInit(): void {
-    // Mantiene esCes al día en cada navegación (deep-links y cambios de vista).
-    this.router.events.pipe(filter((e) => e instanceof NavigationEnd)).subscribe((e) => {
-      this.esCes.set(e.urlAfterRedirects.startsWith('/e/'));
-    });
-
     // Sincroniza la ruta con la versión persistida al cargar (sin recarga brusca).
     // Usamos location.pathname (fiable durante el bootstrap con rutas lazy, donde
     // router.url aún puede ser '/'), así un deep-link a /n/<vista> se respeta.
-    // Un deep-link a /e/<vista> (demo CES) también se respeta y no se redirige.
     const path = typeof location !== 'undefined' ? location.pathname : '';
-    if (path.includes('/e/')) return;
-    const onNew = path.includes('/n/');
+    const onNew = path.includes('/n/') || path.includes('/e/');
     if (this.version.nueva() && !onNew) {
       this.router.navigateByUrl('/n/inicio');
     } else if (!this.version.nueva() && onNew) {
-      this.router.navigateByUrl('/inicio');
+      // Un deep-link a la vista nueva activa la versión nueva en vez de expulsar.
+      this.version.set(true);
     }
   }
 
