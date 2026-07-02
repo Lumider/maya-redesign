@@ -61,6 +61,11 @@ Assets de `public/` se referencian desde la raíz: `/icons/check.png`, `/brand/l
 - **Accesibilidad AA**: contrastes ya calibrados en los tokens (los comentarios de `styles.scss` lo indican); `aria-label` en botones de icono; `aria-hidden` en SVG decorativos.
 - Tonos de estado: `success`, `warning`, `danger`, `info`, `teal`, `violet` — cada uno con par `--X` / `--X-bg`.
 
+## Conocimiento de negocio (en `docs/`)
+
+- `docs/calendario-campanas.md` — cómo se dividen las campañas del año: 13 campañas × 4 semanas (sáb→vie), C13 cruza Año Nuevo y a veces dura 5 semanas. Fechas 2024–2026.
+- `docs/referencia-vista-ces.md` — levantamiento de la Maya real vista por una CES.
+
 ## Flujo de trabajo
 
 - Rama principal: `main`. Remoto SSH: `git@github.com:Lumider/maya-redesign.git`.
