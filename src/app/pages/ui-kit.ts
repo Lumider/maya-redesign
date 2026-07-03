@@ -105,6 +105,18 @@ import { Reveal } from '../shared/reveal';
           <button class="btn btn--primary" disabled>Disabled</button>
         </div>
 
+        <span class="vs__label">Anterior (se conserva como referencia)</span>
+        <div class="fila" style="margin:6px 0 14px">
+          <button
+            class="btn"
+            tabindex="-1"
+            style="border-radius:var(--radius-s);background:var(--brand-grad-strong);color:#fff"
+          >
+            Button
+          </button>
+          <span class="tiny">radio 8px · degradado · reemplazado por FrYDA en C7 2026</span>
+        </div>
+
         <span class="vs__label">Estados (referencia estática)</span>
         <div class="fila" style="margin:6px 0 0">
           <span class="estado">
@@ -177,6 +189,22 @@ import { Reveal } from '../shared/reveal';
           <span class="badge badge--sys badge--danger"><i class="badge__dot"></i> con dot</span>
           <span class="badge badge--teal">teal</span>
           <span class="badge badge--brand">brand</span>
+        </div>
+
+        <span class="vs__label">Anteriores (se conservan como referencia)</span>
+        <div class="fila" style="margin:6px 0 12px">
+          @for (t of estados; track t) {
+            <span
+              class="badge"
+              [style.background]="'var(--' + t + '-bg)'"
+              [style.color]="'var(--' + t + ')'"
+              >{{ t }}</span
+            >
+          }
+          <span class="badge" style="background:var(--sand);color:var(--ink-2)">neutral</span>
+          <span class="tiny" style="align-self:center"
+            >paleta previa · reemplazada por FrYDA en C7 2026</span
+          >
         </div>
 
         <div class="fila" style="align-items:center">

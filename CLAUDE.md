@@ -70,6 +70,11 @@ Assets de `public/` se referencian desde la raíz: `/icons/check.png`, `/brand/l
 
 Ruta oculta `/ui` (`pages/ui-kit.ts`): muestra todos los tokens, badges, botones, iconos y componentes del sistema. **Antes de crear un componente nuevo, revisar ahí si ya existe**; al crear uno reutilizable, añadirlo a la galería.
 
+Reglas de migración de componentes (proceso FrYDA):
+1. Un componente nuevo/candidato entra primero SOLO al UI Kit — nunca directo a la app.
+2. El reemplazo en la app se aplica únicamente cuando Giovanni lo pide explícitamente.
+3. Al migrar, la versión anterior NO se elimina: se conserva en `/ui` como referencia ("Anterior"), renderizada con los tokens aún vivos del sistema.
+
 ## Acceso a la demo publicada
 
 La demo (GitHub Pages) tiene una puerta de clave en el frontend (`shared/acceso.ts` + `shared/acceso-gate.ts`). Es cortesía para datos ficticios, no seguridad real. Para cambiar la clave: `echo -n "nueva-clave" | shasum -a 256` y reemplazar `CLAVE_HASH` en `acceso.ts`. La sesión se recuerda por dispositivo (localStorage `maya-acceso`).
