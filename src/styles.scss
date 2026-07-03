@@ -463,6 +463,25 @@ button {
   background: var(--fry-bone-10);
   color: var(--fry-bone-90);
 }
+/* CANDIDATOS de armonización de banda (auditoría de contraste — meta 5–8:1,
+   como danger 8.3 y violet 6.4): success falla AA (4.29), warning raspa (4.54),
+   info pesa de más (10.18). Ajustes de un solo tono en la misma familia. */
+.badge--success-arm {
+  background: var(--fry-mint-10);
+  color: var(--fry-mint-90);
+}
+.badge--sys.badge--success-arm {
+  background: var(--fry-mint-90);
+  color: var(--fry-mint-10);
+}
+.badge--warning-arm {
+  background: var(--fry-marigold-10);
+  color: var(--fry-marigold-90);
+}
+.badge--info-arm {
+  background: var(--fry-blue-10);
+  color: var(--fry-blue-70);
+}
 
 /* Variante System (sólida) — para veredictos fuertes: .badge--sys.badge--danger */
 .badge--sys.badge--success {

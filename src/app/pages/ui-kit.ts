@@ -243,6 +243,27 @@ import { Reveal } from '../shared/reveal';
           >
         </div>
 
+        <span class="vs__label"
+          >Armonización de banda — auditoría de contraste (meta 5–8:1, como danger y violet)</span
+        >
+        <div class="fila" style="margin:6px 0 4px; align-items:center">
+          <span class="badge badge--success">success 4.3 ✗AA</span>
+          <span style="color:var(--ink-3)">→</span>
+          <span class="badge badge--success-arm">success mint-90 · 6.1</span>
+          <span class="badge badge--sys badge--success-arm">sys 6.1</span>
+        </div>
+        <div class="fila" style="margin:0 0 4px; align-items:center">
+          <span class="badge badge--warning">warning 4.5</span>
+          <span style="color:var(--ink-3)">→</span>
+          <span class="badge badge--warning-arm">warning fondo-10 · 5.1</span>
+        </div>
+        <div class="fila" style="margin:0 0 12px; align-items:center">
+          <span class="badge badge--info">info 10.2</span>
+          <span style="color:var(--ink-3)">→</span>
+          <span class="badge badge--info-arm">info blue-70 · 6.9</span>
+          <span class="tiny">danger (8.3) y violet (6.4) ya están en banda — no cambian</span>
+        </div>
+
         <span class="vs__label">Anteriores (se conservan como referencia)</span>
         <div class="fila" style="margin:6px 0 12px">
           @for (t of estados; track t) {
