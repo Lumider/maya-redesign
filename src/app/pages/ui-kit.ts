@@ -90,70 +90,61 @@ import { Reveal } from '../shared/reveal';
         </div>
       </section>
 
-      <!-- Candidato FrYDA vs botón actual -->
+      <!-- Estados del botón primario (sistema FrYDA, oficial desde C7 2026) -->
       <section class="card pad v2-section" appReveal>
-        <h2 class="v2-h">🔬 Botón FrYDA (candidato) vs actual</h2>
+        <h2 class="v2-h">🔘 Botón primario FrYDA — estados oficiales</h2>
         <p class="tiny" style="margin:0 0 14px">
-          "Lo mejor de ambos mundos": píldora, estados y focus ring del Figma FrYDA Foundations ·
-          tipografía y tamaño del redesign. Default #C94E22 = AA con blanco (4.57:1) ✓
+          Adoptado del Figma FrYDA Foundations (9957-1325): píldora, estados explícitos y focus ring
+          azul, con la tipografía del redesign (Plus Jakarta 14/700). Default #C94E22 = AA con
+          blanco (4.57:1) ✓ · Reemplazó al botón de radio 8px con degradado.
         </p>
 
-        <div class="vs">
-          <span class="vs__label">Actual</span>
-          <div class="fila" style="margin:6px 0 14px">
-            <button class="btn btn--primary">Button</button>
-            <span class="tiny">radio 8px · degradado · hover +brillo · foco naranja</span>
-          </div>
+        <span class="vs__label">Vivo — interactúa: hover, clic sostenido y Tab para el foco</span>
+        <div class="fila" style="margin:6px 0 14px">
+          <button class="btn btn--primary">Button</button>
+          <button class="btn btn--primary" disabled>Disabled</button>
+        </div>
 
-          <span class="vs__label"
-            >Candidato FrYDA — interactúa: hover, clic y Tab para el foco</span
-          >
-          <div class="fila" style="margin:6px 0 10px">
-            <button class="btn btn--fryda">Button</button>
-            <button class="btn btn--fryda" disabled>Disabled</button>
-          </div>
-
-          <span class="vs__label">Estados del candidato (referencia estática)</span>
-          <div class="fila" style="margin:6px 0 0">
-            <span class="estado">
-              <button class="btn btn--fryda" tabindex="-1">Button</button>
-              <code>default</code>
-            </span>
-            <span class="estado">
-              <button
-                class="btn btn--fryda"
-                tabindex="-1"
-                style="background:var(--fryda-btn-hover);color:var(--fryda-btn-hover-content)"
-              >
-                Button
-              </button>
-              <code>hover</code>
-            </span>
-            <span class="estado">
-              <button
-                class="btn btn--fryda"
-                tabindex="-1"
-                style="background:var(--fryda-btn-pressed);color:var(--fryda-btn-pressed-content)"
-              >
-                Button
-              </button>
-              <code>pressed</code>
-            </span>
-            <span class="estado">
-              <button
-                class="btn btn--fryda"
-                tabindex="-1"
-                style="box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--fryda-focus-ring)"
-              >
-                Button
-              </button>
-              <code>focus</code>
-            </span>
-            <span class="estado">
-              <button class="btn btn--fryda" disabled>Button</button>
-              <code>disabled</code>
-            </span>
-          </div>
+        <span class="vs__label">Estados (referencia estática)</span>
+        <div class="fila" style="margin:6px 0 0">
+          <span class="estado">
+            <button class="btn btn--primary" tabindex="-1">Button</button>
+            <code>default</code>
+          </span>
+          <span class="estado">
+            <button
+              class="btn btn--primary"
+              tabindex="-1"
+              style="background:var(--fryda-btn-hover);color:var(--fryda-btn-hover-content)"
+            >
+              Button
+            </button>
+            <code>hover</code>
+          </span>
+          <span class="estado">
+            <button
+              class="btn btn--primary"
+              tabindex="-1"
+              style="background:var(--fryda-btn-pressed);color:var(--fryda-btn-pressed-content)"
+            >
+              Button
+            </button>
+            <code>pressed</code>
+          </span>
+          <span class="estado">
+            <button
+              class="btn btn--primary"
+              tabindex="-1"
+              style="box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--fryda-focus-ring)"
+            >
+              Button
+            </button>
+            <code>focus</code>
+          </span>
+          <span class="estado">
+            <button class="btn btn--primary" disabled>Button</button>
+            <code>disabled</code>
+          </span>
         </div>
       </section>
 
