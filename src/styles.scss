@@ -312,6 +312,55 @@ button {
   }
 }
 
+/* Badges — sistema FrYDA (Figma Foundations 16853-3196) adoptado como oficial:
+   colores por intent en dos variantes — Business (suave, default) y System
+   (sólida, .badge--sys) — + dot opcional, con la tipografía del redesign
+   (Plus Jakarta 11/700 uppercase). "violet" adopta el intent Reenroll (ciruela).
+   Solo el badge usa estos tokens; los estados globales (--success…) siguen
+   alimentando alerts, semáforos y tints. */
+:root {
+  --fryda-tag-neutral-sys-bg: #1c1f28;
+  --fryda-tag-neutral-sys-fg: #e6e8ec;
+  --fryda-tag-neutral-biz-bg: #e6e8ec;
+  --fryda-tag-neutral-biz-fg: #1c1f28;
+  --fryda-tag-success-sys-bg: #1f8084;
+  --fryda-tag-success-sys-fg: #e8f8f9;
+  --fryda-tag-success-biz-bg: #e8f8f9;
+  --fryda-tag-success-biz-fg: #1f8084;
+  --fryda-tag-warning-sys-bg: #b24b05;
+  --fryda-tag-warning-sys-fg: #fff7eb;
+  --fryda-tag-warning-biz-bg: #ffe9c6;
+  --fryda-tag-warning-biz-fg: #b24b05;
+  --fryda-tag-danger-sys-bg: #b02b25;
+  --fryda-tag-danger-sys-fg: #fce5e4;
+  --fryda-tag-danger-biz-bg: #fce5e4;
+  --fryda-tag-danger-biz-fg: #792623;
+  --fryda-tag-info-sys-bg: #0066bf;
+  --fryda-tag-info-sys-fg: #f0f7ff;
+  --fryda-tag-info-biz-bg: #f0f7ff;
+  --fryda-tag-info-biz-fg: #0b3d6f;
+  --fryda-tag-violet-sys-bg: #734c62;
+  --fryda-tag-violet-sys-fg: #f9f0f5;
+  --fryda-tag-violet-biz-bg: #f9f0f5;
+  --fryda-tag-violet-biz-fg: #734c62;
+}
+/* Oscuro: la variante Business pasa a fondo translúcido del color System con
+   texto en su pastel — mismo criterio que los estados globales del tema. */
+[data-theme='dark'] {
+  --fryda-tag-neutral-biz-bg: rgba(230, 232, 236, 0.14);
+  --fryda-tag-neutral-biz-fg: #e6e8ec;
+  --fryda-tag-success-biz-bg: rgba(31, 128, 132, 0.22);
+  --fryda-tag-success-biz-fg: #a9e5e8;
+  --fryda-tag-warning-biz-bg: rgba(178, 75, 5, 0.22);
+  --fryda-tag-warning-biz-fg: #ffce8f;
+  --fryda-tag-danger-biz-bg: rgba(176, 43, 37, 0.24);
+  --fryda-tag-danger-biz-fg: #f8b7b4;
+  --fryda-tag-info-biz-bg: rgba(0, 102, 191, 0.24);
+  --fryda-tag-info-biz-fg: #a7cdf3;
+  --fryda-tag-violet-biz-bg: rgba(115, 76, 98, 0.32);
+  --fryda-tag-violet-biz-fg: #e3c7d6;
+}
+
 .badge {
   display: inline-flex;
   align-items: center;
@@ -319,42 +368,77 @@ button {
   font-size: 11px;
   font-weight: 700;
   letter-spacing: 0.04em;
-  border-radius: 99px;
+  border-radius: 9999px;
   padding: 3px 10px;
   text-transform: uppercase;
 }
+/* Dot opcional (FrYDA): <span class="badge badge--success"><i class="badge__dot"></i> texto</span> */
+.badge__dot {
+  width: 4px;
+  height: 4px;
+  border-radius: 99px;
+  background: currentColor;
+  flex-shrink: 0;
+}
 
 .badge--success {
-  background: var(--success-bg);
-  color: var(--success);
+  background: var(--fryda-tag-success-biz-bg);
+  color: var(--fryda-tag-success-biz-fg);
 }
 .badge--warning {
-  background: var(--warning-bg);
-  color: var(--warning);
+  background: var(--fryda-tag-warning-biz-bg);
+  color: var(--fryda-tag-warning-biz-fg);
 }
 .badge--danger {
-  background: var(--danger-bg);
-  color: var(--danger);
+  background: var(--fryda-tag-danger-biz-bg);
+  color: var(--fryda-tag-danger-biz-fg);
 }
 .badge--info {
-  background: var(--info-bg);
-  color: var(--info);
+  background: var(--fryda-tag-info-biz-bg);
+  color: var(--fryda-tag-info-biz-fg);
 }
+.badge--violet {
+  background: var(--fryda-tag-violet-biz-bg);
+  color: var(--fryda-tag-violet-biz-fg);
+}
+.badge--neutral {
+  background: var(--fryda-tag-neutral-biz-bg);
+  color: var(--fryda-tag-neutral-biz-fg);
+}
+/* Tonos propios del redesign (sin equivalente FrYDA) */
 .badge--teal {
   background: var(--teal-bg);
   color: var(--teal);
-}
-.badge--violet {
-  background: var(--violet-bg);
-  color: var(--violet);
 }
 .badge--brand {
   background: var(--brand-100);
   color: var(--brand-700);
 }
-.badge--neutral {
-  background: var(--sand);
-  color: var(--ink-2);
+
+/* Variante System (sólida) — para veredictos fuertes: .badge--sys.badge--danger */
+.badge--sys.badge--success {
+  background: var(--fryda-tag-success-sys-bg);
+  color: var(--fryda-tag-success-sys-fg);
+}
+.badge--sys.badge--warning {
+  background: var(--fryda-tag-warning-sys-bg);
+  color: var(--fryda-tag-warning-sys-fg);
+}
+.badge--sys.badge--danger {
+  background: var(--fryda-tag-danger-sys-bg);
+  color: var(--fryda-tag-danger-sys-fg);
+}
+.badge--sys.badge--info {
+  background: var(--fryda-tag-info-sys-bg);
+  color: var(--fryda-tag-info-sys-fg);
+}
+.badge--sys.badge--violet {
+  background: var(--fryda-tag-violet-sys-bg);
+  color: var(--fryda-tag-violet-sys-fg);
+}
+.badge--sys.badge--neutral {
+  background: var(--fryda-tag-neutral-sys-bg);
+  color: var(--fryda-tag-neutral-sys-fg);
 }
 
 .chip {

@@ -148,14 +148,37 @@ import { Reveal } from '../shared/reveal';
         </div>
       </section>
 
-      <!-- Badges y semáforos -->
+      <!-- Badges (sistema FrYDA) y semáforos -->
       <section class="card pad v2-section" appReveal>
-        <h2 class="v2-h">🏷️ Badges y semáforos</h2>
-        <div class="fila">
-          @for (b of badges; track b) {
+        <h2 class="v2-h">🏷️ Badges FrYDA y semáforos</h2>
+        <p class="tiny" style="margin:0 0 12px">
+          Adoptado del Figma FrYDA Foundations (16853-3196): intents en dos variantes — Business
+          (suave, default) y System (sólida, veredictos) — con dot opcional. Tipografía del
+          redesign. "violet" = intent Reenroll (reactivadas).
+        </p>
+
+        <span class="vs__label">Business (default)</span>
+        <div class="fila" style="margin:6px 0 12px">
+          @for (b of intentsFryda; track b) {
             <span class="badge" [class]="'badge--' + b">{{ b }}</span>
           }
         </div>
+
+        <span class="vs__label">System (sólida) — .badge--sys</span>
+        <div class="fila" style="margin:6px 0 12px">
+          @for (b of intentsFryda; track b) {
+            <span class="badge badge--sys" [class]="'badge--' + b">{{ b }}</span>
+          }
+        </div>
+
+        <span class="vs__label">Con dot · y tonos propios del redesign</span>
+        <div class="fila" style="margin:6px 0 12px">
+          <span class="badge badge--success"><i class="badge__dot"></i> con dot</span>
+          <span class="badge badge--sys badge--danger"><i class="badge__dot"></i> con dot</span>
+          <span class="badge badge--teal">teal</span>
+          <span class="badge badge--brand">brand</span>
+        </div>
+
         <div class="fila" style="align-items:center">
           @for (s of sems; track s) {
             <span style="display:inline-flex;align-items:center;gap:6px">
@@ -385,16 +408,8 @@ export class UiKitPage {
     '--ink',
   ];
   protected readonly estados = ['success', 'warning', 'danger', 'info', 'teal', 'violet'];
-  protected readonly badges = [
-    'success',
-    'warning',
-    'danger',
-    'info',
-    'teal',
-    'violet',
-    'brand',
-    'neutral',
-  ];
+  /** Intents FrYDA del badge (Business y System). */
+  protected readonly intentsFryda = ['neutral', 'success', 'warning', 'danger', 'info', 'violet'];
   protected readonly sems = ['ok', 'warn', 'bad', 'info'];
 
   protected readonly iconos = [
