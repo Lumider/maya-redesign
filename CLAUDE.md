@@ -70,6 +70,10 @@ Assets de `public/` se referencian desde la raíz: `/icons/check.png`, `/brand/l
 
 Ruta oculta `/ui` (`pages/ui-kit.ts`): muestra todos los tokens, badges, botones, iconos y componentes del sistema. **Antes de crear un componente nuevo, revisar ahí si ya existe**; al crear uno reutilizable, añadirlo a la galería.
 
+### Primitives FrYDA (fuente de color)
+
+`design-tokens/Primitives.json` (export de Figma Variables) → `scripts/fryda-primitives.py` → `src/fryda-primitives.scss` (230 vars `--fry-familia-tono`, 23 familias × tonos 10–100). **Los componentes FrYDA (botón, badge) referencian primitives, nunca hex.** Si el equipo de diseño actualiza los primitives: reemplazar el JSON y correr el script. Galería completa en `/ui`.
+
 Reglas de migración de componentes (proceso FrYDA):
 1. Un componente nuevo/candidato entra primero SOLO al UI Kit — nunca directo a la app.
 2. El reemplazo en la app se aplica únicamente cuando Giovanni lo pide explícitamente.

@@ -2,6 +2,10 @@
    Maya · Yanbal — design tokens y estilos base (estilo Airbnb)
    ========================================================================== */
 
+/* Primitives FrYDA (230 colores, generados desde Figma Variables) —
+   los componentes FrYDA beben de aquí. Regenerar: scripts/fryda-primitives.py */
+@import 'fryda-primitives';
+
 :root {
   /* Marca — naranja Yanbal anclado en #DC582A */
   --brand-50: #fff3ed;
@@ -275,18 +279,19 @@ button {
   }
 }
 
-/* Tokens FrYDA del botón (valores del Figma Foundations). El default #C94E22
-   pasa AA con texto blanco (4.57:1). Estados documentados en /ui. */
+/* Tokens FrYDA del botón, cableados a los PRIMITIVES (fryda-primitives.scss).
+   El default (yanbal-orange/80 = #C94E22) pasa AA con texto blanco (4.57:1).
+   Estados documentados en /ui. */
 :root {
-  --fryda-btn-default: #c94e22;
+  --fryda-btn-default: var(--fry-yanbal-orange-80);
   --fryda-btn-default-content: #ffffff;
-  --fryda-btn-hover: #a83c18;
-  --fryda-btn-hover-content: #fde4da;
-  --fryda-btn-pressed: #7a2e14;
-  --fryda-btn-pressed-content: #f9c7b6;
-  --fryda-focus-ring: #0066bf;
-  --fryda-btn-disabled: #e6e8ec;
-  --fryda-btn-disabled-content: #858993;
+  --fryda-btn-hover: var(--fry-yanbal-orange-90);
+  --fryda-btn-hover-content: var(--fry-yanbal-orange-20);
+  --fryda-btn-pressed: var(--fry-yanbal-orange-100);
+  --fryda-btn-pressed-content: var(--fry-yanbal-orange-30);
+  --fryda-focus-ring: var(--fry-blue-60);
+  --fryda-btn-disabled: var(--fry-yanbal-black-20);
+  --fryda-btn-disabled-content: var(--fry-yanbal-black-50);
 }
 /* En oscuro, solo el deshabilitado necesita adaptarse (los rellenos FrYDA
    son estables y el blanco mantiene AA sobre ellos). */
@@ -319,30 +324,30 @@ button {
    Solo el badge usa estos tokens; los estados globales (--success…) siguen
    alimentando alerts, semáforos y tints. */
 :root {
-  --fryda-tag-neutral-sys-bg: #1c1f28;
-  --fryda-tag-neutral-sys-fg: #e6e8ec;
-  --fryda-tag-neutral-biz-bg: #e6e8ec;
-  --fryda-tag-neutral-biz-fg: #1c1f28;
-  --fryda-tag-success-sys-bg: #1f8084;
-  --fryda-tag-success-sys-fg: #e8f8f9;
-  --fryda-tag-success-biz-bg: #e8f8f9;
-  --fryda-tag-success-biz-fg: #1f8084;
-  --fryda-tag-warning-sys-bg: #b24b05;
-  --fryda-tag-warning-sys-fg: #fff7eb;
-  --fryda-tag-warning-biz-bg: #ffe9c6;
-  --fryda-tag-warning-biz-fg: #b24b05;
-  --fryda-tag-danger-sys-bg: #b02b25;
-  --fryda-tag-danger-sys-fg: #fce5e4;
-  --fryda-tag-danger-biz-bg: #fce5e4;
-  --fryda-tag-danger-biz-fg: #792623;
-  --fryda-tag-info-sys-bg: #0066bf;
-  --fryda-tag-info-sys-fg: #f0f7ff;
-  --fryda-tag-info-biz-bg: #f0f7ff;
-  --fryda-tag-info-biz-fg: #0b3d6f;
-  --fryda-tag-violet-sys-bg: #734c62;
-  --fryda-tag-violet-sys-fg: #f9f0f5;
-  --fryda-tag-violet-biz-bg: #f9f0f5;
-  --fryda-tag-violet-biz-fg: #734c62;
+  --fryda-tag-neutral-sys-bg: var(--fry-yanbal-black-100);
+  --fryda-tag-neutral-sys-fg: var(--fry-yanbal-black-20);
+  --fryda-tag-neutral-biz-bg: var(--fry-yanbal-black-20);
+  --fryda-tag-neutral-biz-fg: var(--fry-yanbal-black-100);
+  --fryda-tag-success-sys-bg: var(--fry-mint-80);
+  --fryda-tag-success-sys-fg: var(--fry-mint-10);
+  --fryda-tag-success-biz-bg: var(--fry-mint-10);
+  --fryda-tag-success-biz-fg: var(--fry-mint-80);
+  --fryda-tag-warning-sys-bg: var(--fry-marigold-90);
+  --fryda-tag-warning-sys-fg: var(--fry-marigold-10);
+  --fryda-tag-warning-biz-bg: var(--fry-marigold-20);
+  --fryda-tag-warning-biz-fg: var(--fry-marigold-90);
+  --fryda-tag-danger-sys-bg: var(--fry-crimson-60);
+  --fryda-tag-danger-sys-fg: var(--fry-crimson-10);
+  --fryda-tag-danger-biz-bg: var(--fry-crimson-10);
+  --fryda-tag-danger-biz-fg: var(--fry-crimson-70);
+  --fryda-tag-info-sys-bg: var(--fry-blue-60);
+  --fryda-tag-info-sys-fg: var(--fry-blue-10);
+  --fryda-tag-info-biz-bg: var(--fry-blue-10);
+  --fryda-tag-info-biz-fg: var(--fry-blue-80);
+  --fryda-tag-violet-sys-bg: var(--fry-wine-60);
+  --fryda-tag-violet-sys-fg: var(--fry-wine-10);
+  --fryda-tag-violet-biz-bg: var(--fry-wine-10);
+  --fryda-tag-violet-biz-fg: var(--fry-wine-60);
 }
 /* Oscuro: la variante Business pasa a fondo translúcido del color System con
    texto en su pastel — mismo criterio que los estados globales del tema. */

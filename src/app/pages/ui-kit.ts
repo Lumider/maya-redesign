@@ -24,9 +24,33 @@ import { Reveal } from '../shared/reveal';
         </p>
       </header>
 
+      <!-- Primitives FrYDA -->
+      <section class="card pad v2-section" appReveal>
+        <h2 class="v2-h">🧬 Primitives FrYDA</h2>
+        <p class="tiny" style="margin:0 0 12px">
+          Las 23 familias × 10 tonos del Figma Variables (design-tokens/Primitives.json →
+          <code>--fry-familia-tono</code>). Los componentes FrYDA (botón, badge) beben de aquí. Pasa
+          el mouse para ver el nombre de cada token.
+        </p>
+        @for (f of familias; track f) {
+          <div class="prim-fila">
+            <code class="prim-nombre">{{ f }}</code>
+            <div class="prim-tonos">
+              @for (t of tonos; track t) {
+                <span
+                  class="prim-sw"
+                  [style.background]="'var(--fry-' + f + '-' + t + ')'"
+                  [title]="'--fry-' + f + '-' + t"
+                ></span>
+              }
+            </div>
+          </div>
+        }
+      </section>
+
       <!-- Tokens de color -->
       <section class="card pad v2-section" appReveal>
-        <h2 class="v2-h">🎨 Tokens de color</h2>
+        <h2 class="v2-h">🎨 Tokens de color (redesign)</h2>
         <span class="tiny">Rampa de marca</span>
         <div class="sw-row">
           @for (t of rampa; track t) {
@@ -394,6 +418,37 @@ import { Reveal } from '../shared/reveal';
         font-size: 13.5px;
       }
 
+      /* Primitives FrYDA */
+      .prim-fila {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        padding: 3px 0;
+      }
+      .prim-nombre {
+        width: 190px;
+        flex-shrink: 0;
+        text-align: right;
+      }
+      .prim-tonos {
+        display: flex;
+        gap: 4px;
+        flex: 1;
+      }
+      .prim-sw {
+        flex: 1;
+        max-width: 44px;
+        height: 22px;
+        border-radius: 5px;
+        border: 1px solid var(--line);
+      }
+      @media (max-width: 720px) {
+        .prim-nombre {
+          width: 120px;
+          font-size: 9.5px;
+        }
+      }
+
       /* Comparativa de botones */
       .vs__label {
         display: block;
@@ -436,6 +491,34 @@ export class UiKitPage {
     '--ink',
   ];
   protected readonly estados = ['success', 'warning', 'danger', 'info', 'teal', 'violet'];
+  /** Primitives FrYDA: 23 familias × tonos 10–100 (fryda-primitives.scss). */
+  protected readonly familias = [
+    'yanbal-orange',
+    'yanbal-orange-overlay',
+    'yanbal-black',
+    'yanbal-black-overlay',
+    'aegean',
+    'blue',
+    'bone',
+    'coconut',
+    'crimson',
+    'green',
+    'indigo',
+    'magenta',
+    'marigold',
+    'mint',
+    'olive',
+    'peach',
+    'pearl',
+    'pink',
+    'pistachio',
+    'purple',
+    'salt',
+    'slate',
+    'wine',
+  ];
+  protected readonly tonos = [10, 20, 30, 40, 50, 60, 70, 80, 90, 100];
+
   /** Intents FrYDA del badge (Business y System). */
   protected readonly intentsFryda = ['neutral', 'success', 'warning', 'danger', 'info', 'violet'];
   protected readonly sems = ['ok', 'warn', 'bad', 'info'];
