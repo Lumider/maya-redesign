@@ -215,6 +215,23 @@ import { Reveal } from '../shared/reveal';
           <span class="badge badge--brand">brand</span>
         </div>
 
+        <span class="vs__label">Candidatos FrYDA para los tonos propios — comparar y decidir</span>
+        <div class="fila" style="margin:6px 0 4px; align-items:center">
+          <span class="badge badge--teal">teal actual</span>
+          <span style="color:var(--ink-3)">→</span>
+          <span class="badge badge--teal-fry">teal aegean</span>
+          <span class="badge badge--sys badge--teal-fry">teal aegean sys</span>
+          <span class="tiny">aegean-10 / aegean-60 · AA 8.4:1 (mint ya es success)</span>
+        </div>
+        <div class="fila" style="margin:0 0 12px; align-items:center">
+          <span class="badge badge--brand">brand actual</span>
+          <span style="color:var(--ink-3)">→</span>
+          <span class="badge badge--brand-fry">brand orange</span>
+          <span class="badge badge--sys badge--brand-fry">brand orange sys</span>
+          <span class="badge badge--brand-fry-alt">alt peach</span>
+          <span class="tiny">yanbal-orange-20 / -90 · AA 5.2:1 · alternativa peach 4.8:1</span>
+        </div>
+
         <span class="vs__label">Anteriores (se conservan como referencia)</span>
         <div class="fila" style="margin:6px 0 12px">
           @for (t of estados; track t) {

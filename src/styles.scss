@@ -420,6 +420,30 @@ button {
   color: var(--brand-700);
 }
 
+/* CANDIDATOS (solo /ui, no usar en páginas): versiones FrYDA de los tonos
+   propios, elegidas por cercanía de color y AA sobre los primitives.
+   teal → aegean (mint ya es success) · brand → yanbal-orange (alt: peach). */
+.badge--teal-fry {
+  background: var(--fry-aegean-10);
+  color: var(--fry-aegean-60);
+}
+.badge--sys.badge--teal-fry {
+  background: var(--fry-aegean-60);
+  color: var(--fry-aegean-10);
+}
+.badge--brand-fry {
+  background: var(--fry-yanbal-orange-20);
+  color: var(--fry-yanbal-orange-90);
+}
+.badge--sys.badge--brand-fry {
+  background: var(--fry-yanbal-orange-80);
+  color: var(--fry-yanbal-orange-10);
+}
+.badge--brand-fry-alt {
+  background: var(--fry-peach-20);
+  color: var(--fry-peach-90);
+}
+
 /* Variante System (sólida) — para veredictos fuertes: .badge--sys.badge--danger */
 .badge--sys.badge--success {
   background: var(--fryda-tag-success-sys-bg);
