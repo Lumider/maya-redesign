@@ -937,6 +937,8 @@ export class App implements OnInit {
     // Usamos location.pathname (fiable durante el bootstrap con rutas lazy, donde
     // router.url aún puede ser '/'), así un deep-link a /n/<vista> se respeta.
     const path = typeof location !== 'undefined' ? location.pathname : '';
+    // Rutas neutrales (fuera de ambas versiones): no se sincronizan.
+    if (path.includes('/ui') || path.includes('/externa/')) return;
     const onNew = path.includes('/n/') || path.includes('/e/');
     if (this.version.nueva() && !onNew) {
       this.router.navigateByUrl('/n/inicio');

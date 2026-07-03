@@ -57,5 +57,8 @@ export const routes: Routes = [
   { path: 'e/incorpora', redirectTo: 'n/incorpora' },
   { path: 'e/camino', redirectTo: 'n/camino' },
 
+  // UI Kit (styleguide viviente) — ruta oculta, sin enlace en la navegación
+  { path: 'ui', loadComponent: () => import('./pages/ui-kit').then((m) => m.UiKitPage) },
+
   { path: '**', redirectTo: 'inicio' },
 ];
