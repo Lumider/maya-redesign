@@ -349,21 +349,22 @@ button {
   --fryda-tag-violet-biz-bg: var(--fry-wine-10);
   --fryda-tag-violet-biz-fg: var(--fry-wine-60);
 }
-/* Oscuro: la variante Business pasa a fondo translúcido del color System con
-   texto en su pastel — mismo criterio que los estados globales del tema. */
+/* Oscuro: la variante Business pasa a fondo translúcido del color System
+   (color-mix sobre el primitive) con texto en el pastel tono-20/30 de la
+   MISMA familia — si diseño actualiza un primitive, el oscuro lo hereda. */
 [data-theme='dark'] {
-  --fryda-tag-neutral-biz-bg: rgba(230, 232, 236, 0.14);
-  --fryda-tag-neutral-biz-fg: #e6e8ec;
-  --fryda-tag-success-biz-bg: rgba(31, 128, 132, 0.22);
-  --fryda-tag-success-biz-fg: #a9e5e8;
-  --fryda-tag-warning-biz-bg: rgba(178, 75, 5, 0.22);
-  --fryda-tag-warning-biz-fg: #ffce8f;
-  --fryda-tag-danger-biz-bg: rgba(176, 43, 37, 0.24);
-  --fryda-tag-danger-biz-fg: #f8b7b4;
-  --fryda-tag-info-biz-bg: rgba(0, 102, 191, 0.24);
-  --fryda-tag-info-biz-fg: #a7cdf3;
-  --fryda-tag-violet-biz-bg: rgba(115, 76, 98, 0.32);
-  --fryda-tag-violet-biz-fg: #e3c7d6;
+  --fryda-tag-neutral-biz-bg: color-mix(in srgb, var(--fry-yanbal-black-20) 14%, transparent);
+  --fryda-tag-neutral-biz-fg: var(--fry-yanbal-black-20);
+  --fryda-tag-success-biz-bg: color-mix(in srgb, var(--fry-mint-80) 22%, transparent);
+  --fryda-tag-success-biz-fg: var(--fry-mint-30);
+  --fryda-tag-warning-biz-bg: color-mix(in srgb, var(--fry-marigold-90) 22%, transparent);
+  --fryda-tag-warning-biz-fg: var(--fry-marigold-30);
+  --fryda-tag-danger-biz-bg: color-mix(in srgb, var(--fry-crimson-60) 24%, transparent);
+  --fryda-tag-danger-biz-fg: var(--fry-crimson-30);
+  --fryda-tag-info-biz-bg: color-mix(in srgb, var(--fry-blue-60) 24%, transparent);
+  --fryda-tag-info-biz-fg: var(--fry-blue-30);
+  --fryda-tag-violet-biz-bg: color-mix(in srgb, var(--fry-wine-60) 32%, transparent);
+  --fryda-tag-violet-biz-fg: var(--fry-wine-20);
 }
 
 .badge {
