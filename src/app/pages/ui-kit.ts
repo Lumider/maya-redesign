@@ -90,6 +90,73 @@ import { Reveal } from '../shared/reveal';
         </div>
       </section>
 
+      <!-- Candidato FrYDA vs botón actual -->
+      <section class="card pad v2-section" appReveal>
+        <h2 class="v2-h">🔬 Botón FrYDA (candidato) vs actual</h2>
+        <p class="tiny" style="margin:0 0 14px">
+          "Lo mejor de ambos mundos": píldora, estados y focus ring del Figma FrYDA Foundations ·
+          tipografía y tamaño del redesign. Default #C94E22 = AA con blanco (4.57:1) ✓
+        </p>
+
+        <div class="vs">
+          <span class="vs__label">Actual</span>
+          <div class="fila" style="margin:6px 0 14px">
+            <button class="btn btn--primary">Button</button>
+            <span class="tiny">radio 8px · degradado · hover +brillo · foco naranja</span>
+          </div>
+
+          <span class="vs__label"
+            >Candidato FrYDA — interactúa: hover, clic y Tab para el foco</span
+          >
+          <div class="fila" style="margin:6px 0 10px">
+            <button class="btn btn--fryda">Button</button>
+            <button class="btn btn--fryda" disabled>Disabled</button>
+          </div>
+
+          <span class="vs__label">Estados del candidato (referencia estática)</span>
+          <div class="fila" style="margin:6px 0 0">
+            <span class="estado">
+              <button class="btn btn--fryda" tabindex="-1">Button</button>
+              <code>default</code>
+            </span>
+            <span class="estado">
+              <button
+                class="btn btn--fryda"
+                tabindex="-1"
+                style="background:var(--fryda-btn-hover);color:var(--fryda-btn-hover-content)"
+              >
+                Button
+              </button>
+              <code>hover</code>
+            </span>
+            <span class="estado">
+              <button
+                class="btn btn--fryda"
+                tabindex="-1"
+                style="background:var(--fryda-btn-pressed);color:var(--fryda-btn-pressed-content)"
+              >
+                Button
+              </button>
+              <code>pressed</code>
+            </span>
+            <span class="estado">
+              <button
+                class="btn btn--fryda"
+                tabindex="-1"
+                style="box-shadow:0 0 0 2px var(--surface),0 0 0 4px var(--fryda-focus-ring)"
+              >
+                Button
+              </button>
+              <code>focus</code>
+            </span>
+            <span class="estado">
+              <button class="btn btn--fryda" disabled>Button</button>
+              <code>disabled</code>
+            </span>
+          </div>
+        </div>
+      </section>
+
       <!-- Badges y semáforos -->
       <section class="card pad v2-section" appReveal>
         <h2 class="v2-h">🏷️ Badges y semáforos</h2>
@@ -283,6 +350,23 @@ import { Reveal } from '../shared/reveal';
         flex-direction: column;
         gap: 6px;
         font-size: 13.5px;
+      }
+
+      /* Comparativa de botones */
+      .vs__label {
+        display: block;
+        font-size: 11px;
+        font-weight: 800;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--ink-3);
+        margin-top: 6px;
+      }
+      .estado {
+        display: inline-flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 6px;
       }
     `,
   ],

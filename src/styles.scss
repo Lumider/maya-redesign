@@ -109,21 +109,30 @@
 /* Brillo sutil de marca en la parte superior, al estilo de la referencia */
 [data-theme='dark'] body {
   background:
-    radial-gradient(1200px 480px at 50% -260px, rgba(220, 88, 42, 0.16), transparent 70%),
-    var(--bg);
+    radial-gradient(1200px 480px at 50% -260px, rgba(220, 88, 42, 0.16), transparent 70%), var(--bg);
   background-attachment: fixed;
 }
 
 /* Textos de alertas que estaban fijados para fondo claro */
-[data-theme='dark'] .alert--warning { color: var(--warning); }
-[data-theme='dark'] .alert--info { color: var(--info); }
+[data-theme='dark'] .alert--warning {
+  color: var(--warning);
+}
+[data-theme='dark'] .alert--info {
+  color: var(--info);
+}
 
 /* Scrollbar en oscuro */
-[data-theme='dark'] ::-webkit-scrollbar-thumb { background: #3a3633; }
+[data-theme='dark'] ::-webkit-scrollbar-thumb {
+  background: #3a3633;
+}
 
-* { box-sizing: border-box; }
+* {
+  box-sizing: border-box;
+}
 
-html { scroll-behavior: smooth; }
+html {
+  scroll-behavior: smooth;
+}
 
 body {
   margin: 0;
@@ -135,18 +144,27 @@ body {
   -webkit-font-smoothing: antialiased;
 }
 
-h1, h2, h3 {
+h1,
+h2,
+h3 {
   font-family: var(--font-display);
   font-weight: 800;
   letter-spacing: -0.02em;
   margin: 0;
 }
 
-a { color: inherit; text-decoration: none; }
+a {
+  color: inherit;
+  text-decoration: none;
+}
 /* Los <button> nativos no heredan color: sin esto, las tarjetas-botón
    (.seg, .acc, .tabs__tab…) usan el ButtonText del sistema (negro) y fallan
    contraste en modo oscuro (WCAG 1.4.3). */
-button { font-family: inherit; color: inherit; cursor: pointer; }
+button {
+  font-family: inherit;
+  color: inherit;
+  cursor: pointer;
+}
 
 /* Indicador de foco de teclado visible y consistente (WCAG 2.4.7) */
 :focus-visible {
@@ -154,7 +172,9 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
   outline-offset: 2px;
   border-radius: 4px;
 }
-[data-theme='dark'] :focus-visible { outline-color: var(--brand-400); }
+[data-theme='dark'] :focus-visible {
+  outline-color: var(--brand-400);
+}
 
 /* Respeta la preferencia de movimiento reducido (WCAG 2.3.3) */
 @media (prefers-reduced-motion: reduce) {
@@ -168,12 +188,23 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
   }
 }
 
-::selection { background: var(--brand-100); }
+::selection {
+  background: var(--brand-100);
+}
 
 /* Scrollbar discreto */
-::-webkit-scrollbar { width: 10px; height: 8px; }
-::-webkit-scrollbar-thumb { background: #d4d4d4; border-radius: 99px; border: 2px solid var(--bg); }
-::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar {
+  width: 10px;
+  height: 8px;
+}
+::-webkit-scrollbar-thumb {
+  background: #d4d4d4;
+  border-radius: 99px;
+  border: 2px solid var(--bg);
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
 
 /* --------------------------------------------------------------------------
    Utilidades compartidas
@@ -186,7 +217,9 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
 }
 
 .card--hover {
-  transition: box-shadow 0.18s ease, transform 0.18s ease;
+  transition:
+    box-shadow 0.18s ease,
+    transform 0.18s ease;
   &:hover {
     box-shadow: var(--shadow);
     transform: translateY(-2px);
@@ -203,27 +236,88 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
   font-size: 14px;
   padding: 11px 22px;
   border: 1px solid transparent;
-  transition: background 0.15s ease, box-shadow 0.15s ease, transform 0.1s ease;
-  &:active { transform: scale(0.98); }
+  transition:
+    background 0.15s ease,
+    box-shadow 0.15s ease,
+    transform 0.1s ease;
+  &:active {
+    transform: scale(0.98);
+  }
 }
 
 .btn--primary {
   background: var(--brand-grad-strong);
   color: #fff;
-  &:hover { filter: brightness(1.08); }
+  &:hover {
+    filter: brightness(1.08);
+  }
+}
+
+/* --------------------------------------------------------------------------
+   Botón FrYDA (candidato) — "lo mejor de ambos mundos":
+   píldora + estados + focus ring del Figma FrYDA Foundations (node 9957-1325),
+   con la tipografía y tamaño del redesign (Plus Jakarta 14/700).
+   El default #C94E22 pasa AA con texto blanco (4.57:1). Comparar en /ui.
+   -------------------------------------------------------------------------- */
+:root {
+  --fryda-btn-default: #c94e22;
+  --fryda-btn-default-content: #ffffff;
+  --fryda-btn-hover: #a83c18;
+  --fryda-btn-hover-content: #fde4da;
+  --fryda-btn-pressed: #7a2e14;
+  --fryda-btn-pressed-content: #f9c7b6;
+  --fryda-focus-ring: #0066bf;
+  --fryda-btn-disabled: #e6e8ec;
+  --fryda-btn-disabled-content: #858993;
+}
+/* En oscuro, solo el deshabilitado necesita adaptarse (los rellenos FrYDA
+   son estables y el blanco mantiene AA sobre ellos). */
+[data-theme='dark'] {
+  --fryda-btn-disabled: #2c2926;
+  --fryda-btn-disabled-content: #6e6a66;
+}
+
+.btn--fryda {
+  border-radius: 9999px;
+  background: var(--fryda-btn-default);
+  color: var(--fryda-btn-default-content);
+  &:hover {
+    background: var(--fryda-btn-hover);
+    color: var(--fryda-btn-hover-content);
+  }
+  &:active {
+    background: var(--fryda-btn-pressed);
+    color: var(--fryda-btn-pressed-content);
+  }
+  &:focus-visible {
+    outline: none;
+    box-shadow:
+      0 0 0 2px var(--surface),
+      0 0 0 4px var(--fryda-focus-ring);
+  }
+  &:disabled {
+    background: var(--fryda-btn-disabled);
+    color: var(--fryda-btn-disabled-content);
+    cursor: not-allowed;
+    transform: none;
+  }
 }
 
 .btn--ghost {
   background: var(--surface);
   color: var(--ink);
   border-color: var(--ink);
-  &:hover { background: var(--sand); }
+  &:hover {
+    background: var(--sand);
+  }
 }
 
 .btn--soft {
   background: var(--sand);
   color: var(--ink);
-  &:hover { background: var(--line); }
+  &:hover {
+    background: var(--line);
+  }
 }
 
 .badge {
@@ -238,14 +332,38 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
   text-transform: uppercase;
 }
 
-.badge--success { background: var(--success-bg); color: var(--success); }
-.badge--warning { background: var(--warning-bg); color: var(--warning); }
-.badge--danger { background: var(--danger-bg); color: var(--danger); }
-.badge--info { background: var(--info-bg); color: var(--info); }
-.badge--teal { background: var(--teal-bg); color: var(--teal); }
-.badge--violet { background: var(--violet-bg); color: var(--violet); }
-.badge--brand { background: var(--brand-100); color: var(--brand-700); }
-.badge--neutral { background: var(--sand); color: var(--ink-2); }
+.badge--success {
+  background: var(--success-bg);
+  color: var(--success);
+}
+.badge--warning {
+  background: var(--warning-bg);
+  color: var(--warning);
+}
+.badge--danger {
+  background: var(--danger-bg);
+  color: var(--danger);
+}
+.badge--info {
+  background: var(--info-bg);
+  color: var(--info);
+}
+.badge--teal {
+  background: var(--teal-bg);
+  color: var(--teal);
+}
+.badge--violet {
+  background: var(--violet-bg);
+  color: var(--violet);
+}
+.badge--brand {
+  background: var(--brand-100);
+  color: var(--brand-700);
+}
+.badge--neutral {
+  background: var(--sand);
+  color: var(--ink-2);
+}
 
 .chip {
   display: inline-flex;
@@ -259,7 +377,9 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
   font-weight: 600;
   padding: 8px 16px;
   transition: all 0.15s ease;
-  &:hover { border-color: var(--ink); }
+  &:hover {
+    border-color: var(--ink);
+  }
   &.chip--active {
     background: var(--ink);
     border-color: var(--ink);
@@ -287,8 +407,13 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
   justify-content: space-between;
 }
 
-.muted { color: var(--ink-2); }
-.tiny { font-size: 12px; color: var(--ink-3); }
+.muted {
+  color: var(--ink-2);
+}
+.tiny {
+  font-size: 12px;
+  color: var(--ink-3);
+}
 
 .alert {
   display: flex;
@@ -299,8 +424,14 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
   font-size: 13px;
   font-weight: 500;
 }
-.alert--warning { background: var(--warning-bg); color: #8a5a13; }
-.alert--info { background: var(--info-bg); color: #1d4fd7; }
+.alert--warning {
+  background: var(--warning-bg);
+  color: #8a5a13;
+}
+.alert--info {
+  background: var(--info-bg);
+  color: #1d4fd7;
+}
 
 /* Barra de progreso */
 .progress {
@@ -320,8 +451,12 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
 }
 
 @media (max-width: 720px) {
-  .page { padding: 18px 16px 56px; }
-  .page-title { font-size: 23px; }
+  .page {
+    padding: 18px 16px 56px;
+  }
+  .page-title {
+    font-size: 23px;
+  }
 }
 
 /* ==========================================================================
@@ -332,86 +467,231 @@ button { font-family: inherit; color: inherit; cursor: pointer; }
 .reveal {
   opacity: 0;
   transform: translateY(16px);
-  transition: opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1), transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+  transition:
+    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
+    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.reveal--in { opacity: 1; transform: none; }
+.reveal--in {
+  opacity: 1;
+  transform: none;
+}
 @media (prefers-reduced-motion: reduce) {
-  .reveal { transition: opacity 0.2s ease; transform: none; }
+  .reveal {
+    transition: opacity 0.2s ease;
+    transform: none;
+  }
 }
 
 /* Layout de 2 columnas (lateral baja en móvil) */
-.v2 { max-width: 1180px; margin: 0 auto; padding: 22px 40px 72px; }
-.v2-grid { display: grid; grid-template-columns: minmax(0, 1fr) 340px; gap: 22px; align-items: start; }
-.v2-aside { display: flex; flex-direction: column; gap: 16px; position: sticky; top: 150px; }
-.v2-section { margin-bottom: 22px; }
-.v2-head { margin-bottom: 18px; }
-.v2-title { font-size: 26px; line-height: 1.15; }
-.v2-sub { color: var(--ink-2); font-size: 14px; margin-top: 4px; }
+.v2 {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding: 22px 40px 72px;
+}
+.v2-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 340px;
+  gap: 22px;
+  align-items: start;
+}
+.v2-aside {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  position: sticky;
+  top: 150px;
+}
+.v2-section {
+  margin-bottom: 22px;
+}
+.v2-head {
+  margin-bottom: 18px;
+}
+.v2-title {
+  font-size: 26px;
+  line-height: 1.15;
+}
+.v2-sub {
+  color: var(--ink-2);
+  font-size: 14px;
+  margin-top: 4px;
+}
 
 /* Chips-ancla (scroll dentro de la vista) */
-.anchors { display: flex; gap: 8px; flex-wrap: wrap; margin: 14px 0 4px; }
-.anchor {
-  font-size: 12.5px; font-weight: 700; padding: 7px 14px; border-radius: 99px;
-  border: 1px solid var(--line-strong); background: var(--surface); color: var(--ink-2);
-  white-space: nowrap; transition: all 0.15s ease;
+.anchors {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 14px 0 4px;
 }
-.anchor:hover { border-color: var(--ink); color: var(--ink); }
-.anchor--ext::after { content: ' ↗'; color: var(--brand-600); }
-.anchor[appAnchor] { cursor: pointer; }
+.anchor {
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 7px 14px;
+  border-radius: 99px;
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  color: var(--ink-2);
+  white-space: nowrap;
+  transition: all 0.15s ease;
+}
+.anchor:hover {
+  border-color: var(--ink);
+  color: var(--ink);
+}
+.anchor--ext::after {
+  content: ' ↗';
+  color: var(--brand-600);
+}
+.anchor[appAnchor] {
+  cursor: pointer;
+}
 /* El header es sticky: deja margen al hacer scroll a una sección anclada */
-.v2 [id] { scroll-margin-top: 150px; }
+.v2 [id] {
+  scroll-margin-top: 150px;
+}
 
 /* Breadcrumb: el enlace debe distinguirse del texto sin depender del color
    (WCAG 1.4.1) — subrayado; el color de acento llega en hover/focus. */
-.crumbs a { text-decoration: underline; text-underline-offset: 2px; }
-.crumbs a:hover { color: var(--brand-600); }
+.crumbs a {
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+.crumbs a:hover {
+  color: var(--brand-600);
+}
 
 /* Encabezado de sección dentro de vista */
-.v2-h { font-size: 18px; font-weight: 800; margin: 0 0 12px; display: flex; align-items: center; gap: 8px; }
+.v2-h {
+  font-size: 18px;
+  font-weight: 800;
+  margin: 0 0 12px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
 /* Mini-tiles de métrica (lateral / grids) */
-.tiles { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.tile { padding: 14px 16px; }
-.tile__label { font-size: 12px; color: var(--ink-2); font-weight: 600; }
-.tile__value { font-family: var(--font-display); font-size: 24px; font-weight: 800; margin-top: 2px; line-height: 1.1; }
-.tile__hint { font-size: 11.5px; color: var(--ink-3); margin-top: 3px; }
-.tile__top { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.tiles {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+.tile {
+  padding: 14px 16px;
+}
+.tile__label {
+  font-size: 12px;
+  color: var(--ink-2);
+  font-weight: 600;
+}
+.tile__value {
+  font-family: var(--font-display);
+  font-size: 24px;
+  font-weight: 800;
+  margin-top: 2px;
+  line-height: 1.1;
+}
+.tile__hint {
+  font-size: 11.5px;
+  color: var(--ink-3);
+  margin-top: 3px;
+}
+.tile__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
 
 /* Semáforo de estado */
-.sem { width: 10px; height: 10px; border-radius: 99px; flex-shrink: 0; }
-.sem--ok { background: var(--success); }
-.sem--warn { background: var(--warning); }
-.sem--bad { background: var(--danger); }
-.sem--info { background: var(--info); }
+.sem {
+  width: 10px;
+  height: 10px;
+  border-radius: 99px;
+  flex-shrink: 0;
+}
+.sem--ok {
+  background: var(--success);
+}
+.sem--warn {
+  background: var(--warning);
+}
+.sem--bad {
+  background: var(--danger);
+}
+.sem--info {
+  background: var(--info);
+}
 
 /* Anillo de progreso (SVG dona) */
-.ring { display: grid; place-items: center; position: relative; }
-.ring__txt { position: absolute; text-align: center; }
-.ring__pct { font-family: var(--font-display); font-weight: 800; font-size: 20px; line-height: 1; }
-.ring__cap { font-size: 10.5px; color: var(--ink-2); }
+.ring {
+  display: grid;
+  place-items: center;
+  position: relative;
+}
+.ring__txt {
+  position: absolute;
+  text-align: center;
+}
+.ring__pct {
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: 20px;
+  line-height: 1;
+}
+.ring__cap {
+  font-size: 10.5px;
+  color: var(--ink-2);
+}
 
 /* Fila de puntos (ej. primeros pedidos 0/4) */
-.dots { display: flex; gap: 8px; }
-.dot {
-  width: 30px; height: 30px; border-radius: 99px; display: grid; place-items: center;
-  border: 1.5px dashed var(--line-strong); color: var(--ink-3); font-weight: 700; font-size: 12px;
+.dots {
+  display: flex;
+  gap: 8px;
 }
-.dot--on { border-style: solid; border-color: var(--success); background: var(--success-bg); color: var(--success); }
+.dot {
+  width: 30px;
+  height: 30px;
+  border-radius: 99px;
+  display: grid;
+  place-items: center;
+  border: 1.5px dashed var(--line-strong);
+  color: var(--ink-3);
+  font-weight: 700;
+  font-size: 12px;
+}
+.dot--on {
+  border-style: solid;
+  border-color: var(--success);
+  background: var(--success-bg);
+  color: var(--success);
+}
 
 @media (max-width: 920px) {
-  .v2 { padding: 18px 16px 64px; }
-  .v2-grid { grid-template-columns: 1fr; }
-  .v2-aside { position: static; }
+  .v2 {
+    padding: 18px 16px 64px;
+  }
+  .v2-grid {
+    grid-template-columns: 1fr;
+  }
+  .v2-aside {
+    position: static;
+  }
 }
 
 /* Móvil: una columna, chips-ancla deslizables y espacio para el bottom nav fijo */
 @media (max-width: 720px) {
-  .v2 { padding-bottom: calc(76px + env(safe-area-inset-bottom)); }
+  .v2 {
+    padding-bottom: calc(76px + env(safe-area-inset-bottom));
+  }
   .anchors {
     flex-wrap: nowrap;
     overflow-x: auto;
     scrollbar-width: none;
     -webkit-overflow-scrolling: touch;
   }
-  .anchors::-webkit-scrollbar { display: none; }
+  .anchors::-webkit-scrollbar {
+    display: none;
+  }
 }
