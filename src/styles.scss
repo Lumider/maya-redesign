@@ -443,6 +443,25 @@ button {
   background: var(--fry-peach-20);
   color: var(--fry-peach-90);
 }
+/* Candidatos de neutral SUAVE: el neutral FrYDA (black-100/black-20 = 13.4:1)
+   pesa mucho más que sus hermanos (5–8:1) y rompe la armonía de la fila.
+   A: misma familia suavizada · B: slate frío · C: bone cálido (≈ el anterior). */
+.badge--neutral-suave {
+  background: var(--fry-yanbal-black-20);
+  color: var(--fry-yanbal-black-70);
+}
+.badge--sys.badge--neutral-suave {
+  background: var(--fry-yanbal-black-70);
+  color: var(--fry-yanbal-black-10);
+}
+.badge--neutral-slate {
+  background: var(--fry-slate-10);
+  color: var(--fry-slate-70);
+}
+.badge--neutral-bone {
+  background: var(--fry-bone-10);
+  color: var(--fry-bone-90);
+}
 
 /* Variante System (sólida) — para veredictos fuertes: .badge--sys.badge--danger */
 .badge--sys.badge--success {

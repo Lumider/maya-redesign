@@ -223,13 +223,24 @@ import { Reveal } from '../shared/reveal';
           <span class="badge badge--sys badge--teal-fry">teal aegean sys</span>
           <span class="tiny">aegean-10 / aegean-60 · AA 8.4:1 (mint ya es success)</span>
         </div>
-        <div class="fila" style="margin:0 0 12px; align-items:center">
+        <div class="fila" style="margin:0 0 4px; align-items:center">
           <span class="badge badge--brand">brand actual</span>
           <span style="color:var(--ink-3)">→</span>
           <span class="badge badge--brand-fry">brand orange</span>
           <span class="badge badge--sys badge--brand-fry">brand orange sys</span>
           <span class="badge badge--brand-fry-alt">alt peach</span>
           <span class="tiny">yanbal-orange-20 / -90 · AA 5.2:1 · alternativa peach 4.8:1</span>
+        </div>
+        <div class="fila" style="margin:0 0 12px; align-items:center">
+          <span class="badge badge--neutral">neutral FrYDA</span>
+          <span style="color:var(--ink-3)">→</span>
+          <span class="badge badge--neutral-suave">A black suave</span>
+          <span class="badge badge--sys badge--neutral-suave">A sys</span>
+          <span class="badge badge--neutral-slate">B slate</span>
+          <span class="badge badge--neutral-bone">C bone</span>
+          <span class="tiny"
+            >el FrYDA pesa 13.4:1 vs 5–8:1 de sus hermanos · candidatos: 5.5 / 5.6 / 5.8:1</span
+          >
         </div>
 
         <span class="vs__label">Anteriores (se conservan como referencia)</span>
