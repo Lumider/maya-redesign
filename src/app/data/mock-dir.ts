@@ -24,6 +24,24 @@ export interface PerfilDir {
   hijas: { total: number; enA: number } | null;
   /** % de comisión por generaciones (null para JNR). */
   generaciones: { gen1: number; gen2: number } | null;
+  /**
+   * La salud del negocio ESTA campaña. Cada estatus muestra un cuadrante
+   * distinto a propósito: la demo recorre los 4 estados de la matriz
+   * (JNR en C · SNR en B · SSE en D · REG en A).
+   */
+  negocio: {
+    cuadrante: 'A' | 'B' | 'C' | 'D';
+    badge: string;
+    tone: 'success' | 'brand' | 'warning' | 'danger';
+    titulo: string;
+    mensaje: string;
+    icono: string;
+    ventaGP: number;
+    pped: number;
+    bono: number;
+    morosidad: { im: number; deudaGP: number; pagoNecesario: number; miDeuda: number };
+    credito: { estado: string; utilizado: number; disponible: number; total: number };
+  };
   /** Composición de la ganancia campañal (referencial). */
   ganancia: { total: number; fuentes: { label: string; monto: number }[] };
   /** Meta PAR+ 2026 del estatus. */
@@ -51,6 +69,20 @@ export const PERFILES_DIR: Record<EstatusDir, PerfilDir> = {
     cuadranteA: { venta: 22500, pped: 3 },
     hijas: null,
     generaciones: null,
+    negocio: {
+      cuadrante: 'C',
+      badge: 'En recuperación',
+      tone: 'warning',
+      titulo: 'Cuadrante C · cumples PPED, falta venta',
+      mensaje:
+        'Ya cumples tus 3 primeros pedidos. Te faltan S/ 3,600 de venta del GP para el Cuadrante A y tu bono de S/ 400.',
+      icono: 'icons/growth.png',
+      ventaGP: 18900,
+      pped: 3,
+      bono: 400,
+      morosidad: { im: 4.2, deudaGP: 3120, pagoNecesario: 410, miDeuda: 890 },
+      credito: { estado: 'Aprobado', utilizado: 890, disponible: 4110, total: 5000 },
+    },
     ganancia: {
       total: 2000,
       fuentes: [
@@ -90,6 +122,20 @@ export const PERFILES_DIR: Record<EstatusDir, PerfilDir> = {
     cuadranteA: { venta: 28200, pped: 3 },
     hijas: { total: 2, enA: 1 },
     generaciones: { gen1: 5, gen2: 0.3 },
+    negocio: {
+      cuadrante: 'B',
+      badge: 'Potencial riesgo',
+      tone: 'brand',
+      titulo: 'Cuadrante B · vendes, pero no incorporas',
+      mensaje:
+        'Tu venta ya supera el MRM. Asegura 2 primeros pedidos más y ganas tu bono de S/ 400 — sin incorporación no hay crecimiento futuro.',
+      icono: 'icons/goals.png',
+      ventaGP: 29450,
+      pped: 1,
+      bono: 400,
+      morosidad: { im: 3.6, deudaGP: 4480, pagoNecesario: 320, miDeuda: 1240 },
+      credito: { estado: 'Aprobado', utilizado: 1240, disponible: 6760, total: 8000 },
+    },
     ganancia: {
       total: 3200,
       fuentes: [
@@ -130,6 +176,20 @@ export const PERFILES_DIR: Record<EstatusDir, PerfilDir> = {
     cuadranteA: { venta: 34000, pped: 4 },
     hijas: { total: 5, enA: 3 },
     generaciones: { gen1: 5.5, gen2: 0.5 },
+    negocio: {
+      cuadrante: 'D',
+      badge: 'En riesgo',
+      tone: 'danger',
+      titulo: 'Cuadrante D · sin MRM ni PPED',
+      mensaje:
+        'Te faltan S/ 2,720 de venta y 4 primeros pedidos para el Cuadrante A y tu bono de S/ 600 — esta campaña aún alcanza.',
+      icono: 'icons/alert-02.png',
+      ventaGP: 31280,
+      pped: 0,
+      bono: 600,
+      morosidad: { im: 4.2, deudaGP: 6980, pagoNecesario: 940, miDeuda: 3180 },
+      credito: { estado: 'Aprobado', utilizado: 3180, disponible: 10820, total: 14000 },
+    },
     ganancia: {
       total: 6200,
       fuentes: [
@@ -172,6 +232,20 @@ export const PERFILES_DIR: Record<EstatusDir, PerfilDir> = {
     cuadranteA: { venta: 34000, pped: 4 },
     hijas: { total: 8, enA: 5 },
     generaciones: { gen1: 6, gen2: 0.75 },
+    negocio: {
+      cuadrante: 'A',
+      badge: 'Crecimiento',
+      tone: 'success',
+      titulo: 'Cuadrante A · ¡bono asegurado!',
+      mensaje:
+        'Cumples MRM y primeros pedidos: tu bono de S/ 700 está asegurado. Sostén el ritmo — cada campaña en A suma a tu Medalla de Excelencia.',
+      icono: 'icons/check.png',
+      ventaGP: 35950,
+      pped: 5,
+      bono: 700,
+      morosidad: { im: 2.8, deudaGP: 5410, pagoNecesario: 0, miDeuda: 1980 },
+      credito: { estado: 'Aprobado', utilizado: 4520, disponible: 15480, total: 20000 },
+    },
     ganancia: {
       total: 9400,
       fuentes: [

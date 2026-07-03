@@ -1,11 +1,13 @@
-import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../shared/icon';
 import { Ring } from '../shared/ring';
 import { Reveal } from '../shared/reveal';
 import { Anchor } from '../shared/anchor';
+import { EstatusDirService } from '../shared/estatus';
 import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../data/mock';
+import { PERFILES_DIR } from '../data/mock-dir';
 
 /**
  * Mi campaña (ejecuta): ¿voy a tiempo y qué hago esta campaña?
@@ -62,10 +64,8 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
                 >
               </div>
               <p class="muted">
-                Tu sueño: <strong>"{{ plan.sueno }}"</strong> — necesita \${{
-                  plan.gananciaObjetivo | number
-                }}
-                de ganancia.
+                Tu sueño: <strong>"{{ plan.sueno }}"</strong> — necesita S/
+                {{ plan.gananciaObjetivo | number }} de ganancia.
               </p>
               <div class="progress" style="margin-top:10px">
                 <div class="progress__fill" [style.width.%]="gananciaPct"></div>
@@ -73,7 +73,7 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
             </div>
             <div class="plan__gain">
               <app-ring [pct]="gananciaPct" [size]="92" label="ganancia" [expected]="75" />
-              <span class="tiny">\${{ plan.gananciaProyectada | number }}</span>
+              <span class="tiny">S/ {{ plan.gananciaProyectada | number }}</span>
             </div>
           </section>
 
@@ -99,7 +99,7 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
                 <div class="reward" [class.reward--locked]="!cuadranteListo()">
                   <img class="reward__ill" src="icons/money-01.png" alt="" />
                   <div>
-                    <div class="reward__val">\${{ c.cuadrante.bono | number }}</div>
+                    <div class="reward__val">S/ {{ n().bono | number }}</div>
                     <div class="tiny">Bono de Desempeño</div>
                   </div>
                 </div>
@@ -112,7 +112,11 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
                     ><app-icon name="trending" [size]="15" /> Racha: {{ rachaCumplidas }} campañas
                     en Cuadrante A</strong
                   >
-                  <span class="tiny streak__msg">{{ c.actual }} en riesgo — no la rompas 💪</span>
+                  <span class="tiny streak__msg">{{
+                    cuadranteListo()
+                      ? '¡' + c.actual + ' asegurada — racha viva! 🎉'
+                      : c.actual + ' en riesgo — no la rompas 💪'
+                  }}</span>
                 </div>
                 <div
                   class="streak__row"
@@ -152,26 +156,32 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
                 <!-- Checkpoint 1: Venta · MRM (una barra; la meta C6 va como texto secundario) -->
                 <div
                   class="check"
-                  [class.check--ok]="ventaMrmPct >= 100"
-                  [class.check--warn]="ventaMrmPct < 100"
+                  [class.check--ok]="ventaMrmPct() >= 100"
+                  [class.check--warn]="ventaMrmPct() < 100"
                 >
                   <span class="check__ic"
-                    ><app-icon [name]="ventaMrmPct >= 100 ? 'check' : 'trending'" [size]="15"
+                    ><app-icon [name]="ventaMrmPct() >= 100 ? 'check' : 'trending'" [size]="15"
                   /></span>
                   <div class="check__body">
                     <div class="row-between">
                       <strong>Venta · MRM</strong>
                       <span class="check__n"
-                        >{{ ventaMrmPct }}% <span class="muted">· casi</span></span
+                        >{{ ventaMrmPct() }}%
+                        <span class="muted"
+                          >· {{ ventaMrmPct() >= 100 ? 'listo' : 'casi' }}</span
+                        ></span
                       >
                     </div>
-                    <div class="progress" [class.progress--success]="ventaMrmPct >= 100">
-                      <div class="progress__fill" [style.width.%]="ventaMrmPct"></div>
+                    <div class="progress" [class.progress--success]="ventaMrmPct() >= 100">
+                      <div class="progress__fill" [style.width.%]="ventaMrmPct()"></div>
                     </div>
                     <div class="check__foot tiny">
-                      Mínimo para calificar \${{ c.cuadrante.ventaRequerida | number }} · faltan
-                      <strong>\${{ c.cuadrante.faltaVenta | number }}</strong> · {{ ventaC6Pct }}%
-                      de tu meta {{ c.actual }} (\${{ c.meta | number }})
+                      Mínimo para calificar (tu estatus): S/ {{ vara().venta | number }}
+                      @if (faltaVenta() > 0) {
+                        · faltan <strong>S/ {{ faltaVenta() | number }}</strong>
+                      } @else {
+                        · <strong>cumplido ✓</strong>
+                      }
                     </div>
                   </div>
                 </div>
@@ -189,16 +199,20 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
                     <div class="row-between">
                       <strong>Primeros pedidos</strong>
                       <span class="check__n"
-                        >{{ c.primerosPedidos.valor }}/{{ c.primerosPedidos.meta }}
-                        <span class="muted">· pendiente</span></span
+                        >{{ n().pped }}/{{ vara().pped }}
+                        <span class="muted">· {{ ppedListo() ? 'listo' : 'pendiente' }}</span></span
                       >
                     </div>
-                    <div class="progress">
-                      <div class="progress__fill" [style.width.%]="ppedPct"></div>
+                    <div class="progress" [class.progress--success]="ppedListo()">
+                      <div class="progress__fill" [style.width.%]="ppedPct()"></div>
                     </div>
                     <div class="check__foot tiny">
-                      Requisito de Cuadrante A · te faltan
-                      <strong>{{ c.cuadrante.ppedFaltantes }}</strong>
+                      Requisito de Cuadrante A
+                      @if (ppedFaltan() > 0) {
+                        · te faltan <strong>{{ ppedFaltan() }}</strong>
+                      } @else {
+                        · <strong>cumplido ✓</strong>
+                      }
                     </div>
                   </div>
                 </div>
@@ -321,14 +335,10 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
               <div class="trio__i">
                 <span class="tiny">1ros pedidos</span
                 ><strong
-                  >{{ c.primerosPedidos.valor
-                  }}<span class="muted">/{{ c.primerosPedidos.meta }}</span></strong
+                  >{{ n().pped }}<span class="muted">/{{ vara().pped }}</span></strong
                 >
                 <div class="progress">
-                  <div
-                    class="progress__fill"
-                    [style.width.%]="pct(c.primerosPedidos.valor, c.primerosPedidos.meta)"
-                  ></div>
+                  <div class="progress__fill" [style.width.%]="ppedPct()"></div>
                 </div>
               </div>
             </div>
@@ -839,11 +849,18 @@ import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../d
   ],
 })
 export class CampanaN {
+  private readonly estatusDirSrv = inject(EstatusDirService);
+
   protected readonly c = CAMPANA;
   protected readonly plan = PLAN_CAMPANA;
   protected readonly recon = RECONOCIMIENTOS;
   protected readonly racha = CUADRANTE_HISTORIA.filter((h) => h.valor !== '-');
   protected readonly rachaCumplidas = this.racha.filter((h) => h.valor === 'A').length;
+
+  /** Perfil del estatus encarnado: su negocio y su vara de Cuadrante A. */
+  protected readonly p = computed(() => PERFILES_DIR[this.estatusDirSrv.estatus()]);
+  protected readonly n = computed(() => this.p().negocio);
+  protected readonly vara = computed(() => this.p().cuadranteA);
 
   protected readonly done = signal(
     new Set(PLAN_CAMPANA.acciones.filter((a) => a.hecho).map((a) => a.id)),
@@ -852,16 +869,13 @@ export class CampanaN {
   protected readonly gananciaPct = Math.round(
     (PLAN_CAMPANA.gananciaProyectada / PLAN_CAMPANA.gananciaObjetivo) * 100,
   );
-  /** Vara de calificación: venta vs MRM (mínimo para Cuadrante A). */
-  protected readonly ventaMrmPct = Math.round(
-    (CAMPANA.ventaActual / CAMPANA.cuadrante.ventaRequerida) * 100,
+  /** Vara de calificación: venta vs MRM del estatus (misma fórmula que Mi negocio). */
+  protected readonly ventaMrmPct = computed(() =>
+    Math.min(100, Math.round((this.n().ventaGP / this.vara().venta) * 100)),
   );
-  /** Vara de reto: venta vs meta C6 (stretch del plan). Diferenciada del MRM. */
-  protected readonly ventaC6Pct = Math.round((CAMPANA.ventaActual / CAMPANA.meta) * 100);
-  protected readonly ppedPct = this.pct(
-    CAMPANA.primerosPedidos.valor,
-    CAMPANA.primerosPedidos.meta,
-  );
+  protected readonly faltaVenta = computed(() => Math.max(0, this.vara().venta - this.n().ventaGP));
+  protected readonly ppedPct = computed(() => this.pct(this.n().pped, this.vara().pped));
+  protected readonly ppedFaltan = computed(() => Math.max(0, this.vara().pped - this.n().pped));
 
   protected readonly retoPct = computed(() =>
     Math.round((this.done().size / PLAN_CAMPANA.acciones.length) * 100),
@@ -870,10 +884,10 @@ export class CampanaN {
   private readonly maxBar = Math.max(...PLAN_CAMPANA.semanas.flatMap((s) => [s.plan, s.logrado]));
 
   protected ppedListo(): boolean {
-    return this.c.primerosPedidos.valor >= this.c.primerosPedidos.meta;
+    return this.n().pped >= this.vara().pped;
   }
   protected cuadranteListo(): boolean {
-    return this.ventaMrmPct >= 100 && this.ppedListo();
+    return this.ventaMrmPct() >= 100 && this.ppedListo();
   }
 
   protected pct(a: number, b: number): number {

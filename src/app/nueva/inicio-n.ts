@@ -29,18 +29,28 @@ import { PERFILES_DIR } from '../data/mock-dir';
         <div class="crit">
           <div class="crit__i card">
             <span class="crit__top"
-              ><span class="crit__label">Cuadrante</span><span class="sem sem--bad"></span
+              ><span class="crit__label">Cuadrante</span
+              ><span class="sem" [class]="'sem--' + semCuadrante()"></span
             ></span>
-            <span class="crit__v bad">{{ cuadrante }}</span>
-            <span class="tiny">Riesgo · no cumple MRM ni PPED</span>
+            <span class="crit__v" [class]="semCuadrante()">{{ n().cuadrante }}</span>
+            <span class="tiny"
+              >{{ n().badge }} · vara de tu estatus: S/ {{ vara().venta | number }} +
+              {{ vara().pped }} PPED</span
+            >
           </div>
           <div class="crit__i card">
             <span class="crit__top"><span class="crit__label">Avance al MRM</span></span>
-            <span class="crit__v">{{ mrmPct }}%</span>
+            <span class="crit__v">{{ mrmPct() }}%</span>
             <div class="progress" style="margin:8px 0 4px">
-              <div class="progress__fill" [style.width.%]="mrmPct"></div>
+              <div class="progress__fill" [style.width.%]="mrmPct()"></div>
             </div>
-            <span class="tiny">del mínimo para Cuadrante A · faltan \${{ faltaVentaK }}k</span>
+            <span class="tiny">
+              @if (faltaVenta() > 0) {
+                del mínimo para Cuadrante A · faltan S/ {{ faltaVenta() | number }}
+              } @else {
+                mínimo para Cuadrante A cumplido ✓
+              }
+            </span>
           </div>
           <div class="crit__i card">
             <span class="crit__top"><span class="crit__label">Cierre de campaña</span></span>
@@ -54,15 +64,16 @@ import { PERFILES_DIR } from '../data/mock-dir';
 
       <div class="v2-grid">
         <main>
-          <!-- Alerta: una sola narrativa — la CAMPAÑA (subir a Cuadrante A → bono) -->
-          <section class="card pad alerta" appReveal>
-            <span class="sem sem--bad" style="margin-top:5px"></span>
+          <!-- Alerta: una sola narrativa — el cuadrante del estatus y su bono -->
+          <section class="card pad alerta" [class.alerta--ok]="n().cuadrante === 'A'" appReveal>
+            <span class="sem" [class]="'sem--' + semCuadrante()" style="margin-top:5px"></span>
             <div>
-              <strong>Sube a Cuadrante A esta campaña.</strong>
-              <p class="muted">
-                Te faltan \${{ faltaVentaK }}k de venta y {{ ppedFaltan }} primeros pedidos para tu
-                bono de \${{ bono | number }}.
-              </p>
+              <strong>{{
+                n().cuadrante === 'A'
+                  ? '¡Cuadrante A asegurado!'
+                  : 'Sube a Cuadrante A esta campaña.'
+              }}</strong>
+              <p class="muted">{{ n().mensaje }}</p>
             </div>
             <a class="btn btn--soft btn--sm" routerLink="/n/campana">Ver mi plan</a>
           </section>
@@ -82,7 +93,7 @@ import { PERFILES_DIR } from '../data/mock-dir';
                   <app-icon name="chevron-right" [size]="18" />
                 </a>
               }
-              @for (a of pendientes; track a.id) {
+              @for (a of pendientes(); track a.id) {
                 <a class="feed__item card" [routerLink]="a.ruta">
                   @if (a.icon) {
                     <img class="feed__ill" [src]="a.icon" alt="" />
@@ -207,6 +218,15 @@ import { PERFILES_DIR } from '../data/mock-dir';
       .crit__v.bad {
         color: var(--danger);
       }
+      .crit__v.warn {
+        color: var(--warning);
+      }
+      .crit__v.ok {
+        color: var(--success);
+      }
+      .crit__v.info {
+        color: var(--brand-600);
+      }
 
       .alerta {
         display: flex;
@@ -214,6 +234,9 @@ import { PERFILES_DIR } from '../data/mock-dir';
         align-items: flex-start;
         border-color: var(--warning);
         margin-bottom: 22px;
+      }
+      .alerta--ok {
+        border-color: var(--success);
       }
       .alerta p {
         margin: 4px 0 0;
@@ -392,76 +415,84 @@ export class InicioN {
 
   /** Perfil del estatus Directora encarnado (conmutador demo). */
   protected readonly perfil = computed(() => PERFILES_DIR[this.estatusDirSrv.estatus()]);
+  protected readonly n = computed(() => this.perfil().negocio);
+  protected readonly vara = computed(() => this.perfil().cuadranteA);
 
-  // --- 3 críticos (coherentes con el Cuadrante D) ---
-  protected readonly cuadrante = CAMPANA.cuadrante.actual; // 'D'
-  /** Único % de MRM en toda la app: venta sobre el mínimo requerido para Cuadrante A.
-   *  92% (aún por debajo del mínimo → D) y coherente con "faltan $14k", con Mi negocio
-   *  y con Mi campaña, que usan el mismo denominador. */
-  protected readonly mrmPct = Math.round(
-    (CAMPANA.ventaActual / CAMPANA.cuadrante.ventaRequerida) * 100,
-  ); // 92
+  // --- 3 críticos (del cuadrante del estatus encarnado) ---
+  /** Único % de MRM en toda la app: venta sobre la vara del estatus (misma
+   *  fórmula que Mi negocio y Mi campaña). */
+  protected readonly mrmPct = computed(() =>
+    Math.min(100, Math.round((this.n().ventaGP / this.vara().venta) * 100)),
+  );
+  protected readonly faltaVenta = computed(() => Math.max(0, this.vara().venta - this.n().ventaGP));
+  /** Semáforo del cuadrante: A verde · B naranja (potencial) · C ámbar · D rojo. */
+  protected readonly semCuadrante = computed(
+    () => ({ A: 'ok', B: 'info', C: 'warn', D: 'bad' })[this.n().cuadrante],
+  );
   protected readonly diasCierre = 9;
   protected readonly semana = 3;
   protected readonly totalSemanas = 4;
 
-  // --- alerta de campaña ---
-  protected readonly faltaVentaK = Math.round(CAMPANA.cuadrante.faltaVenta / 1000); // 14
-  protected readonly ppedFaltan = CAMPANA.cuadrante.ppedRequeridos; // 4
-  protected readonly bono = CAMPANA.cuadrante.bono; // 2300
-
   protected readonly creditos = CREDITOS_PENDIENTES.length;
   protected readonly parPct = Math.round((CAMPANA.par.ventaC6 / CAMPANA.par.metaSueno) * 100); // 53
 
-  protected readonly pendientes: {
-    id: string;
-    emoji: string;
-    icon?: string;
-    texto: string;
-    impacto: string;
-    ruta: string;
-  }[] = [
-    {
-      id: 'a1',
-      emoji: '📞',
-      texto: 'Llama a 5 consultoras por reactivar',
-      impacto: 'Reactivadas +5 · ~$14,000 de venta',
-      ruta: '/n/equipo',
-    },
-    {
-      id: 'a2',
-      emoji: '🎯',
-      icon: 'icons/goals.png',
-      texto: 'Asegura 2 primeros pedidos antes del cierre',
-      impacto: 'PPED +2 de 4 · acerca el Cuadrante A',
-      ruta: '/n/campana',
-    },
-    {
+  /** Acciones con las cifras del estatus (PPED faltantes, N1 Ganamás S/ 470). */
+  protected readonly pendientes = computed(() => {
+    const faltanPped = Math.max(0, this.vara().pped - this.n().pped);
+    const out: {
+      id: string;
+      emoji: string;
+      icon?: string;
+      texto: string;
+      impacto: string;
+      ruta: string;
+    }[] = [
+      {
+        id: 'a1',
+        emoji: '📞',
+        texto: 'Llama a 5 consultoras por reactivar',
+        impacto: 'Reactivadas +5 · empujan tu venta GP',
+        ruta: '/n/equipo',
+      },
+    ];
+    if (faltanPped > 0) {
+      out.push({
+        id: 'a2',
+        emoji: '🎯',
+        icon: 'icons/goals.png',
+        texto: `Asegura ${faltanPped} primeros pedidos antes del cierre`,
+        impacto: `PPED ${this.n().pped} de ${this.vara().pped} · acerca el Cuadrante A`,
+        ruta: '/n/campana',
+      });
+    }
+    out.push({
       id: 'a3',
       emoji: '🛍️',
-      texto: 'Pasa tu pedido personal al N1 Gana Más ($400)',
+      texto: 'Pasa tu pedido personal al N1 Ganamás (S/ 470)',
       impacto: 'Mantienes tu calificación y premios',
       ruta: '/n/campana',
-    },
-  ];
+    });
+    return out;
+  });
 
   /** Cifra de apoyo de cada área — vive SOLO aquí. "Mi equipo" solo existe con hijas
    *  directoras (desde SNR); la carrera refleja la Estrella PAR+ del estatus. */
   protected readonly areas = computed(() => {
     const p = this.perfil();
+    const n = this.n();
     const out = [
       {
         titulo: 'Mi negocio',
         icon: 'chart',
-        tone: 'bad',
-        resumen: 'Venta GP $158k · IM 4.2% · deuda $3,180',
+        tone: this.semCuadrante(),
+        resumen: `Venta GP S/ ${n.ventaGP.toLocaleString('es-PE')} · IM ${n.morosidad.im}% · deuda S/ ${n.morosidad.miDeuda.toLocaleString('es-PE')}`,
         ruta: '/n/negocio',
       },
       {
         titulo: 'Mi campaña',
         icon: 'target',
         tone: 'warn',
-        resumen: '31/65 activas · 0 de 4 primeros pedidos',
+        resumen: `31/65 activas · ${n.pped} de ${this.vara().pped} primeros pedidos`,
         ruta: '/n/campana',
       },
     ];

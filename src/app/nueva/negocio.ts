@@ -1,19 +1,23 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { Icon } from '../shared/icon';
 import { Ring } from '../shared/ring';
 import { Reveal } from '../shared/reveal';
 import { Anchor } from '../shared/anchor';
+import { EstatusDirService } from '../shared/estatus';
 import { CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../data/mock';
+import { PERFILES_DIR } from '../data/mock-dir';
 
 /**
- * Mi negocio (mide): la salud del negocio de la LÍDER esta campaña.
+ * Mi negocio (mide): la salud del negocio de la DIRECTORA esta campaña, con la
+ * vara del Cuadrante A de su estatus (PAR+ 2026 Perú). Cada estatus de la demo
+ * muestra un cuadrante distinto — la matriz completa se recorre con el conmutador.
  * Cada cifra vive en un solo lugar:
  *  · El Cuadrante se muestra una vez (hero + su posición en la matriz).
- *  · Un único % grande = el MRM (define cuadrante y bono); la meta C6 es contexto pequeño.
+ *  · Un único % grande = el MRM (define cuadrante y bono).
  *  · Deuda / IM / crédito viven solo en el lateral.
- *  · "Resultados clave" = solo lo que no está en el hero ni el lateral (Venta, Activas, PPED).
+ *  · "Resultados clave" = solo lo que no está en el hero ni el lateral.
  */
 @Component({
   selector: 'app-negocio',
@@ -36,57 +40,86 @@ import { CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../data/mock';
       <div class="v2-grid">
         <main>
           <!-- Hero de estado: el Cuadrante como veredicto (una sola vez, grande) + CTA -->
-          <section id="cuadrante" class="card pad hero-estado v2-section" appReveal>
-            <div class="hero-estado__q">{{ c.cuadrante.actual }}</div>
+          <section
+            id="cuadrante"
+            class="card pad hero-estado v2-section"
+            [class]="'hero-estado--' + n().tone"
+            appReveal
+          >
+            <div class="hero-estado__q">{{ n().cuadrante }}</div>
             <div class="hero-estado__body">
-              <span class="badge badge--danger">En riesgo</span>
-              <h2 class="hero-estado__t">Cuadrante {{ c.cuadrante.actual }} · sin MRM ni PPED</h2>
-              <p class="muted">
-                Sube a Cuadrante A y gana tu bono de \${{ c.cuadrante.bono | number }} — te faltan
-                \${{ c.cuadrante.faltaVenta | number }} de venta y
-                {{ c.cuadrante.ppedRequeridos }} primeros pedidos.
-              </p>
+              <span class="badge" [class]="'badge--' + n().tone">{{ n().badge }}</span>
+              <h2 class="hero-estado__t">{{ n().titulo }}</h2>
+              <p class="muted">{{ n().mensaje }}</p>
             </div>
-            <img class="hero-estado__ill" src="icons/alert-02.png" alt="" />
+            <img class="hero-estado__ill" [src]="n().icono" alt="" />
           </section>
 
           <!-- Matriz (posición) + anillo del MRM (único % grande) + puntos PPED -->
           <section class="card pad v2-section" appReveal>
             <h2 class="v2-h"><app-icon name="chart" [size]="18" /> ¿Dónde estás hoy?</h2>
             <div class="matrix">
-              <div class="matrix__cell matrix__cell--c">
+              <div class="matrix__cell matrix__cell--c" [class.here]="n().cuadrante === 'C'">
                 <span class="badge badge--warning">C · Recuperación</span>
                 <p>Cumple PPED · no MRM</p>
+                @if (n().cuadrante === 'C') {
+                  <span class="here__dot"></span>
+                }
               </div>
-              <div class="matrix__cell matrix__cell--a">
+              <div class="matrix__cell matrix__cell--a" [class.here]="n().cuadrante === 'A'">
                 <span class="badge badge--success">A · Crecimiento</span>
                 <p>Cumple MRM + PPED</p>
+                @if (n().cuadrante === 'A') {
+                  <span class="here__dot"></span>
+                }
               </div>
-              <div class="matrix__cell matrix__cell--d here">
+              <div class="matrix__cell matrix__cell--d" [class.here]="n().cuadrante === 'D'">
                 <span class="badge badge--danger">D · Riesgo</span>
                 <p>No cumple MRM ni PPED</p>
-                <span class="here__dot"></span>
+                @if (n().cuadrante === 'D') {
+                  <span class="here__dot"></span>
+                }
               </div>
-              <div class="matrix__cell matrix__cell--b">
+              <div class="matrix__cell matrix__cell--b" [class.here]="n().cuadrante === 'B'">
                 <span class="badge badge--brand">B · Potencial</span>
                 <p>Cumple MRM · no PPED</p>
+                @if (n().cuadrante === 'B') {
+                  <span class="here__dot"></span>
+                }
               </div>
               <div class="matrix__axis matrix__axis--y">PPED →</div>
               <div class="matrix__axis matrix__axis--x">Venta (MRM) →</div>
             </div>
             <div class="cuad-prog">
               <div class="cuad-prog__ring">
-                <app-ring [pct]="mrmPct" [size]="104" label="del MRM" [expected]="100" />
-                <span class="tiny">Faltan \${{ c.cuadrante.faltaVenta | number }}</span>
+                <app-ring [pct]="mrmPct()" [size]="104" label="del MRM" [expected]="100" />
+                <span class="tiny">
+                  @if (faltaVenta() > 0) {
+                    Faltan S/ {{ faltaVenta() | number }} (MRM S/ {{ vara().venta | number }})
+                  } @else {
+                    ¡MRM cumplido! (S/ {{ vara().venta | number }})
+                  }
+                </span>
               </div>
               <div class="cuad-prog__pped">
-                <div class="tiny bad" style="margin-bottom:6px;font-weight:700">
-                  Primeros pedidos · {{ c.primerosPedidos.valor }} de
-                  {{ c.cuadrante.ppedRequeridos }} · te mantiene en Cuadrante D
+                <div
+                  class="tiny"
+                  [class.bad]="n().pped === 0"
+                  [class.ok]="ppedListo()"
+                  style="margin-bottom:6px;font-weight:700"
+                >
+                  Primeros pedidos · {{ n().pped }} de {{ vara().pped }} ·
+                  {{
+                    ppedListo()
+                      ? 'requisito cumplido'
+                      : n().pped === 0
+                        ? 'te mantiene fuera del Cuadrante A'
+                        : 'requisito de tu estatus'
+                  }}
                 </div>
-                <div class="dots dots--bad">
-                  @for (n of ppedSlots; track n) {
-                    <span class="dot" [class.dot--on]="n <= c.primerosPedidos.valor">{{ n }}</span>
+                <div class="dots" [class.dots--bad]="n().pped === 0">
+                  @for (s of ppedSlots(); track s) {
+                    <span class="dot" [class.dot--on]="s <= n().pped">{{ s }}</span>
                   }
                 </div>
               </div>
@@ -97,7 +130,7 @@ import { CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../data/mock';
           <section id="resultados" class="v2-section" appReveal>
             <h2 class="v2-h"><app-icon name="trending" [size]="18" /> Resultados clave</h2>
             <div class="ind-grid">
-              @for (r of resultados; track r.label) {
+              @for (r of resultados(); track r.label) {
                 <div class="tile card">
                   <div class="tile__top">
                     <span class="tile__label">{{ r.label }}</span
@@ -149,23 +182,31 @@ import { CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../data/mock';
               <app-icon name="wallet" [size]="16" /> Morosidad y deuda
             </h3>
             <div class="kv">
-              <span>Índice de morosidad</span><strong class="warn">{{ c.morosidad.im }}%</strong>
+              <span>Índice de morosidad</span
+              ><strong [class.warn]="n().morosidad.im > 3" [class.ok]="n().morosidad.im <= 3"
+                >{{ n().morosidad.im }}%</strong
+              >
             </div>
             <div class="progress progress--im" style="margin:6px 0 10px">
-              <div class="progress__fill" [style.width.%]="imPct"></div>
+              <div class="progress__fill" [style.width.%]="imPct()"></div>
             </div>
             <div class="kv">
-              <span>Deuda del GP</span><strong>\${{ c.morosidad.deudaGP | number }}</strong>
+              <span>Deuda del GP</span><strong>S/ {{ n().morosidad.deudaGP | number }}</strong>
             </div>
             <div class="kv">
-              <span>Tu deuda</span><strong class="bad">\${{ c.morosidad.miDeuda | number }}</strong>
+              <span>Tu deuda</span
+              ><strong class="bad">S/ {{ n().morosidad.miDeuda | number }}</strong>
             </div>
-            <div class="alert alert--warning" style="margin:10px 0">
-              <app-icon name="alert" [size]="16" /> Tu grupo necesita pagar \${{
-                c.morosidad.pagoNecesario | number
-              }}
-              para un IM saludable.
-            </div>
+            @if (n().morosidad.pagoNecesario > 0) {
+              <div class="alert alert--warning" style="margin:10px 0">
+                <app-icon name="alert" [size]="16" /> Tu grupo necesita pagar S/
+                {{ n().morosidad.pagoNecesario | number }} para un IM saludable.
+              </div>
+            } @else {
+              <div class="alert alert--info" style="margin:10px 0">
+                <app-icon name="check" [size]="16" /> IM saludable — dentro de la meta PAR+ (3%).
+              </div>
+            }
             <div class="acc">
               <a class="acc__link" routerLink="/n/equipo"
                 ><app-icon name="wallet" [size]="15" /> Créditos por aprobar →</a
@@ -180,16 +221,16 @@ import { CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../data/mock';
               <app-icon name="wallet" [size]="16" /> Crédito Yanbal
             </h3>
             <div class="row-between">
-              <span class="badge badge--success">{{ c.credito.estado }}</span>
+              <span class="badge badge--success">{{ n().credito.estado }}</span>
             </div>
             <div style="display:flex;gap:16px;align-items:center;margin-top:10px">
-              <app-ring [pct]="credPct" [size]="92" label="usado" [expected]="0" />
+              <app-ring [pct]="credPct()" [size]="92" label="usado" [expected]="0" />
               <div>
                 <div class="kv">
-                  <span>Disponible</span><strong>\${{ c.credito.disponible | number }}</strong>
+                  <span>Disponible</span><strong>S/ {{ n().credito.disponible | number }}</strong>
                 </div>
                 <div class="kv">
-                  <span>Total</span><strong>\${{ c.credito.total | number }}</strong>
+                  <span>Total</span><strong>S/ {{ n().credito.total | number }}</strong>
                 </div>
               </div>
             </div>
@@ -223,12 +264,43 @@ import { CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../data/mock';
         gap: 10px;
       }
 
-      /* Hero de estado */
+      /* Hero de estado — el color acompaña al cuadrante del estatus */
       .hero-estado {
         display: flex;
         gap: 18px;
         align-items: center;
+      }
+      .hero-estado--danger {
         border-color: var(--danger);
+      }
+      .hero-estado--danger .hero-estado__q {
+        color: var(--danger);
+        background: var(--danger-bg);
+        border-color: var(--danger);
+      }
+      .hero-estado--warning {
+        border-color: var(--warning);
+      }
+      .hero-estado--warning .hero-estado__q {
+        color: var(--warning);
+        background: var(--warning-bg);
+        border-color: var(--warning);
+      }
+      .hero-estado--brand {
+        border-color: var(--brand-600);
+      }
+      .hero-estado--brand .hero-estado__q {
+        color: var(--brand-700);
+        background: var(--brand-100);
+        border-color: var(--brand-600);
+      }
+      .hero-estado--success {
+        border-color: var(--success);
+      }
+      .hero-estado--success .hero-estado__q {
+        color: var(--success);
+        background: var(--success-bg);
+        border-color: var(--success);
       }
       .hero-estado__ill {
         width: 56px;
@@ -247,9 +319,8 @@ import { CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../data/mock';
         font-family: var(--font-display);
         font-size: 46px;
         font-weight: 800;
-        color: var(--danger);
-        background: var(--danger-bg);
-        border: 2px solid var(--danger);
+        border: 2px solid var(--line-strong);
+        background: var(--sand);
       }
       .hero-estado__body {
         display: flex;
@@ -296,8 +367,9 @@ import { CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../data/mock';
       .matrix__cell--d {
         background: var(--danger-bg);
       }
+      /* Marcador de posición: neutro (el tono ya lo da la celda) */
       .here {
-        outline: 2.5px solid var(--danger);
+        outline: 2.5px solid var(--ink);
         outline-offset: 2px;
       }
       .here__dot {
@@ -307,8 +379,8 @@ import { CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../data/mock';
         width: 14px;
         height: 14px;
         border-radius: 99px;
-        background: var(--danger);
-        box-shadow: 0 0 0 4px color-mix(in srgb, var(--danger) 30%, transparent);
+        background: var(--ink);
+        box-shadow: 0 0 0 4px color-mix(in srgb, var(--ink) 25%, transparent);
       }
       .matrix__axis {
         position: absolute;
@@ -408,6 +480,9 @@ import { CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../data/mock';
       .bad {
         color: var(--danger);
       }
+      .ok {
+        color: var(--success);
+      }
       .progress--im .progress__fill {
         background: linear-gradient(90deg, var(--warning), var(--danger));
       }
@@ -463,33 +538,44 @@ import { CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../data/mock';
   ],
 })
 export class Negocio {
+  private readonly estatusDirSrv = inject(EstatusDirService);
+
   protected readonly c = CAMPANA;
   protected readonly historia = CUADRANTE_HISTORIA;
   protected readonly rec = RECONOCIMIENTOS;
-  protected readonly ppedSlots = [1, 2, 3, 4];
 
-  /** Único % grande de la vista: venta sobre el mínimo (MRM) para Cuadrante A. */
-  protected readonly mrmPct = Math.round(
-    (CAMPANA.ventaActual / CAMPANA.cuadrante.ventaRequerida) * 100,
-  ); // 92
-  /** Contexto pequeño: avance alcanzado sobre la meta C6 (no es el MRM). Truncado:
-   *  es % efectivamente alcanzado (56,6% → 56% alcanzado). */
-  protected readonly metaPct = Math.floor((CAMPANA.ventaActual / CAMPANA.meta) * 100); // 56
-  protected readonly imPct = Math.min(100, Math.round((CAMPANA.morosidad.im / 6) * 100));
-  protected readonly credPct = Math.round(
-    (CAMPANA.credito.utilizado / CAMPANA.credito.total) * 100,
+  /** Perfil del estatus encarnado: su negocio y su vara de Cuadrante A. */
+  protected readonly p = computed(() => PERFILES_DIR[this.estatusDirSrv.estatus()]);
+  protected readonly n = computed(() => this.p().negocio);
+  protected readonly vara = computed(() => this.p().cuadranteA);
+
+  /** Único % grande de la vista: venta sobre el mínimo (MRM) del estatus. */
+  protected readonly mrmPct = computed(() =>
+    Math.min(100, Math.round((this.n().ventaGP / this.vara().venta) * 100)),
+  );
+  protected readonly faltaVenta = computed(() => Math.max(0, this.vara().venta - this.n().ventaGP));
+  protected readonly ppedListo = computed(() => this.n().pped >= this.vara().pped);
+  protected readonly ppedSlots = computed(() =>
+    Array.from({ length: this.vara().pped }, (_, i) => i + 1),
+  );
+  /** IM sobre el límite de morosidad del país (6%). */
+  protected readonly imPct = computed(() =>
+    Math.min(100, Math.round((this.n().morosidad.im / 6) * 100)),
+  );
+  protected readonly credPct = computed(() =>
+    Math.round((this.n().credito.utilizado / this.n().credito.total) * 100),
   );
 
   protected readonly completadas = CUADRANTE_HISTORIA.filter((h) => h.valor !== '-').length; // 6
   protected readonly enA = CUADRANTE_HISTORIA.filter((h) => h.valor === 'A').length; // 5
 
-  /** Severidad: verde=bien · ámbar=atrasado · rojo=crítico. 0 PPED es lo que la mantiene en D → rojo. */
-  protected readonly resultados = [
+  /** Severidad: verde=bien · ámbar=atrasado · rojo=crítico. */
+  protected readonly resultados = computed(() => [
     {
       label: 'Venta GP',
-      valor: '$' + CAMPANA.ventaActual.toLocaleString('en-US'),
-      detalle: `${this.mrmPct}% del MRM · ${this.metaPct}% de meta C6`,
-      tone: 'warn',
+      valor: 'S/ ' + this.n().ventaGP.toLocaleString('es-PE'),
+      detalle: `${this.mrmPct()}% del MRM de tu estatus (S/ ${this.vara().venta.toLocaleString('es-PE')})`,
+      tone: this.mrmPct() >= 100 ? 'ok' : 'warn',
     },
     {
       label: 'Activas GP',
@@ -499,9 +585,9 @@ export class Negocio {
     },
     {
       label: 'Primeros pedidos',
-      valor: `${CAMPANA.primerosPedidos.valor} / ${CAMPANA.cuadrante.ppedRequeridos}`,
+      valor: `${this.n().pped} / ${this.vara().pped}`,
       detalle: 'requisito de Cuadrante A',
-      tone: 'bad',
+      tone: this.ppedListo() ? 'ok' : this.n().pped === 0 ? 'bad' : 'warn',
     },
-  ];
+  ]);
 }

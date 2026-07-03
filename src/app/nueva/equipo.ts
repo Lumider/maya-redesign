@@ -380,9 +380,7 @@ import {
                         }}</span
                         ><span class="tiny"
                           >Proyecta
-                          {{
-                            d.par.proyectada ? 'Estrella ' + d.par.proyectada : 'sin proyección'
-                          }}
+                          {{ d.par.proyectada ? 'Estrella ' + d.par.proyectada : 'sin proyección' }}
                           · Sueño Estrella {{ d.par.sueno }}</span
                         >
                       </div>
