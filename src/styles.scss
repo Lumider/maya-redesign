@@ -369,6 +369,9 @@ button {
 
 .badge {
   display: inline-flex;
+  /* Hug content (FrYDA): el badge siempre abraza su texto; sin esto, como hijo
+     directo de un flex-column o grid con stretch se estiraría a todo el ancho. */
+  width: fit-content;
   align-items: center;
   gap: 4px;
   font-size: 11px;
