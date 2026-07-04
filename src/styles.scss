@@ -216,14 +216,19 @@ button {
 
 /* Cards — FrYDA "stroke suave" adoptado como oficial (card-business,
    Foundations 11016-32806): borde yanbal-black-20, el tono FrYDA más cercano
-   al --line anterior, y radio 16px de la spec. Antes: borde --line + radio 12px. */
+   al --line anterior, y radio 16px de la spec. Antes: borde --line + radio 12px.
+   El borde vive en un token de componente para poder probarlo en vivo desde
+   el personalizador de /ui (en oscuro se deriva del mismo token atenuado). */
+:root {
+  --fryda-card-border: var(--fry-yanbal-black-20);
+}
 .card {
   background: var(--surface);
-  border: 1px solid var(--fry-yanbal-black-20);
+  border: 1px solid var(--fryda-card-border);
   border-radius: 16px;
 }
 [data-theme='dark'] .card {
-  border-color: color-mix(in srgb, var(--fry-yanbal-black-20) 16%, transparent);
+  border-color: color-mix(in srgb, var(--fryda-card-border) 16%, transparent);
 }
 
 .card--hover {

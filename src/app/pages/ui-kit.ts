@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from '@angular/core';
+import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
 import { Icon } from '../shared/icon';
 import { Icon3d } from '../shared/icon3d';
 import { Ring } from '../shared/ring';
@@ -24,24 +24,52 @@ import { Reveal } from '../shared/reveal';
         </p>
       </header>
 
-      <!-- Primitives FrYDA -->
+      <!-- Primitives FrYDA + personalizador en vivo -->
       <section class="card pad v2-section" appReveal>
-        <h2 class="v2-h">🧬 Primitives FrYDA</h2>
+        <h2 class="v2-h">🧬 Primitives FrYDA · personalizador en vivo</h2>
         <p class="tiny" style="margin:0 0 12px">
           Las 23 familias × 10 tonos del Figma Variables (design-tokens/Primitives.json →
-          <code>--fry-familia-tono</code>). Los componentes FrYDA (botón, badge) beben de aquí. Pasa
-          el mouse para ver el nombre de cada token.
+          <code>--fry-familia-tono</code>). Elige abajo una propiedad de componente y haz clic en un
+          color: se copia el hex y el cambio se aplica al instante en todo el proyecto (solo en esta
+          pestaña — para hacerlo oficial, pídelo).
         </p>
+
+        <div class="perso">
+          <label class="perso__campo">
+            <span class="tiny">Propiedad a cambiar</span>
+            <select class="perso__select" (change)="propSel.set(asValue($event))">
+              @for (g of gruposProp; track g.nombre) {
+                <optgroup [label]="g.nombre">
+                  @for (p of g.props; track p.token) {
+                    <option [value]="p.token" [selected]="propSel() === p.token">
+                      {{ p.etiqueta }}
+                    </option>
+                  }
+                </optgroup>
+              }
+            </select>
+          </label>
+          <span class="perso__aviso tiny" aria-live="polite">{{ copiado() }}</span>
+          @if (numCambios() > 0) {
+            <button class="btn btn--soft perso__reset" (click)="restaurar()">
+              Restaurar originales ({{ numCambios() }})
+            </button>
+          }
+        </div>
+
         @for (f of familias; track f) {
           <div class="prim-fila">
             <code class="prim-nombre">{{ f }}</code>
             <div class="prim-tonos">
               @for (t of tonos; track t) {
-                <span
+                <button
+                  type="button"
                   class="prim-sw"
                   [style.background]="'var(--fry-' + f + '-' + t + ')'"
-                  [title]="'--fry-' + f + '-' + t"
-                ></span>
+                  [title]="'--fry-' + f + '-' + t + ' — clic: copiar y aplicar'"
+                  [attr.aria-label]="'Aplicar --fry-' + f + '-' + t + ' a ' + etiquetaSel()"
+                  (click)="elegirColor(f, t)"
+                ></button>
               }
             </div>
           </div>
@@ -544,6 +572,49 @@ import { Reveal } from '../shared/reveal';
         height: 22px;
         border-radius: 5px;
         border: 1px solid var(--line);
+        padding: 0;
+        cursor: pointer;
+        transition: transform 0.1s ease;
+      }
+      .prim-sw:hover {
+        transform: scale(1.18);
+        border-color: var(--ink-3);
+      }
+
+      /* Personalizador en vivo */
+      .perso {
+        display: flex;
+        align-items: flex-end;
+        gap: 14px;
+        flex-wrap: wrap;
+        margin: 0 0 14px;
+        padding: 12px 14px;
+        background: var(--sand);
+        border-radius: var(--radius);
+      }
+      .perso__campo {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .perso__select {
+        font: inherit;
+        font-size: 13px;
+        color: var(--ink);
+        background: var(--surface);
+        border: 1px solid var(--line-strong);
+        border-radius: var(--radius-s);
+        padding: 8px 10px;
+      }
+      .perso__aviso {
+        flex: 1;
+        min-width: 180px;
+        font-weight: 700;
+        color: var(--success);
+      }
+      .perso__reset {
+        padding: 8px 16px;
+        font-size: 13px;
       }
       @media (max-width: 720px) {
         .prim-nombre {
@@ -572,6 +643,81 @@ import { Reveal } from '../shared/reveal';
   ],
 })
 export class UiKitPage {
+  /** Personalizador en vivo: propiedades de componente que se pueden re-colorear
+   *  con un clic en los primitives. Cada una es un token de :root, así que el
+   *  override inline en <html> gana y el cambio se ve en toda la app abierta.
+   *  Es una herramienta de prueba: no persiste ni toca el código. */
+  protected readonly gruposProp = [
+    { nombre: 'Card', props: [{ etiqueta: 'Borde', token: '--fryda-card-border' }] },
+    {
+      nombre: 'Botón primario',
+      props: [
+        { etiqueta: 'Fondo', token: '--fryda-btn-default' },
+        { etiqueta: 'Fondo hover', token: '--fryda-btn-hover' },
+        { etiqueta: 'Texto hover', token: '--fryda-btn-hover-content' },
+        { etiqueta: 'Fondo presionado', token: '--fryda-btn-pressed' },
+        { etiqueta: 'Texto presionado', token: '--fryda-btn-pressed-content' },
+        { etiqueta: 'Focus ring', token: '--fryda-focus-ring' },
+      ],
+    },
+    {
+      nombre: 'Badge Business',
+      props: [
+        { etiqueta: 'Neutral · fondo', token: '--fryda-tag-neutral-biz-bg' },
+        { etiqueta: 'Neutral · texto', token: '--fryda-tag-neutral-biz-fg' },
+        { etiqueta: 'Success · fondo', token: '--fryda-tag-success-biz-bg' },
+        { etiqueta: 'Success · texto', token: '--fryda-tag-success-biz-fg' },
+        { etiqueta: 'Warning · fondo', token: '--fryda-tag-warning-biz-bg' },
+        { etiqueta: 'Warning · texto', token: '--fryda-tag-warning-biz-fg' },
+        { etiqueta: 'Danger · fondo', token: '--fryda-tag-danger-biz-bg' },
+        { etiqueta: 'Danger · texto', token: '--fryda-tag-danger-biz-fg' },
+        { etiqueta: 'Info · fondo', token: '--fryda-tag-info-biz-bg' },
+        { etiqueta: 'Info · texto', token: '--fryda-tag-info-biz-fg' },
+        { etiqueta: 'Violet · fondo', token: '--fryda-tag-violet-biz-bg' },
+        { etiqueta: 'Violet · texto', token: '--fryda-tag-violet-biz-fg' },
+      ],
+    },
+  ];
+  protected readonly propSel = signal('--fryda-card-border');
+  protected readonly copiado = signal('');
+  private readonly cambiados = signal<string[]>([]);
+  protected readonly numCambios = computed(() => this.cambiados().length);
+  protected readonly etiquetaSel = computed(() => {
+    for (const g of this.gruposProp) {
+      const p = g.props.find((p) => p.token === this.propSel());
+      if (p) return `${g.nombre} · ${p.etiqueta}`;
+    }
+    return this.propSel();
+  });
+  private avisoTimer: ReturnType<typeof setTimeout> | undefined;
+
+  /** Copia el hex del primitive y lo aplica en vivo a la propiedad elegida. */
+  protected elegirColor(familia: string, tono: number): void {
+    const prim = `--fry-${familia}-${tono}`;
+    const hex = getComputedStyle(document.documentElement).getPropertyValue(prim).trim();
+    navigator.clipboard?.writeText(hex).catch(() => {});
+    document.documentElement.style.setProperty(this.propSel(), `var(${prim})`);
+    if (!this.cambiados().includes(this.propSel())) {
+      this.cambiados.update((c) => [...c, this.propSel()]);
+    }
+    this.copiado.set(`✓ ${hex} copiado → ${this.etiquetaSel()}`);
+    clearTimeout(this.avisoTimer);
+    this.avisoTimer = setTimeout(() => this.copiado.set(''), 3500);
+  }
+
+  /** Quita todos los overrides de prueba y vuelve a los tokens del código. */
+  protected restaurar(): void {
+    for (const token of this.cambiados()) {
+      document.documentElement.style.removeProperty(token);
+    }
+    this.cambiados.set([]);
+    this.copiado.set('Originales restaurados');
+  }
+
+  protected asValue(e: Event): string {
+    return (e.target as HTMLSelectElement).value;
+  }
+
   protected readonly rampa = [
     '--brand-50',
     '--brand-100',
