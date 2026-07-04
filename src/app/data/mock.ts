@@ -133,6 +133,8 @@ export interface Material {
   tag?: 'Actual' | 'Nuevo';
   gradiente: string;
   emoji: string;
+  /** Portada real (public/media); cuando existe reemplaza al emoji sobre el degradado. */
+  imagen?: string;
 }
 
 export const MATERIALES: Material[] = [
@@ -153,6 +155,7 @@ export const MATERIALES: Material[] = [
     tag: 'Actual',
     gradiente: 'linear-gradient(160deg, #2f4858, #33658a)',
     emoji: '💄',
+    imagen: 'media/catalogo.png',
   },
   {
     titulo: 'Entrenos C6',
@@ -160,7 +163,12 @@ export const MATERIALES: Material[] = [
     gradiente: 'linear-gradient(160deg, #7a5c3e, #a98253)',
     emoji: '🧖🏽‍♀️',
   },
-  { titulo: 'Catálogo C7', gradiente: 'linear-gradient(160deg, #4c2a59, #7c3aed)', emoji: '✨' },
+  {
+    titulo: 'Catálogo C7',
+    gradiente: 'linear-gradient(160deg, #4c2a59, #7c3aed)',
+    emoji: '✨',
+    imagen: 'media/catalogo.png',
+  },
   { titulo: 'Entrenos C7', gradiente: 'linear-gradient(160deg, #9a3412, #ea580c)', emoji: '🍳' },
   { titulo: 'Reporte PAR+', gradiente: 'linear-gradient(160deg, #155e75, #0891b2)', emoji: '🌊' },
 ];

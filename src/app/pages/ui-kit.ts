@@ -334,7 +334,7 @@ import { Reveal } from '../shared/reveal';
         </div>
 
         <span class="vs__label" style="display:block;margin-top:16px"
-          >Candidato Card FrYDA (Foundations 11016-32806) — comparar y decidir</span
+          >Card FrYDA stroke suave — adoptada como oficial (Foundations 11016-32806)</span
         >
         <div
           class="tiles"
@@ -342,12 +342,24 @@ import { Reveal } from '../shared/reveal';
         >
           <div>
             <div class="card pad">
-              <strong>Card actual</strong>
+              <strong>Card oficial (.card)</strong>
               <p class="tiny" style="margin:6px 0 0">
                 Mismo contenido de ejemplo para comparar el marco.
               </p>
             </div>
-            <span class="tiny">.card · borde --line · radio 12px</span>
+            <span class="tiny">borde yanbal-black-20 · radio 16px · FrYDA stroke suave</span>
+          </div>
+          <div>
+            <div
+              class="pad"
+              style="background:var(--surface);border:1px solid var(--line);border-radius:var(--radius)"
+            >
+              <strong>Anterior</strong>
+              <p class="tiny" style="margin:6px 0 0">
+                Mismo contenido de ejemplo para comparar el marco.
+              </p>
+            </div>
+            <span class="tiny">borde --line · radio 12px · reemplazada por FrYDA en C7 2026</span>
           </div>
           <div>
             <div class="card-fry pad">
@@ -356,7 +368,7 @@ import { Reveal } from '../shared/reveal';
                 Mismo contenido de ejemplo para comparar el marco.
               </p>
             </div>
-            <span class="tiny">borde yanbal-black-40 · radio 16px</span>
+            <span class="tiny">borde yanbal-black-40 · evaluada, no adoptada</span>
           </div>
           <div>
             <div class="card-fry card-fry--medio pad">
@@ -365,24 +377,14 @@ import { Reveal } from '../shared/reveal';
                 Mismo contenido de ejemplo para comparar el marco.
               </p>
             </div>
-            <span class="tiny">borde yanbal-black-30 · radio 16px</span>
-          </div>
-          <div>
-            <div class="card-fry card-fry--suave pad">
-              <strong>Card FrYDA stroke suave</strong>
-              <p class="tiny" style="margin:6px 0 0">
-                Mismo contenido de ejemplo para comparar el marco.
-              </p>
-            </div>
-            <span class="tiny">borde yanbal-black-20 (≈ --line actual) · radio 16px</span>
+            <span class="tiny">borde yanbal-black-30 · evaluada, no adoptada</span>
           </div>
         </div>
         <p class="tiny" style="margin:8px 0 0">
-          El original marca el borde con yanbal-black-40 (#A1A5AE), bastante más oscuro que nuestro
-          --line (#EBEBEB). El punto medio (yanbal-black-30, #C4C7CE) sigue visible para ojos 40+
-          con sensibilidad al contraste reducida, sin el peso del original cuando hay muchas cards.
-          La variante suave baja a yanbal-black-20 (#E6E8EC), el tono de la misma familia más
-          cercano al stroke actual; fondo = yanbal-black-10 (blanco).
+          Adoptada la variante stroke suave: borde yanbal-black-20 (#E6E8EC), el tono FrYDA más
+          cercano al --line anterior (#EBEBEB), con el radio 16px de la spec card-business. El
+          original (black-40) y el punto medio (black-30) quedan como referencia de la evaluación
+          para el público 30–50.
         </p>
       </section>
 

@@ -313,7 +313,7 @@ import { CAMPANA_CES, GANAMAS_NIVELES, PERFILES } from '../data/mock-ces';
           </div>
 
           <div class="card pad tipcard" appReveal [revealDelay]="140">
-            <img src="icons/file.png" alt="" aria-hidden="true" width="40" height="40" />
+            <img src="media/catalogo.png" alt="" aria-hidden="true" width="44" height="44" />
             <p class="tiny" style="margin:0">
               El catálogo {{ c.actual }} y el material para incorporar están en
               <a class="link" routerLink="/externa/reportes">Mis Herramientas ↗</a>

@@ -214,10 +214,16 @@ button {
    Utilidades compartidas
    -------------------------------------------------------------------------- */
 
+/* Cards — FrYDA "stroke suave" adoptado como oficial (card-business,
+   Foundations 11016-32806): borde yanbal-black-20, el tono FrYDA más cercano
+   al --line anterior, y radio 16px de la spec. Antes: borde --line + radio 12px. */
 .card {
   background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: var(--radius);
+  border: 1px solid var(--fry-yanbal-black-20);
+  border-radius: 16px;
+}
+[data-theme='dark'] .card {
+  border-color: color-mix(in srgb, var(--fry-yanbal-black-20) 16%, transparent);
 }
 
 .card--hover {
@@ -483,11 +489,10 @@ button {
   color: var(--fry-blue-70);
 }
 
-/* CANDIDATO Card FrYDA (Figma Foundations 11016-32806, "card-business"):
-   fondo yanbal-black-10 (blanco), borde 1px yanbal-black-40, radio 16px,
-   contenido delegado por slot. La variante --suave baja el borde a
-   yanbal-black-20, el tono de la misma familia más cercano al --line actual
-   (#ebebeb); el más cercano en absoluto sería slate-20 (#e8eced). */
+/* Card FrYDA (Figma Foundations 11016-32806, "card-business") — referencias
+   del UI Kit. La variante --suave (borde yanbal-black-20) fue ADOPTADA como
+   oficial en .card; el original (black-40) y el punto medio (black-30) se
+   conservan solo para comparar en /ui. */
 .card-fry {
   background: var(--fry-yanbal-black-10);
   border: 1px solid var(--fry-yanbal-black-40);

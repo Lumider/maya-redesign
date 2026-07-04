@@ -143,7 +143,11 @@ const ACCESOS = [
         @for (m of materiales; track m.titulo) {
           <a class="material card--hover" routerLink="/herramientas">
             <div class="material__cover" [style.background]="m.gradiente">
-              <span>{{ m.emoji }}</span>
+              @if (m.imagen) {
+                <img class="material__img" [src]="m.imagen" [alt]="m.titulo" />
+              } @else {
+                <span>{{ m.emoji }}</span>
+              }
               @if (m.tag) {
                 <span class="material__tag" [class.material__tag--new]="m.tag === 'Nuevo'">{{
                   m.tag
@@ -449,6 +453,12 @@ const ACCESOS = [
         place-items: center;
         font-size: 46px;
         box-shadow: var(--shadow-s);
+      }
+      /* Portada real (render con transparencia) flotando sobre el degradado. */
+      .material__img {
+        width: 82%;
+        height: 82%;
+        object-fit: contain;
       }
       .material__tag {
         position: absolute;
