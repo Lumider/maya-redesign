@@ -334,7 +334,7 @@ import { Reveal } from '../shared/reveal';
         </div>
 
         <span class="vs__label" style="display:block;margin-top:16px"
-          >Card FrYDA stroke suave — adoptada como oficial (Foundations 11016-32806)</span
+          >Card FrYDA punto medio — adoptada como oficial (Foundations 11016-32806)</span
         >
         <div
           class="tiles"
@@ -347,7 +347,7 @@ import { Reveal } from '../shared/reveal';
                 Mismo contenido de ejemplo para comparar el marco.
               </p>
             </div>
-            <span class="tiny">borde yanbal-black-20 · radio 16px · FrYDA stroke suave</span>
+            <span class="tiny">borde yanbal-black-30 · radio 16px · FrYDA punto medio</span>
           </div>
           <div>
             <div
@@ -371,20 +371,20 @@ import { Reveal } from '../shared/reveal';
             <span class="tiny">borde yanbal-black-40 · evaluada, no adoptada</span>
           </div>
           <div>
-            <div class="card-fry card-fry--medio pad">
-              <strong>Card FrYDA punto medio</strong>
+            <div class="card-fry card-fry--suave pad">
+              <strong>Card FrYDA stroke suave</strong>
               <p class="tiny" style="margin:6px 0 0">
                 Mismo contenido de ejemplo para comparar el marco.
               </p>
             </div>
-            <span class="tiny">borde yanbal-black-30 · evaluada, no adoptada</span>
+            <span class="tiny">borde yanbal-black-20 · evaluada, no adoptada</span>
           </div>
         </div>
         <p class="tiny" style="margin:8px 0 0">
-          Adoptada la variante stroke suave: borde yanbal-black-20 (#E6E8EC), el tono FrYDA más
-          cercano al --line anterior (#EBEBEB), con el radio 16px de la spec card-business. El
-          original (black-40) y el punto medio (black-30) quedan como referencia de la evaluación
-          para el público 30–50.
+          Adoptada la variante punto medio: borde yanbal-black-30 (#C4C7CE), visible para el público
+          30–50 con sensibilidad al contraste reducida, sin el peso del black-40 original, con el
+          radio 16px de la spec card-business. El original (black-40) y el stroke suave (black-20)
+          quedan como referencia de la evaluación.
         </p>
       </section>
 
