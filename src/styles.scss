@@ -668,12 +668,14 @@ button {
    ========================================================================== */
 
 /* Scroll-reveal (directiva appReveal) */
+/* Entrada de elementos — timing OUTFIT: sube 1.2em en 1s con expo.out ≈
+   cubic-bezier(0.19, 1, 0.22, 1); el stagger (0.09s) lo pone el directive. */
 .reveal {
   opacity: 0;
-  transform: translateY(16px);
+  transform: translateY(1.2em);
   transition:
-    opacity 0.5s cubic-bezier(0.22, 1, 0.36, 1),
-    transform 0.5s cubic-bezier(0.22, 1, 0.36, 1);
+    opacity 0.7s cubic-bezier(0.19, 1, 0.22, 1),
+    transform 1s cubic-bezier(0.19, 1, 0.22, 1);
 }
 .reveal--in {
   opacity: 1;
