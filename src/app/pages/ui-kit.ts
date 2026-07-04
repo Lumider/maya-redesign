@@ -332,6 +332,44 @@ import { Reveal } from '../shared/reveal';
             <div class="alert alert--info">💡 alert--info</div>
           </div>
         </div>
+
+        <span class="vs__label" style="display:block;margin-top:16px"
+          >Candidato Card FrYDA (Foundations 11016-32806) — comparar y decidir</span
+        >
+        <div class="tiles" style="grid-template-columns:repeat(3,1fr);margin-top:6px">
+          <div>
+            <div class="card pad">
+              <strong>Card actual</strong>
+              <p class="tiny" style="margin:6px 0 0">
+                Mismo contenido de ejemplo para comparar el marco.
+              </p>
+            </div>
+            <span class="tiny">.card · borde --line · radio 12px</span>
+          </div>
+          <div>
+            <div class="card-fry pad">
+              <strong>Card FrYDA original</strong>
+              <p class="tiny" style="margin:6px 0 0">
+                Mismo contenido de ejemplo para comparar el marco.
+              </p>
+            </div>
+            <span class="tiny">borde yanbal-black-40 · radio 16px</span>
+          </div>
+          <div>
+            <div class="card-fry card-fry--suave pad">
+              <strong>Card FrYDA stroke suave</strong>
+              <p class="tiny" style="margin:6px 0 0">
+                Mismo contenido de ejemplo para comparar el marco.
+              </p>
+            </div>
+            <span class="tiny">borde yanbal-black-20 (≈ --line actual) · radio 16px</span>
+          </div>
+        </div>
+        <p class="tiny" style="margin:8px 0 0">
+          El original marca el borde con yanbal-black-40 (#A1A5AE), bastante más oscuro que nuestro
+          --line (#EBEBEB). La variante suave baja a yanbal-black-20 (#E6E8EC), el tono de la misma
+          familia más cercano al stroke actual; fondo = yanbal-black-10 (blanco).
+        </p>
       </section>
 
       <!-- Iconos de línea -->

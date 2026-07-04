@@ -483,6 +483,32 @@ button {
   color: var(--fry-blue-70);
 }
 
+/* CANDIDATO Card FrYDA (Figma Foundations 11016-32806, "card-business"):
+   fondo yanbal-black-10 (blanco), borde 1px yanbal-black-40, radio 16px,
+   contenido delegado por slot. La variante --suave baja el borde a
+   yanbal-black-20, el tono de la misma familia más cercano al --line actual
+   (#ebebeb); el más cercano en absoluto sería slate-20 (#e8eced). */
+.card-fry {
+  background: var(--fry-yanbal-black-10);
+  border: 1px solid var(--fry-yanbal-black-40);
+  border-radius: 16px;
+  overflow: hidden;
+}
+.card-fry--suave {
+  border-color: var(--fry-yanbal-black-20);
+}
+[data-theme='dark'] {
+  /* En oscuro el fondo pasa a la superficie del tema y los bordes se derivan
+     de los mismos primitives atenuados sobre transparente. */
+  .card-fry {
+    background: var(--surface);
+    border-color: color-mix(in srgb, var(--fry-yanbal-black-40) 45%, transparent);
+  }
+  .card-fry--suave {
+    border-color: color-mix(in srgb, var(--fry-yanbal-black-20) 16%, transparent);
+  }
+}
+
 /* Variante System (sólida) — para veredictos fuertes: .badge--sys.badge--danger */
 .badge--sys.badge--success {
   background: var(--fryda-tag-success-sys-bg);
