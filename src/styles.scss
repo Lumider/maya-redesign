@@ -7,51 +7,63 @@
 @import 'fryda-primitives';
 
 :root {
-  /* Marca — naranja Yanbal anclado en #DC582A */
-  --brand-50: #fff3ed;
-  --brand-100: #ffe2d3;
-  --brand-200: #ffc4a8;
-  --brand-300: #ff9c6b;
-  --brand-400: #ff6f3c;
-  --brand-500: #dc582a;
-  --brand-600: #c2410c; /* texto/acento sobre claro — AA (5.2:1 sobre blanco) */
-  --brand-700: #b8400c;
-  --brand-800: #92330b;
-  --brand-grad: linear-gradient(to right, #e85d27, #cf4914); /* decorativo/texto grande (≥3:1) */
-  --brand-grad-strong: linear-gradient(to right, #c2410c, #9a3412); /* texto blanco normal — AA */
+  /* Marca — rampa cableada a yanbal-orange (primitives FrYDA). El ancla pasa
+     de #DC582A a orange-60 #D95F34, su tono FrYDA más cercano. Los tonos 600
+     y 700 (casi idénticos antes) colapsan en orange-90. */
+  --brand-50: var(--fry-yanbal-orange-10);
+  --brand-100: var(--fry-yanbal-orange-20);
+  --brand-200: var(--fry-yanbal-orange-30);
+  --brand-300: var(--fry-yanbal-orange-40);
+  --brand-400: var(--fry-yanbal-orange-50);
+  --brand-500: var(--fry-yanbal-orange-60);
+  --brand-600: var(--fry-yanbal-orange-90); /* texto/acento — AA 6.3 blanco · 5.9 bone-10 */
+  --brand-700: var(--fry-yanbal-orange-90);
+  --brand-800: var(--fry-yanbal-orange-100); /* blanco sobre él 9.4 */
+  /* decorativo/texto grande (blanco ≥3:1 en ambos extremos) */
+  --brand-grad: linear-gradient(to right, var(--fry-yanbal-orange-60), var(--fry-yanbal-orange-70));
+  /* texto blanco normal — AA (4.6 y 9.4) */
+  --brand-grad-strong: linear-gradient(
+    to right,
+    var(--fry-yanbal-orange-80),
+    var(--fry-yanbal-orange-100)
+  );
 
-  /* Neutros — el fondo de página y el header beben de la familia bone de
-     FrYDA (cálida) para separar el lienzo de las superficies blancas. */
+  /* Neutros — lienzo y rellenos suaves desde bone (cálido); textos y líneas
+     desde yanbal-black (el neutro FrYDA). Ratios medidos sobre bone-10/blanco:
+     ink 15.4/16.5 · ink-2 8.9/9.6 · ink-3 6.3/6.8 — todos AA. */
   --bg: var(--fry-bone-10);
   --header-bg: var(--fry-bone-20);
-  --sand: #f7f7f7;
-  --surface: #ffffff;
-  --line: #ebebeb;
-  --line-strong: #dddddd;
-  --ink: #222222;
-  --ink-2: #5f5f5f;
-  --ink-3: #6e6e6e; /* texto tenue legible — AA (5:1 sobre blanco) */
-  --on-ink: #ffffff; /* texto que contrasta con fondos var(--ink) */
+  --sand: var(--fry-bone-20);
+  --surface: var(--fry-yanbal-black-10);
+  --line: var(--fry-yanbal-black-20);
+  --line-strong: var(--fry-yanbal-black-30);
+  --ink: var(--fry-yanbal-black-100);
+  --ink-2: var(--fry-yanbal-black-80);
+  --ink-3: var(--fry-yanbal-black-70); /* texto tenue legible — AA */
+  --on-ink: var(--fry-yanbal-black-10); /* texto que contrasta con fondos var(--ink) */
 
   /* Rellenos sólidos que SIEMPRE llevan texto/icono blanco — estables en ambos
-     temas (no se aclaran en oscuro, así el blanco mantiene contraste AA). */
-  --fill-brand: #b8400c;
-  --fill-success: #00750a;
-  --fill-danger: #c13515;
+     temas. Blanco sobre ellos: 6.3 / 6.7 / 6.5 — AA. */
+  --fill-brand: var(--fry-yanbal-orange-90);
+  --fill-success: var(--fry-mint-90);
+  --fill-danger: var(--fry-crimson-60);
 
-  /* Estado — textos oscurecidos para pasar 4.5:1 sobre sus fondos suaves */
-  --success: #00750a;
-  --success-bg: #e8f5e9;
-  --warning: #8a5a13;
-  --warning-bg: #fdf3e0;
-  --danger: #c13515;
-  --danger-bg: #fdf0ed;
-  --info: #1d4fd7;
-  --info-bg: #e9f0fe;
-  --teal: #115e59;
-  --teal-bg: #dff3f1;
-  --violet: #6d28d9;
-  --violet-bg: #f0eafd;
+  /* Estado — familias semánticas FrYDA (las mismas que los badges), con el
+     par texto/fondo en la banda 5–8:1: success mint 6.1 · warning marigold
+     5.1 · danger crimson 5.4 · info blue 6.9 · teal aegean 7.1 · violet
+     (Reenroll) wine 6.4. */
+  --success: var(--fry-mint-90);
+  --success-bg: var(--fry-mint-10);
+  --warning: var(--fry-marigold-90);
+  --warning-bg: var(--fry-marigold-10);
+  --danger: var(--fry-crimson-60);
+  --danger-bg: var(--fry-crimson-10);
+  --info: var(--fry-blue-70);
+  --info-bg: var(--fry-blue-10);
+  --teal: var(--fry-aegean-60);
+  --teal-bg: var(--fry-aegean-10);
+  --violet: var(--fry-wine-60);
+  --violet-bg: var(--fry-wine-10);
 
   /* Forma y sombra */
   --radius-s: 8px;
@@ -71,43 +83,47 @@
    Solo se redefinen tokens; los componentes no cambian.
    ========================================================================== */
 [data-theme='dark'] {
-  /* La rampa naranja se mantiene vívida; ajustamos solo los extremos usados
-     como fondos suaves (tints) y como texto sobre tint. */
-  --brand-50: rgba(255, 124, 60, 0.08);
-  --brand-100: rgba(255, 124, 60, 0.16);
-  --brand-200: rgba(255, 124, 60, 0.26);
-  --brand-600: #ff7a44; /* acento sólido más luminoso para contraste en oscuro */
-  --brand-700: #ff9c6b; /* texto naranja sobre tint */
-  --brand-grad: linear-gradient(to right, #ff7a3d, #f2632a);
-  --brand-grad-strong: linear-gradient(to right, #c2410c, #9a3412); /* texto blanco normal — AA */
+  /* La rampa naranja se deriva de los mismos yanbal-orange: tints translúcidos
+     sobre transparente y acentos en los tonos pastel (40/30), que pasan AA
+     sobre la superficie oscura (8.4 y 11.4). */
+  --brand-50: color-mix(in srgb, var(--fry-yanbal-orange-50) 8%, transparent);
+  --brand-100: color-mix(in srgb, var(--fry-yanbal-orange-50) 16%, transparent);
+  --brand-200: color-mix(in srgb, var(--fry-yanbal-orange-50) 26%, transparent);
+  --brand-600: var(--fry-yanbal-orange-40); /* acento sólido más luminoso en oscuro */
+  --brand-700: var(--fry-yanbal-orange-30); /* texto naranja sobre tint */
+  --brand-grad: linear-gradient(to right, var(--fry-yanbal-orange-50), var(--fry-yanbal-orange-60));
 
-  /* Neutros — en oscuro el lienzo y el header se derivan del mismo bone-100
-     mezclado con negro: 25% ≈ el near-black cálido anterior (#131110) y 38%
-     deja el header apenas más claro, conservando la relación del tema claro. */
+  /* Neutros — todo el lienzo oscuro se deriva de bone-100 mezclado con negro
+     (25% ≈ el near-black cálido anterior; 38% para superficies y header; 50%
+     para rellenos suaves); textos en tonos claros de bone: ink 16.1 · ink-2
+     10.6 · ink-3 8.3 sobre superficie — AA. Las líneas salen del mismo
+     yanbal-black-20 del claro, atenuado sobre transparente. */
   --bg: color-mix(in srgb, var(--fry-bone-100) 25%, black);
   --header-bg: color-mix(in srgb, var(--fry-bone-100) 38%, black);
-  --sand: #262320;
-  --surface: #1c1a18;
-  --line: #2c2926;
-  --line-strong: #403b37;
-  --ink: #f6f3f0;
-  --ink-2: #ada69f;
-  --ink-3: #9c958d; /* texto tenue legible sobre superficie oscura — AA */
-  --on-ink: #131110; /* texto oscuro sobre fondos var(--ink) (claros en dark) */
+  --sand: color-mix(in srgb, var(--fry-bone-100) 50%, black);
+  --surface: color-mix(in srgb, var(--fry-bone-100) 38%, black);
+  --line: color-mix(in srgb, var(--fry-yanbal-black-20) 16%, transparent);
+  --line-strong: color-mix(in srgb, var(--fry-yanbal-black-20) 30%, transparent);
+  --ink: var(--fry-bone-10);
+  --ink-2: var(--fry-bone-50);
+  --ink-3: var(--fry-bone-60); /* texto tenue legible sobre superficie oscura — AA */
+  --on-ink: color-mix(in srgb, var(--fry-bone-100) 25%, black); /* texto oscuro sobre var(--ink) */
 
-  /* Estado — colores más claros + fondos translúcidos */
-  --success: #34d399;
-  --success-bg: rgba(52, 211, 153, 0.14);
-  --warning: #fbbf24;
-  --warning-bg: rgba(251, 191, 36, 0.14);
-  --danger: #f87171;
-  --danger-bg: rgba(248, 113, 113, 0.14);
-  --info: #60a5fa;
-  --info-bg: rgba(96, 165, 250, 0.14);
-  --teal: #2dd4bf;
-  --teal-bg: rgba(45, 212, 191, 0.14);
-  --violet: #a78bfa;
-  --violet-bg: rgba(167, 139, 250, 0.16);
+  /* Estado — texto pastel (tone-30) + fondo del mismo tono fuerte atenuado.
+     Ratios del texto sobre superficie oscura: mint 10.2 · marigold 11.9 ·
+     crimson 9.5 · blue 12.2 · aegean 5.6 · wine 8.9 — todos AA. */
+  --success: var(--fry-mint-30);
+  --success-bg: color-mix(in srgb, var(--fry-mint-80) 18%, transparent);
+  --warning: var(--fry-marigold-30);
+  --warning-bg: color-mix(in srgb, var(--fry-marigold-80) 18%, transparent);
+  --danger: var(--fry-crimson-30);
+  --danger-bg: color-mix(in srgb, var(--fry-crimson-60) 18%, transparent);
+  --info: var(--fry-blue-30);
+  --info-bg: color-mix(in srgb, var(--fry-blue-60) 18%, transparent);
+  --teal: var(--fry-aegean-30);
+  --teal-bg: color-mix(in srgb, var(--fry-aegean-60) 18%, transparent);
+  --violet: var(--fry-wine-30);
+  --violet-bg: color-mix(in srgb, var(--fry-wine-60) 20%, transparent);
 
   /* Sombras más marcadas para que se perciban sobre fondo oscuro */
   --shadow-s: 0 1px 2px rgba(0, 0, 0, 0.4);
@@ -128,11 +144,6 @@
 }
 [data-theme='dark'] .alert--info {
   color: var(--info);
-}
-
-/* Scrollbar en oscuro */
-[data-theme='dark'] ::-webkit-scrollbar-thumb {
-  background: #3a3633;
 }
 
 * {
@@ -207,7 +218,7 @@ button {
   height: 8px;
 }
 ::-webkit-scrollbar-thumb {
-  background: #d4d4d4;
+  background: var(--line-strong);
   border-radius: 99px;
   border: 2px solid var(--bg);
 }

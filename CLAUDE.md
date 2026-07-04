@@ -72,7 +72,7 @@ Ruta oculta `/ui` (`pages/ui-kit.ts`): muestra todos los tokens, badges, botones
 
 ### Primitives FrYDA (fuente de color)
 
-`design-tokens/Primitives.json` (export de Figma Variables) → `scripts/fryda-primitives.py` → `src/fryda-primitives.scss` (230 vars `--fry-familia-tono`, 23 familias × tonos 10–100). **Los componentes FrYDA (botón, badge) referencian primitives, nunca hex.** Si el equipo de diseño actualiza los primitives: reemplazar el JSON y correr el script. Galería completa en `/ui`.
+`design-tokens/Primitives.json` (export de Figma Variables) → `scripts/fryda-primitives.py` → `src/fryda-primitives.scss` (230 vars `--fry-familia-tono`, 23 familias × tonos 10–100). **Los componentes FrYDA (botón, badge, card) y TODOS los tokens del redesign (`:root` de styles.scss: marca, neutros, estados) referencian primitives, nunca hex.** Familias semánticas: marca=yanbal-orange, neutros de texto/línea=yanbal-black, lienzo=bone, success=mint, warning=marigold, danger=crimson, info=blue, teal=aegean, violet=wine. En oscuro todo se deriva de los mismos primitives (tonos pastel 30–60 para texto + `color-mix()` para fondos/superficies); los ratios AA medidos están comentados junto a cada bloque. Si el equipo de diseño actualiza los primitives: reemplazar el JSON y correr el script. Galería completa y personalizador en vivo en `/ui`.
 
 Reglas de migración de componentes (proceso FrYDA):
 1. Un componente nuevo/candidato entra primero SOLO al UI Kit — nunca directo a la app.

@@ -292,7 +292,7 @@ import { Reveal } from '../shared/reveal';
           <span class="tiny">danger (8.3) y violet (6.4) ya están en banda — no cambian</span>
         </div>
 
-        <span class="vs__label">Anteriores (se conservan como referencia)</span>
+        <span class="vs__label">Tonos de estado del redesign (--X / --X-bg)</span>
         <div class="fila" style="margin:6px 0 12px">
           @for (t of estados; track t) {
             <span
@@ -304,7 +304,8 @@ import { Reveal } from '../shared/reveal';
           }
           <span class="badge" style="background:var(--sand);color:var(--ink-2)">neutral</span>
           <span class="tiny" style="align-self:center"
-            >paleta previa · reemplazada por FrYDA en C7 2026</span
+            >alimentan alerts, semáforos y tints — cableados a primitives FrYDA en C7 2026 (banda
+            5–8:1)</span
           >
         </div>
 
