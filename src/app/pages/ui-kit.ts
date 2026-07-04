@@ -648,6 +648,13 @@ export class UiKitPage {
    *  override inline en <html> gana y el cambio se ve en toda la app abierta.
    *  Es una herramienta de prueba: no persiste ni toca el código. */
   protected readonly gruposProp = [
+    {
+      nombre: 'Página',
+      props: [
+        { etiqueta: 'Fondo main', token: '--bg' },
+        { etiqueta: 'Fondo header', token: '--header-bg' },
+      ],
+    },
     { nombre: 'Card', props: [{ etiqueta: 'Borde', token: '--fryda-card-border' }] },
     {
       nombre: 'Botón primario',

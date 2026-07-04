@@ -355,7 +355,7 @@ const MENU_LINKS: MenuLink[] = [
         position: sticky;
         top: 0;
         z-index: 50;
-        background: var(--surface);
+        background: var(--header-bg);
         border-bottom: 1px solid var(--line);
       }
       .hdr__inner {

@@ -20,8 +20,10 @@
   --brand-grad: linear-gradient(to right, #e85d27, #cf4914); /* decorativo/texto grande (≥3:1) */
   --brand-grad-strong: linear-gradient(to right, #c2410c, #9a3412); /* texto blanco normal — AA */
 
-  /* Neutros */
-  --bg: #ffffff;
+  /* Neutros — el fondo de página y el header beben de la familia bone de
+     FrYDA (cálida) para separar el lienzo de las superficies blancas. */
+  --bg: var(--fry-bone-10);
+  --header-bg: var(--fry-bone-20);
   --sand: #f7f7f7;
   --surface: #ffffff;
   --line: #ebebeb;
@@ -79,8 +81,11 @@
   --brand-grad: linear-gradient(to right, #ff7a3d, #f2632a);
   --brand-grad-strong: linear-gradient(to right, #c2410c, #9a3412); /* texto blanco normal — AA */
 
-  /* Neutros */
-  --bg: #131110;
+  /* Neutros — en oscuro el lienzo y el header se derivan del mismo bone-100
+     mezclado con negro: 25% ≈ el near-black cálido anterior (#131110) y 38%
+     deja el header apenas más claro, conservando la relación del tema claro. */
+  --bg: color-mix(in srgb, var(--fry-bone-100) 25%, black);
+  --header-bg: color-mix(in srgb, var(--fry-bone-100) 38%, black);
   --sand: #262320;
   --surface: #1c1a18;
   --line: #2c2926;
