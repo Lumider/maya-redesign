@@ -497,6 +497,11 @@ button {
 .card-fry--suave {
   border-color: var(--fry-yanbal-black-20);
 }
+/* Punto medio para el público 40+: visible con sensibilidad al contraste
+   reducida, sin el peso visual del black-40 cuando hay muchas cards. */
+.card-fry--medio {
+  border-color: var(--fry-yanbal-black-30);
+}
 [data-theme='dark'] {
   /* En oscuro el fondo pasa a la superficie del tema y los bordes se derivan
      de los mismos primitives atenuados sobre transparente. */
@@ -506,6 +511,9 @@ button {
   }
   .card-fry--suave {
     border-color: color-mix(in srgb, var(--fry-yanbal-black-20) 16%, transparent);
+  }
+  .card-fry--medio {
+    border-color: color-mix(in srgb, var(--fry-yanbal-black-30) 30%, transparent);
   }
 }
 

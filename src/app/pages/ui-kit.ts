@@ -336,7 +336,10 @@ import { Reveal } from '../shared/reveal';
         <span class="vs__label" style="display:block;margin-top:16px"
           >Candidato Card FrYDA (Foundations 11016-32806) — comparar y decidir</span
         >
-        <div class="tiles" style="grid-template-columns:repeat(3,1fr);margin-top:6px">
+        <div
+          class="tiles"
+          style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-top:6px"
+        >
           <div>
             <div class="card pad">
               <strong>Card actual</strong>
@@ -356,6 +359,15 @@ import { Reveal } from '../shared/reveal';
             <span class="tiny">borde yanbal-black-40 · radio 16px</span>
           </div>
           <div>
+            <div class="card-fry card-fry--medio pad">
+              <strong>Card FrYDA punto medio</strong>
+              <p class="tiny" style="margin:6px 0 0">
+                Mismo contenido de ejemplo para comparar el marco.
+              </p>
+            </div>
+            <span class="tiny">borde yanbal-black-30 · radio 16px</span>
+          </div>
+          <div>
             <div class="card-fry card-fry--suave pad">
               <strong>Card FrYDA stroke suave</strong>
               <p class="tiny" style="margin:6px 0 0">
@@ -367,8 +379,10 @@ import { Reveal } from '../shared/reveal';
         </div>
         <p class="tiny" style="margin:8px 0 0">
           El original marca el borde con yanbal-black-40 (#A1A5AE), bastante más oscuro que nuestro
-          --line (#EBEBEB). La variante suave baja a yanbal-black-20 (#E6E8EC), el tono de la misma
-          familia más cercano al stroke actual; fondo = yanbal-black-10 (blanco).
+          --line (#EBEBEB). El punto medio (yanbal-black-30, #C4C7CE) sigue visible para ojos 40+
+          con sensibilidad al contraste reducida, sin el peso del original cuando hay muchas cards.
+          La variante suave baja a yanbal-black-20 (#E6E8EC), el tono de la misma familia más
+          cercano al stroke actual; fondo = yanbal-black-10 (blanco).
         </p>
       </section>
 
