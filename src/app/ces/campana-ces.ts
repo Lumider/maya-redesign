@@ -24,7 +24,6 @@ import { CAMPANA_CES, GANAMAS_NIVELES, PERFILES } from '../data/mock-ces';
   template: `
     <div class="v2">
       <header class="v2-head" appReveal>
-        <nav class="crumbs tiny"><a routerLink="/n/inicio">Inicio</a> / Mi campaña</nav>
         <h1 class="v2-title">Mi campaña</h1>
         <p class="v2-sub">
           Cómo va tu {{ c.actual }} — semana {{ c.semana }} de {{ c.totalSemanas }}.

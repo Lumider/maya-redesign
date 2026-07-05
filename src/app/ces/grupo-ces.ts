@@ -19,7 +19,6 @@ import { GRUPO_CES, SEGMENTOS_CES, USUARIA_CES, type IntegranteCes } from '../da
   template: `
     <div class="v2">
       <header class="v2-head" appReveal>
-        <nav class="crumbs tiny"><a routerLink="/n/inicio">Inicio</a> / Mi grupo</nav>
         <h1 class="v2-title">Mi grupo</h1>
         <p class="v2-sub">Las {{ total }} personas de tu red y lo que cada una necesita hoy.</p>
 

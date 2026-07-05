@@ -22,7 +22,6 @@ import { PERFILES_DIR } from '../data/mock-dir';
   template: `
     <div class="v2">
       <header class="v2-head" appReveal>
-        <nav class="crumbs tiny"><a routerLink="/n/inicio">Inicio</a> / Mi campaña</nav>
         <div>
           <h1 class="v2-title">Mi campaña · {{ c.actual }}</h1>
           <p class="v2-sub">¿Voy a tiempo y qué hago esta campaña?</p>
@@ -410,12 +409,6 @@ import { PERFILES_DIR } from '../data/mock-dir';
   `,
   styles: [
     `
-      .crumbs {
-        margin-bottom: 6px;
-      }
-      .crumbs a {
-        color: var(--ink-2);
-      }
       .row-between {
         display: flex;
         align-items: center;

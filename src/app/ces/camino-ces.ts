@@ -23,7 +23,6 @@ import { CAMINO_CES, PERFILES } from '../data/mock-ces';
   template: `
     <div class="v2">
       <header class="v2-head" appReveal>
-        <nav class="crumbs tiny"><a routerLink="/n/inicio">Inicio</a> / Mi camino</nav>
         <h1 class="v2-title">Mi camino</h1>
         <p class="v2-sub">De Consultora a Directora: dónde estás y qué sigue.</p>
       </header>

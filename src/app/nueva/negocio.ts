@@ -26,7 +26,6 @@ import { PERFILES_DIR } from '../data/mock-dir';
   template: `
     <div class="v2">
       <header class="v2-head" appReveal>
-        <nav class="crumbs tiny"><a routerLink="/n/inicio">Inicio</a> / Mi negocio</nav>
         <h1 class="v2-title">Mi negocio</h1>
         <p class="v2-sub">Cómo está la salud de tu negocio esta campaña.</p>
         <nav class="anchors" aria-label="Secciones">
@@ -248,12 +247,6 @@ import { PERFILES_DIR } from '../data/mock-dir';
   `,
   styles: [
     `
-      .crumbs {
-        margin-bottom: 6px;
-      }
-      .crumbs a {
-        color: var(--ink-2);
-      }
       .pad {
         padding: 18px 20px;
       }

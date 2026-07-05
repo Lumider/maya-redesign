@@ -1,6 +1,5 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { Icon } from '../shared/icon';
 import { Reveal } from '../shared/reveal';
 import { Anchor } from '../shared/anchor';
@@ -17,11 +16,10 @@ import { PERFILES_DIR } from '../data/mock-dir';
 @Component({
   selector: 'app-carrera',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DecimalPipe, RouterLink, Icon, Reveal, Anchor],
+  imports: [DecimalPipe, Icon, Reveal, Anchor],
   template: `
     <div class="v2">
       <header class="v2-head" appReveal>
-        <nav class="crumbs tiny"><a routerLink="/n/inicio">Inicio</a> / Mi carrera</nav>
         <h1 class="v2-title">Mi carrera</h1>
         <p class="v2-sub">
           A dónde vas: tu sueño PAR+, tus reconocimientos y tu siguiente estatus.
@@ -233,12 +231,6 @@ import { PERFILES_DIR } from '../data/mock-dir';
   `,
   styles: [
     `
-      .crumbs {
-        margin-bottom: 6px;
-      }
-      .crumbs a {
-        color: var(--ink-2);
-      }
       .pad {
         padding: 18px 20px;
       }

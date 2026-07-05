@@ -19,7 +19,6 @@ import { INCORPORADAS_CES, USUARIA_CES } from '../data/mock-ces';
   template: `
     <div class="v2">
       <header class="v2-head" appReveal>
-        <nav class="crumbs tiny"><a routerLink="/n/inicio">Inicio</a> / Incorpora y Gana</nav>
         <h1 class="v2-title">Incorpora y Gana</h1>
         <p class="v2-sub">
           S/ 50 por campaña por cada nueva consultora activa al N1 — hasta 3 campañas (S/ 150) por
