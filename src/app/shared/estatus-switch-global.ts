@@ -1,6 +1,7 @@
 import { ChangeDetectionStrategy, Component, computed, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { PERFILES } from '../data/mock-ces';
+import { PERFIL_BDM } from '../data/mock-bdm';
 import { ESTATUS_DIR_ORDEN, PERFILES_DIR, type EstatusDir } from '../data/mock-dir';
 import {
   AudienciaService,
@@ -56,6 +57,18 @@ import {
               {{ e }}
             </button>
           }
+        </div>
+
+        <span class="sw__grupo">Staff de Ventas</span>
+        <div class="sw__chips">
+          <button
+            class="sw__chip"
+            [class.sw__chip--on]="actual() === 'BDM'"
+            (click)="verBdm()"
+            [attr.aria-pressed]="actual() === 'BDM'"
+          >
+            BDM
+          </button>
         </div>
 
         <p class="sw__desc">{{ descripcion() }}</p>
@@ -188,17 +201,30 @@ export class EstatusSwitchGlobal {
   protected readonly abierto = signal(true);
 
   /** Estatus encarnado ahora mismo (de la audiencia activa). */
-  protected readonly actual = computed(() =>
-    this.audiencia.tipo() === 'emprendedora' ? this.emp.estatus() : this.dir.estatus(),
-  );
+  protected readonly actual = computed(() => {
+    switch (this.audiencia.tipo()) {
+      case 'emprendedora':
+        return this.emp.estatus();
+      case 'bdm':
+        return 'BDM';
+      default:
+        return this.dir.estatus();
+    }
+  });
 
   protected readonly descripcion = computed(() => {
-    if (this.audiencia.tipo() === 'emprendedora') {
-      const p = PERFILES[this.emp.estatus()];
-      return `${p.nombreNivel} — ${p.resumen}`;
+    switch (this.audiencia.tipo()) {
+      case 'emprendedora': {
+        const p = PERFILES[this.emp.estatus()];
+        return `${p.nombreNivel} — ${p.resumen}`;
+      }
+      case 'bdm':
+        return `${PERFIL_BDM.nombreNivel} — ${PERFIL_BDM.resumen}`;
+      default: {
+        const p = PERFILES_DIR[this.dir.estatus()];
+        return `${p.nombreNivel} — ${p.resumen}`;
+      }
     }
-    const p = PERFILES_DIR[this.dir.estatus()];
-    return `${p.nombreNivel} — ${p.resumen}`;
   });
 
   protected verEmp(e: Estatus): void {
@@ -224,6 +250,12 @@ export class EstatusSwitchGlobal {
       '/n/carrera',
       '/n/herramientas',
     ]);
+  }
+
+  /** Encarna a la BDM (Staff de Ventas): su vista tiene Inicio y Mi campaña. */
+  protected verBdm(): void {
+    this.audiencia.set('bdm');
+    this.regresarSiNoExiste(['/n/inicio', '/n/campana', '/n/herramientas']);
   }
 
   /** Si la vista actual no existe para el estatus elegido, vuelve al inicio. */

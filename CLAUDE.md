@@ -31,7 +31,9 @@ src/
 │   ├── shared/          # Icon (SVG línea), Icon3d (SVG 3D), Ring, Reveal, Anchor, Loader,
 │   │                    # ThemeService (claro/oscuro), VersionService (actual/nueva)
 │   ├── pages/           # vista actual
-│   └── nueva/           # vista nueva (beta)
+│   ├── nueva/           # vista nueva (beta) — audiencia Directoras + hubs por audiencia
+│   ├── ces/             # vista nueva — audiencia Emprendedoras (CNS→ASP)
+│   └── bdm/             # vista nueva — audiencia BDM (Staff de Ventas): inicio + mi campaña
 public/
 ├── brand/               # logo-yanbal.svg, iso-yanbal.svg
 ├── icons/               # set de iconos 3D PNG 100×100 (check, goals, medal-01, money-01,
@@ -67,6 +69,7 @@ Assets de `public/` se referencian desde la raíz: `/icons/check.png`, `/brand/l
 
 - `docs/calendario-campanas.md` — cómo se dividen las campañas del año: 13 campañas × 4 semanas (sáb→vie), C13 cruza Año Nuevo y a veces dura 5 semanas. Fechas 2024–2026.
 - `docs/referencia-vista-ces.md` — levantamiento de la Maya real vista por una CES.
+- Vista BDM: la base de conocimiento vive fuera del repo, en el vault Obsidian `~/Library/CloudStorage/OneDrive-UNIQUEYANBAL/Yanbal - BDM/` (Home, Mi Campaña con 6 cards de indicador, 5 frentes de gestión, glosario). Los datos de `data/mock-bdm.ts` son los valores de ejemplo del Figma documentados ahí.
 
 ## UI Kit (styleguide viviente)
 

@@ -39,13 +39,13 @@ export class EstatusService {
 
 const STORAGE_KEY_AUD = 'maya-audiencia';
 
-export type Audiencia = 'emprendedora' | 'directora';
+export type Audiencia = 'emprendedora' | 'directora' | 'bdm';
 
 /**
  * Audiencia encarnada en la vista nueva (/n/): decide qué familia de páginas
  * y navegación se muestra. Cambia al elegir un estatus en el conmutador:
- * CNS–ASP → emprendedora · JNR–REG → directora. Por defecto, emprendedora
- * (la carrera se recorre desde CNS).
+ * CNS–ASP → emprendedora · JNR–REG → directora · BDM → staff de ventas.
+ * Por defecto, emprendedora (la carrera se recorre desde CNS).
  */
 @Injectable({ providedIn: 'root' })
 export class AudienciaService {
@@ -63,7 +63,7 @@ export class AudienciaService {
   private read(): Audiencia {
     try {
       const v = localStorage.getItem(STORAGE_KEY_AUD);
-      if (v === 'emprendedora' || v === 'directora') return v;
+      if (v === 'emprendedora' || v === 'directora' || v === 'bdm') return v;
     } catch {
       /* almacenamiento no disponible */
     }

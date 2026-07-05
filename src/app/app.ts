@@ -20,6 +20,7 @@ import { AudienciaService, EstatusDirService, EstatusService } from './shared/es
 import { EstatusSwitchGlobal } from './shared/estatus-switch-global';
 import { USUARIA } from './data/mock';
 import { PERFILES, USUARIA_CES } from './data/mock-ces';
+import { PERFIL_BDM, USUARIA_BDM } from './data/mock-bdm';
 import { PERFILES_DIR } from './data/mock-dir';
 
 interface Cat {
@@ -46,6 +47,13 @@ const EMP_CATS: Cat[] = [
   { label: 'Mi grupo', icon: 'users', route: '/n/grupo', short: 'Grupo' },
   { label: 'Incorpora y Gana', icon: 'heart-plus', route: '/n/incorpora', short: 'Incorpora' },
   { label: 'Mi camino', icon: 'star', route: '/n/camino', short: 'Camino' },
+];
+
+/** Navegación de la BDM (Staff de Ventas): primer release = Inicio + Mi campaña. */
+const BDM_CATS: Cat[] = [
+  { label: 'Inicio', icon: 'home', route: '/n/inicio', short: 'Inicio' },
+  { label: 'Mi campaña', icon: 'target', route: '/n/campana', short: 'Campaña' },
+  { label: 'Herramientas', icon: 'sparkles', route: '/n/herramientas', short: 'Herram.' },
 ];
 
 const CATS: Cat[] = [
@@ -166,9 +174,7 @@ const MENU_LINKS: MenuLink[] = [
             <app-icon name="target" [size]="14" /> Campaña {{ u().campana }}
             <span class="ctxpill__div"></span> Semana {{ u().semana }}
             <span class="ctxpill__div"></span>
-            <span class="ctxpill__rol">{{
-              esEmp() ? estatusSrv.estatus() : estatusDirSrv.estatus()
-            }}</span>
+            <span class="ctxpill__rol">{{ rolCorto() }}</span>
           </span>
         } @else {
           <button class="searchpill" aria-label="Buscar en Maya">
@@ -962,6 +968,7 @@ export class App implements OnInit {
    *  Directora: "Mi equipo" existe desde SNR (JNR aún no tiene hijas). */
   protected readonly activeCats = computed<Cat[]>(() => {
     if (!this.version.nueva()) return CATS;
+    if (this.audiencia.tipo() === 'bdm') return BDM_CATS;
     if (this.esEmp()) {
       const cap = PERFILES[this.estatusSrv.estatus()].capacidades;
       return EMP_CATS.filter(
@@ -974,6 +981,9 @@ export class App implements OnInit {
   });
   /** Identidad mostrada en el shell, con el rol del estatus encarnado. */
   protected readonly u = computed(() => {
+    if (this.version.nueva() && this.audiencia.tipo() === 'bdm') {
+      return { ...USUARIA_BDM, rol: PERFIL_BDM.nombreNivel };
+    }
     if (this.esEmp()) {
       return { ...USUARIA_CES, rol: PERFILES[this.estatusSrv.estatus()].nombreNivel };
     }
@@ -981,6 +991,18 @@ export class App implements OnInit {
       return { ...USUARIA, rol: PERFILES_DIR[this.estatusDirSrv.estatus()].nombreNivel };
     }
     return USUARIA;
+  });
+
+  /** Rol corto del pill de contexto (CNS…REG o BDM). */
+  protected readonly rolCorto = computed(() => {
+    switch (this.audiencia.tipo()) {
+      case 'bdm':
+        return 'BDM';
+      case 'emprendedora':
+        return this.estatusSrv.estatus();
+      default:
+        return this.estatusDirSrv.estatus();
+    }
   });
   protected readonly homeRoute = computed(() => (this.version.nueva() ? '/n/inicio' : '/inicio'));
 

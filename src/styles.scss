@@ -138,14 +138,6 @@
   background-attachment: fixed;
 }
 
-/* Textos de alertas que estaban fijados para fondo claro */
-[data-theme='dark'] .alert--warning {
-  color: var(--warning);
-}
-[data-theme='dark'] .alert--info {
-  color: var(--info);
-}
-
 * {
   box-sizing: border-box;
 }
@@ -630,11 +622,15 @@ button {
 }
 .alert--warning {
   background: var(--warning-bg);
-  color: #8a5a13;
+  color: var(--warning);
 }
 .alert--info {
   background: var(--info-bg);
-  color: #1d4fd7;
+  color: var(--info);
+}
+.alert--danger {
+  background: var(--danger-bg);
+  color: var(--danger);
 }
 
 /* Barra de progreso */

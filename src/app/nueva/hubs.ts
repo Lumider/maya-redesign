@@ -2,23 +2,32 @@ import { ChangeDetectionStrategy, Component, inject } from '@angular/core';
 import { AudienciaService } from '../shared/estatus';
 import { InicioCes } from '../ces/inicio-ces';
 import { CampanaCes } from '../ces/campana-ces';
+import { InicioBdm } from '../bdm/inicio-bdm';
+import { CampanaBdm } from '../bdm/campana-bdm';
 import { InicioN } from './inicio-n';
 import { CampanaN } from './campana-n';
 
 /**
- * Hubs de la vista nueva: Inicio y Mi campaña existen para AMBAS audiencias,
- * pero con contenido distinto. Estos componentes eligen la página según la
- * audiencia encarnada (conmutador demo) sin duplicar rutas ni navegación.
+ * Hubs de la vista nueva: Inicio y Mi campaña existen para TODAS las
+ * audiencias (Emprendedoras, Directoras y BDM), pero con contenido distinto.
+ * Estos componentes eligen la página según la audiencia encarnada
+ * (conmutador demo) sin duplicar rutas ni navegación.
  */
 @Component({
   selector: 'app-inicio-hub',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [InicioCes, InicioN],
+  imports: [InicioCes, InicioN, InicioBdm],
   template: `
-    @if (audiencia.tipo() === 'emprendedora') {
-      <app-inicio-ces />
-    } @else {
-      <app-inicio-n />
+    @switch (audiencia.tipo()) {
+      @case ('emprendedora') {
+        <app-inicio-ces />
+      }
+      @case ('bdm') {
+        <app-inicio-bdm />
+      }
+      @default {
+        <app-inicio-n />
+      }
     }
   `,
 })
@@ -29,12 +38,18 @@ export class InicioHub {
 @Component({
   selector: 'app-campana-hub',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [CampanaCes, CampanaN],
+  imports: [CampanaCes, CampanaN, CampanaBdm],
   template: `
-    @if (audiencia.tipo() === 'emprendedora') {
-      <app-campana-ces />
-    } @else {
-      <app-campana-n />
+    @switch (audiencia.tipo()) {
+      @case ('emprendedora') {
+        <app-campana-ces />
+      }
+      @case ('bdm') {
+        <app-campana-bdm />
+      }
+      @default {
+        <app-campana-n />
+      }
     }
   `,
 })
