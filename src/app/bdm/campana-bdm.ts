@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { Icon } from '../shared/icon';
 import { Reveal } from '../shared/reveal';
 import { Anchor } from '../shared/anchor';
@@ -16,7 +17,7 @@ import { CAMPANA_BDM, USUARIA_BDM } from '../data/mock-bdm';
 @Component({
   selector: 'app-campana-bdm',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DecimalPipe, Icon, Reveal, Anchor],
+  imports: [DecimalPipe, RouterLink, Icon, Reveal, Anchor],
   template: `
     <div class="v2">
       <header class="v2-head" appReveal>
@@ -83,7 +84,7 @@ import { CAMPANA_BDM, USUARIA_BDM } from '../data/mock-bdm';
               >
             }
           </div>
-          <a class="link">{{ c.delta.enlace }} ↗</a>
+          <a class="link" routerLink="/n/directoras">{{ c.delta.enlace }} ↗</a>
         </section>
 
         <!-- 2 · Crecimiento de DIR: capitalización (motor del país) -->
@@ -115,7 +116,7 @@ import { CAMPANA_BDM, USUARIA_BDM } from '../data/mock-bdm';
               </span>
             }
           </div>
-          <a class="link">{{ c.crecimiento.enlace }} ↗</a>
+          <a class="link" routerLink="/n/directoras">{{ c.crecimiento.enlace }} ↗</a>
         </section>
 
         <!-- 3 · PAR+: % de DIR con Nivel de Estrella → bono anual -->
@@ -150,7 +151,7 @@ import { CAMPANA_BDM, USUARIA_BDM } from '../data/mock-bdm';
               </div>
             }
           </div>
-          <a class="link">{{ c.par.enlace }} ↗</a>
+          <a class="link" routerLink="/n/directoras">{{ c.par.enlace }} ↗</a>
         </section>
 
         <!-- 4 · Líderes Poderosas: con quién crece la BDM → bono anual -->
@@ -178,7 +179,7 @@ import { CAMPANA_BDM, USUARIA_BDM } from '../data/mock-bdm';
               >
             </div>
           </div>
-          <a class="link">{{ c.poderosas.enlace }} ↗</a>
+          <a class="link" routerLink="/n/directoras">{{ c.poderosas.enlace }} ↗</a>
         </section>
 
         <!-- 5 · Cumplimiento Vta. Neta BP: avance del plan anual de venta -->
@@ -217,7 +218,7 @@ import { CAMPANA_BDM, USUARIA_BDM } from '../data/mock-bdm';
               >
             </div>
           </div>
-          <a class="link">{{ c.driver.enlace }} ↗</a>
+          <a class="link" routerLink="/n/directoras">{{ c.driver.enlace }} ↗</a>
         </section>
       </div>
     </div>

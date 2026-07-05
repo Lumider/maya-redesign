@@ -56,11 +56,13 @@ export interface GestionBdm {
   frente: 'Cuadrante' | 'Meta y Activas' | 'Formaciones' | 'PAR+' | 'Poderosas';
   /** true = estado bueno (celebrar); false = brecha (actuar) */
   positivo?: boolean;
+  /** tab preseleccionado al abrir Mis Directoras (solo tiles de cuadrante) */
+  cuad?: CuadranteLetra;
 }
 
 export const GESTION_BDM: GestionBdm[] = [
-  { etiqueta: 'Cuadrante A', valor: '70%', frente: 'Cuadrante', positivo: true },
-  { etiqueta: 'Cuadrante D', valor: '10%', frente: 'Cuadrante' },
+  { etiqueta: 'Cuadrante A', valor: '70%', frente: 'Cuadrante', positivo: true, cuad: 'A' },
+  { etiqueta: 'Cuadrante D', valor: '10%', frente: 'Cuadrante', cuad: 'D' },
   { etiqueta: 'No cumple meta', valor: '50', frente: 'Meta y Activas' },
   { etiqueta: 'Formadoras', valor: '28', frente: 'Formaciones', positivo: true },
   { etiqueta: 'Con ASP', valor: '5', frente: 'Formaciones', positivo: true },
@@ -74,6 +76,217 @@ export const QUICKLINKS_BDM = [
   { etiqueta: 'Reportes', icono: 'file', ruta: '/externa/reportes' },
   { etiqueta: 'Reporte BPlan', icono: 'chart', ruta: '/externa/reportes' },
   { etiqueta: 'Mis cursos', icono: 'cap', ruta: '/externa/cursos' },
+];
+
+/* --------------------------------------------------------------------------
+ * Gestión de Directoras — frente "Cuadrantes y Medallas"
+ * (Vista BDM — Cuadrantes y Medallas, Figma 748:18331 — el único de los 5
+ * frentes con spec completa en la base; los demás siguen "Pendiente").
+ * -------------------------------------------------------------------------- */
+
+export type CuadranteLetra = 'A' | 'B' | 'C' | 'D';
+
+/** Directora dentro de la genealogía que gestiona la BDM. El cuadrante NO se
+ *  guarda: se calcula con la fórmula del doc (MRM × PPED), igual que los gaps. */
+export interface DirectoraBdm {
+  nombre: string;
+  estatus: 'JNR' | 'SNR' | 'SSE' | 'REG';
+  /** relación en la genealogía de la Líder */
+  relacion: 'Hija' | 'Nieta' | 'Bisnieta';
+  lider: string;
+  /** venta acumulada del GP en la campaña (S/) */
+  ventaGP: number;
+  /** vara MRM de su estatus (S/) — PAR+ 2026 Perú, como en mock-dir */
+  mrm: number;
+  ppedLogrados: number;
+  ppedRequeridos: number;
+  /** campañas del año calificando CA — proyecta la Medalla de GP */
+  campanasCA: number;
+  hijasTotal: number;
+  hijasCA: number;
+  hijasCD: number;
+}
+
+/** Cuadrante según la fórmula del doc: A = MRM ✔ y PPED ✔ · B = solo MRM ·
+ *  C = solo PPED · D = ninguno. */
+export function cuadranteDe(d: DirectoraBdm): CuadranteLetra {
+  const mrmOk = d.ventaGP >= d.mrm;
+  const ppedOk = d.ppedLogrados >= d.ppedRequeridos;
+  if (mrmOk && ppedOk) return 'A';
+  if (mrmOk) return 'B';
+  if (ppedOk) return 'C';
+  return 'D';
+}
+
+/** Medalla de GP proyectada por campañas del año en CA. Umbrales POR CONFIRMAR
+ *  con Negocio (pregunta abierta de la base); supuesto del prototipo:
+ *  Oro ≥ 5 · Plata ≥ 3 · Bronce ≥ 1. */
+export function medallaGpDe(d: DirectoraBdm): 'Oro' | 'Plata' | 'Bronce' | null {
+  if (d.campanasCA >= 5) return 'Oro';
+  if (d.campanasCA >= 3) return 'Plata';
+  if (d.campanasCA >= 1) return 'Bronce';
+  return null;
+}
+
+/** Medalla de Liderazgo: elegible si ≥60% de las hijas directas están en CA. */
+export const MEDALLA_LIDERAZGO_UMBRAL = 60;
+
+export const DIRECTORAS_BDM: DirectoraBdm[] = [
+  // ——— Cuadrante A: banner verde con medalla proyectada ———
+  // El caso del doc: "Hijas en CA: 2 (20%) / Hijas en CD: 5 (50%)"
+  {
+    nombre: 'Rosa Cárdenas Puma',
+    estatus: 'SSE',
+    relacion: 'Hija',
+    lider: 'Gabriela Mendoza',
+    ventaGP: 41200,
+    mrm: 34000,
+    ppedLogrados: 5,
+    ppedRequeridos: 4,
+    campanasCA: 5,
+    hijasTotal: 10,
+    hijasCA: 2,
+    hijasCD: 5,
+  },
+  {
+    nombre: 'Milagros Quispe Flores',
+    estatus: 'SNR',
+    relacion: 'Hija',
+    lider: 'Gabriela Mendoza',
+    ventaGP: 30150,
+    mrm: 28200,
+    ppedLogrados: 4,
+    ppedRequeridos: 3,
+    campanasCA: 3,
+    hijasTotal: 6,
+    hijasCA: 4,
+    hijasCD: 1,
+  },
+  {
+    nombre: 'Teresa Huamán Ccoa',
+    estatus: 'JNR',
+    relacion: 'Nieta',
+    lider: 'Rosa Cárdenas',
+    ventaGP: 24980,
+    mrm: 22500,
+    ppedLogrados: 3,
+    ppedRequeridos: 3,
+    campanasCA: 1,
+    hijasTotal: 4,
+    hijasCA: 3,
+    hijasCD: 0,
+  },
+  {
+    nombre: 'Ana Lucía Torres Vera',
+    estatus: 'REG',
+    relacion: 'Hija',
+    lider: 'Patricia Salas',
+    ventaGP: 36890,
+    mrm: 34000,
+    ppedLogrados: 4,
+    ppedRequeridos: 4,
+    campanasCA: 6,
+    hijasTotal: 8,
+    hijasCA: 6,
+    hijasCD: 1,
+  },
+  // ——— Cuadrante B: tiene venta, le faltan PPED (caso del doc: falta 1) ———
+  {
+    nombre: 'Carmen Ríos Delgado',
+    estatus: 'SNR',
+    relacion: 'Hija',
+    lider: 'Patricia Salas',
+    ventaGP: 29400,
+    mrm: 28200,
+    ppedLogrados: 2,
+    ppedRequeridos: 3,
+    campanasCA: 2,
+    hijasTotal: 5,
+    hijasCA: 2,
+    hijasCD: 2,
+  },
+  {
+    nombre: 'Yolanda Paz Mamani',
+    estatus: 'SSE',
+    relacion: 'Nieta',
+    lider: 'Ana Lucía Torres',
+    ventaGP: 35100,
+    mrm: 34000,
+    ppedLogrados: 2,
+    ppedRequeridos: 4,
+    campanasCA: 4,
+    hijasTotal: 7,
+    hijasCA: 3,
+    hijasCD: 2,
+  },
+  // ——— Cuadrante C: PPED ok, falta venta para el MRM ———
+  {
+    nombre: 'Silvia Chávez Ortega',
+    estatus: 'JNR',
+    relacion: 'Hija',
+    lider: 'Gabriela Mendoza',
+    ventaGP: 19300,
+    mrm: 22500,
+    ppedLogrados: 3,
+    ppedRequeridos: 3,
+    campanasCA: 0,
+    hijasTotal: 3,
+    hijasCA: 1,
+    hijasCD: 1,
+  },
+  // ——— Cuadrante D: foco Delta (caso del doc: faltan S/ 8,200 y 3 PPED) ———
+  {
+    nombre: 'Beatriz Luna Aguirre',
+    estatus: 'SSE',
+    relacion: 'Hija',
+    lider: 'Patricia Salas',
+    ventaGP: 25800,
+    mrm: 34000,
+    ppedLogrados: 1,
+    ppedRequeridos: 4,
+    campanasCA: 0,
+    hijasTotal: 9,
+    hijasCA: 1,
+    hijasCD: 6,
+  },
+  {
+    nombre: 'Gladys Rojas Ninahuanca',
+    estatus: 'JNR',
+    relacion: 'Bisnieta',
+    lider: 'Milagros Quispe',
+    ventaGP: 14200,
+    mrm: 22500,
+    ppedLogrados: 1,
+    ppedRequeridos: 3,
+    campanasCA: 1,
+    hijasTotal: 2,
+    hijasCA: 0,
+    hijasCD: 2,
+  },
+  {
+    nombre: 'Norma Espino Cutipa',
+    estatus: 'SNR',
+    relacion: 'Nieta',
+    lider: 'Rosa Cárdenas',
+    ventaGP: 21050,
+    mrm: 28200,
+    ppedLogrados: 0,
+    ppedRequeridos: 3,
+    campanasCA: 0,
+    hijasTotal: 5,
+    hijasCA: 1,
+    hijasCD: 3,
+  },
+];
+
+/** Los 5 frentes del release 1. Solo Cuadrante tiene spec completa en la base
+ *  de conocimiento; el resto sigue "Pendiente (Figma)" y se muestra en diseño. */
+export const FRENTES_BDM = [
+  { id: 'cuadrante', etiqueta: 'Cuadrante y Medallas', disponible: true },
+  { id: 'meta', etiqueta: 'Meta de Venta y Activas', disponible: false },
+  { id: 'formaciones', etiqueta: 'Formaciones', disponible: false },
+  { id: 'par', etiqueta: 'PAR+', disponible: false },
+  { id: 'poderosas', etiqueta: 'Poderosas', disponible: false },
 ];
 
 /** Mi campaña BDM: las 6 cards de indicador (anatomía común: banner de brecha

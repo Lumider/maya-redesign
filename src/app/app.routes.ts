@@ -45,6 +45,11 @@ export const routes: Routes = [
     loadComponent: () => import('./ces/incorpora-ces').then((m) => m.IncorporaCes),
   },
   { path: 'n/camino', loadComponent: () => import('./ces/camino-ces').then((m) => m.CaminoCes) },
+  // — Audiencia BDM (Staff de Ventas)
+  {
+    path: 'n/directoras',
+    loadComponent: () => import('./bdm/directoras-bdm').then((m) => m.DirectorasBdm),
+  },
   {
     path: 'n/herramientas',
     loadComponent: () => import('./pages/herramientas').then((m) => m.HerramientasPage),

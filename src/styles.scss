@@ -632,6 +632,10 @@ button {
   background: var(--danger-bg);
   color: var(--danger);
 }
+.alert--success {
+  background: var(--success-bg);
+  color: var(--success);
+}
 
 /* Barra de progreso */
 .progress {

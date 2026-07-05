@@ -49,10 +49,11 @@ const EMP_CATS: Cat[] = [
   { label: 'Mi camino', icon: 'star', route: '/n/camino', short: 'Camino' },
 ];
 
-/** Navegación de la BDM (Staff de Ventas): primer release = Inicio + Mi campaña. */
+/** Navegación de la BDM (Staff de Ventas): primer release. */
 const BDM_CATS: Cat[] = [
   { label: 'Inicio', icon: 'home', route: '/n/inicio', short: 'Inicio' },
   { label: 'Mi campaña', icon: 'target', route: '/n/campana', short: 'Campaña' },
+  { label: 'Mis Directoras', icon: 'users', route: '/n/directoras', short: 'Directoras' },
   { label: 'Herramientas', icon: 'sparkles', route: '/n/herramientas', short: 'Herram.' },
 ];
 
@@ -80,6 +81,7 @@ const ROUTE_LABELS: Record<string, string> = {
   '/n/grupo': 'Mi grupo',
   '/n/incorpora': 'Incorpora y Gana',
   '/n/camino': 'Mi camino',
+  '/n/directoras': 'Mis Directoras',
   '/n/herramientas': 'Herramientas',
   '/mi-plan': 'Mi Plan',
   '/mi-campana': 'Mi Campaña',

@@ -33,7 +33,8 @@ src/
 │   ├── pages/           # vista actual
 │   ├── nueva/           # vista nueva (beta) — audiencia Directoras + hubs por audiencia
 │   ├── ces/             # vista nueva — audiencia Emprendedoras (CNS→ASP)
-│   └── bdm/             # vista nueva — audiencia BDM (Staff de Ventas): inicio + mi campaña
+│   └── bdm/             # vista nueva — audiencia BDM (Staff de Ventas): inicio, mi campaña
+│                        # y mis directoras (herramienta de gestión "Cuadrantes y Medallas")
 public/
 ├── brand/               # logo-yanbal.svg, iso-yanbal.svg
 ├── icons/               # set de iconos 3D PNG 100×100 (check, goals, medal-01, money-01,

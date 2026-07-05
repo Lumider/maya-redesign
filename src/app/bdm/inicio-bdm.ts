@@ -47,7 +47,11 @@ import { MATERIALES } from '../data/mock';
             </p>
             <div class="gest">
               @for (g of gestion; track g.etiqueta) {
-                <a class="gest__i card card--hover" routerLink="/n/campana">
+                <a
+                  class="gest__i card card--hover"
+                  routerLink="/n/directoras"
+                  [queryParams]="g.cuad ? { cuad: g.cuad } : {}"
+                >
                   <span class="gest__v" [class.gest__v--ok]="g.positivo">{{ g.valor }}</span>
                   <span class="gest__l">{{ g.etiqueta }}</span>
                   <span class="tiny">{{ g.frente }}</span>

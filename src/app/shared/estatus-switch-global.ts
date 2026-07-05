@@ -252,10 +252,10 @@ export class EstatusSwitchGlobal {
     ]);
   }
 
-  /** Encarna a la BDM (Staff de Ventas): su vista tiene Inicio y Mi campaña. */
+  /** Encarna a la BDM (Staff de Ventas): Inicio, Mi campaña y Mis Directoras. */
   protected verBdm(): void {
     this.audiencia.set('bdm');
-    this.regresarSiNoExiste(['/n/inicio', '/n/campana', '/n/herramientas']);
+    this.regresarSiNoExiste(['/n/inicio', '/n/campana', '/n/directoras', '/n/herramientas']);
   }
 
   /** Si la vista actual no existe para el estatus elegido, vuelve al inicio. */
