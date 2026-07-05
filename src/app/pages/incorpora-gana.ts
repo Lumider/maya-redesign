@@ -1,18 +1,13 @@
 import { ChangeDetectionStrategy, Component, computed, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
 import { Icon } from '../shared/icon';
 import { PARTICIPANTES } from '../data/mock';
 
 @Component({
   selector: 'app-incorpora-gana',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [RouterLink, Icon],
+  imports: [Icon],
   template: `
     <div class="page">
-      <nav class="crumbs" aria-label="Ruta de navegación">
-        <a routerLink="/inicio">Inicio</a> / <a routerLink="/mi-campana">Mi Campaña</a> / Incorpora
-        y Gana
-      </nav>
       <h1 class="page-title">Seguimiento del Incorpora y Gana</h1>
 
       <div class="banner">
@@ -108,15 +103,6 @@ import { PARTICIPANTES } from '../data/mock';
   `,
   styles: [
     `
-      .crumbs {
-        font-size: 12.5px;
-        color: var(--ink-3);
-        margin-bottom: 4px;
-      }
-      .crumbs a:hover {
-        color: var(--brand-600);
-      }
-
       .banner {
         display: flex;
         align-items: center;

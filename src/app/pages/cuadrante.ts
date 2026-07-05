@@ -1,20 +1,16 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
-import { RouterLink } from '@angular/router';
 import { Icon } from '../shared/icon';
 import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
 
 @Component({
   selector: 'app-cuadrante',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DecimalPipe, RouterLink, Icon],
+  imports: [DecimalPipe, Icon],
   template: `
     <div class="page">
       <header class="head">
         <div>
-          <nav class="crumbs" aria-label="Ruta de navegación">
-            <a routerLink="/inicio">Inicio</a> / Cuadrante A
-          </nav>
           <h1 class="page-title">Cuadrante A</h1>
         </div>
         <div class="tabs">
@@ -163,14 +159,6 @@ import { CAMPANA, CUADRANTE_HISTORIA } from '../data/mock';
         gap: 16px;
         flex-wrap: wrap;
         margin-bottom: 20px;
-      }
-      .crumbs {
-        font-size: 12.5px;
-        color: var(--ink-3);
-        margin-bottom: 4px;
-      }
-      .crumbs a:hover {
-        color: var(--brand-600);
       }
 
       .tabs {

@@ -17,9 +17,6 @@ import { PLAN_CAMPANA } from '../data/mock';
     <div class="page">
       <header class="head">
         <div>
-          <nav class="crumbs" aria-label="Ruta de navegación">
-            <a routerLink="/inicio">Inicio</a> / Mi Plan
-          </nav>
           <h1 class="page-title">Mi Plan · {{ plan.campana }}</h1>
         </div>
         <div class="tabs">
@@ -256,14 +253,6 @@ import { PLAN_CAMPANA } from '../data/mock';
         gap: 16px;
         flex-wrap: wrap;
         margin-bottom: 20px;
-      }
-      .crumbs {
-        font-size: 12.5px;
-        color: var(--ink-3);
-        margin-bottom: 4px;
-      }
-      .crumbs a:hover {
-        color: var(--brand-600);
       }
       .tabs {
         display: inline-flex;
