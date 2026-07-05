@@ -6,8 +6,11 @@ import {
   inject,
   signal,
 } from '@angular/core';
-import { Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { NavigationEnd, Router, RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
+import { filter, map } from 'rxjs';
 import { Icon } from './shared/icon';
+import { Breadcrumb, Miga } from './shared/breadcrumb';
 import { Loader } from './shared/loader';
 import { ThemeService } from './shared/theme';
 import { VersionService } from './shared/version';
@@ -59,6 +62,35 @@ const CATS: Cat[] = [
   { label: 'Incorporar', icon: 'heart-plus', route: '/externa/incorporacion' },
 ];
 
+/** Etiqueta de cada ruta para el breadcrumb (home > sección). Se alimenta de
+ *  los mismos rótulos de la navegación; home y /ui no llevan breadcrumb. */
+const ROUTE_LABELS: Record<string, string> = {
+  '/n/negocio': 'Mi negocio',
+  '/n/campana': 'Mi campaña',
+  '/n/equipo': 'Mi equipo',
+  '/n/carrera': 'Mi carrera',
+  '/n/grupo': 'Mi grupo',
+  '/n/incorpora': 'Incorpora y Gana',
+  '/n/camino': 'Mi camino',
+  '/n/herramientas': 'Herramientas',
+  '/mi-plan': 'Mi Plan',
+  '/mi-campana': 'Mi Campaña',
+  '/incorpora-y-gana': 'Incorpora y Gana',
+  '/grupo-personal': 'Grupo Personal',
+  '/cuadrante': 'Cuadrante A',
+  '/herramientas': 'Herramientas',
+};
+
+/** Títulos de las apps externas (/externa/:slug) para el último nivel. */
+const EXTERNA_LABELS: Record<string, string> = {
+  'mis-pedidos': 'Mis Pedidos',
+  'status-pedidos': 'Status de Pedidos',
+  par: 'Reporte PAR+',
+  reportes: 'Reportes',
+  cursos: 'Mis Cursos',
+  incorporacion: 'Incorporación',
+};
+
 interface MenuLink {
   label: string;
   route: string;
@@ -84,6 +116,7 @@ const MENU_LINKS: MenuLink[] = [
     RouterLink,
     RouterLinkActive,
     Icon,
+    Breadcrumb,
     Loader,
     EstatusSwitchGlobal,
     AccesoGate,
@@ -323,6 +356,11 @@ const MENU_LINKS: MenuLink[] = [
     }
 
     <main>
+      @if (migas().length) {
+        <div class="crumbs">
+          <app-breadcrumb [items]="migas()" [homeLink]="homeRoute()" />
+        </div>
+      }
       <router-outlet />
     </main>
 
@@ -350,6 +388,20 @@ const MENU_LINKS: MenuLink[] = [
   `,
   styles: [
     `
+      /* ----- Breadcrumb (desktop) — alineado al ancho de contenido (1180/40px),
+         espaciado en grilla de 4px: 16px bajo el header. En móvil se oculta
+         igual que el propio componente, sin dejar espacio vacío. ----- */
+      .crumbs {
+        max-width: 1180px;
+        margin: 0 auto;
+        padding: 16px 40px 0;
+      }
+      @media (max-width: 720px) {
+        .crumbs {
+          display: none;
+        }
+      }
+
       /* ----- Header ----- */
       .hdr {
         position: sticky;
@@ -931,6 +983,30 @@ export class App implements OnInit {
     return USUARIA;
   });
   protected readonly homeRoute = computed(() => (this.version.nueva() ? '/n/inicio' : '/inicio'));
+
+  /** URL actual como signal (reacciona a cada navegación). */
+  private readonly url = toSignal(
+    this.router.events.pipe(
+      filter((e): e is NavigationEnd => e instanceof NavigationEnd),
+      map(() => this.router.url),
+    ),
+    { initialValue: this.router.url },
+  );
+
+  /** Niveles del breadcrumb (después de home). Vacío = sin breadcrumb: home
+   *  (ya estás ahí) y el styleguide /ui. Cada vista es un solo nivel bajo home. */
+  protected readonly migas = computed<Miga[]>(() => {
+    const path = (this.url().split(/[?#]/)[0] || '/').replace(/\/$/, '') || '/';
+    if (path === '/' || path === '/inicio' || path === '/n/inicio' || path.startsWith('/ui')) {
+      return [];
+    }
+    if (path.startsWith('/externa/')) {
+      const slug = path.slice('/externa/'.length);
+      return [{ label: EXTERNA_LABELS[slug] ?? 'Aplicación externa' }];
+    }
+    const label = ROUTE_LABELS[path];
+    return label ? [{ label }] : [];
+  });
 
   ngOnInit(): void {
     // Sincroniza la ruta con la versión persistida al cargar (sin recarga brusca).

@@ -42,6 +42,8 @@ public/
 
 Assets de `public/` se referencian desde la raíz: `/icons/check.png`, `/brand/logo-yanbal.svg`.
 
+**Breadcrumb (FrYDA):** el shell (`app.ts`) renderiza un único `<app-breadcrumb>` sobre el `<router-outlet>`, derivado de la ruta con `ROUTE_LABELS`/`EXTERNA_LABELS` (mismos rótulos de la nav). Home (`/inicio`, `/n/inicio`) y `/ui` no lo muestran; es desktop-only (oculto <720px). Para dar nombre a una ruta nueva en el breadcrumb, se añade su entrada al mapa — no se toca cada página.
+
 ## Convenciones de código (obligatorias)
 
 - **Componentes standalone** con `template:` y `styles:` inline en el `.ts` — no hay archivos `.html`/`.scss` separados. Un componente = un archivo.
