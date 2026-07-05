@@ -3,6 +3,7 @@ import { Icon } from '../shared/icon';
 import { Icon3d } from '../shared/icon3d';
 import { Ring } from '../shared/ring';
 import { Reveal } from '../shared/reveal';
+import { Breadcrumb } from '../shared/breadcrumb';
 
 /**
  * UI Kit (styleguide viviente) — ruta oculta /ui, sin enlace en la navegación.
@@ -13,7 +14,7 @@ import { Reveal } from '../shared/reveal';
 @Component({
   selector: 'app-ui-kit',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Icon, Icon3d, Ring, Reveal],
+  imports: [Icon, Icon3d, Ring, Reveal, Breadcrumb],
   template: `
     <div class="v2">
       <header class="v2-head" appReveal>
@@ -415,6 +416,52 @@ import { Reveal } from '../shared/reveal';
           original (black-40) y el punto medio (black-30) quedan como referencia de la evaluación
           para el público 30–50.
         </p>
+      </section>
+
+      <!-- Breadcrumb FrYDA -->
+      <section class="card pad v2-section" appReveal>
+        <h2 class="v2-h">🧭 Breadcrumb FrYDA</h2>
+        <p class="tiny" style="margin:0 0 14px">
+          Navegación jerárquica secundaria (Figma Foundations 16355-636): home + niveles separados
+          por chevron; el nivel actual va en negrita y no navega. Con muchos niveles colapsa el
+          medio en "…". Tipografía del redesign (14/20, +0.2px) y color --ink.
+          <strong>Desktop-only</strong> por decisión de FrYDA — se oculta bajo 720px.
+        </p>
+
+        <div style="display:flex;flex-direction:column;gap:12px">
+          <div>
+            <span class="vs__label">1 nivel</span>
+            <app-breadcrumb [items]="[{ label: 'Mi negocio' }]" />
+          </div>
+          <div>
+            <span class="vs__label">2 niveles</span>
+            <app-breadcrumb
+              [items]="[{ label: 'Mi negocio', link: '/n/negocio' }, { label: 'Cuadrante' }]"
+            />
+          </div>
+          <div>
+            <span class="vs__label">3 niveles</span>
+            <app-breadcrumb
+              [items]="[
+                { label: 'Mi negocio', link: '/n/negocio' },
+                { label: 'Cuadrante', link: '/n/negocio' },
+                { label: 'PPED' },
+              ]"
+            />
+          </div>
+          <div>
+            <span class="vs__label">+4 niveles (colapsa a "…")</span>
+            <app-breadcrumb
+              [items]="[
+                { label: 'Mi negocio', link: '/n/negocio' },
+                { label: 'Cuadrante', link: '/n/negocio' },
+                { label: 'Métricas', link: '/n/negocio' },
+                { label: 'PPED', link: '/n/negocio' },
+                { label: 'Detalle' },
+              ]"
+            />
+          </div>
+        </div>
       </section>
 
       <!-- Iconos de línea -->
