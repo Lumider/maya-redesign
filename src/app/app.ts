@@ -74,6 +74,7 @@ const CATS: Cat[] = [
 /** Etiqueta de cada ruta para el breadcrumb (home > sección). Se alimenta de
  *  los mismos rótulos de la navegación; home y /ui no llevan breadcrumb. */
 const ROUTE_LABELS: Record<string, string> = {
+  '/n/pedidos': 'Realizar pedido',
   '/n/negocio': 'Mi negocio',
   '/n/campana': 'Mi campaña',
   '/n/equipo': 'Mi equipo',
@@ -195,15 +196,19 @@ const MENU_LINKS: MenuLink[] = [
             <button class="hdr__iconbtn hdr__iconbtn--search" aria-label="Buscar en Maya">
               <app-icon name="search" [size]="18" />
             </button>
-            <button class="hdr__iconbtn hdr__iconbtn--cart" aria-label="Carrito">
+            <a
+              class="hdr__iconbtn hdr__iconbtn--cart"
+              routerLink="/n/pedidos"
+              aria-label="Ver mi bolsa"
+            >
               <app-icon name="cart" [size]="18" />
               <span class="count">{{ u().carrito }}</span>
-            </button>
+            </a>
             <!-- Acciones: Realizar pedido (primario) · Incorporar (secundario) -->
             <div class="hdr__actions">
               <a
                 class="btn btn--primary btn--sm"
-                routerLink="/externa/mis-pedidos"
+                routerLink="/n/pedidos"
                 aria-label="Realizar pedido"
               >
                 <app-icon name="cart" [size]="16" />
