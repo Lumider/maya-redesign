@@ -36,6 +36,7 @@ export const routes: Routes = [
   { path: 'n/campana', loadComponent: () => import('./nueva/hubs').then((m) => m.CampanaHub) },
   // — Audiencia Directoras (JNR → REG)
   { path: 'n/negocio', loadComponent: () => import('./nueva/negocio').then((m) => m.Negocio) },
+  { path: 'n/pedidos', loadComponent: () => import('./nueva/pedidos').then((m) => m.Pedidos) },
   { path: 'n/equipo', loadComponent: () => import('./nueva/equipo').then((m) => m.Equipo) },
   { path: 'n/carrera', loadComponent: () => import('./nueva/carrera').then((m) => m.Carrera) },
   // — Audiencia Emprendedoras (CNS → ASP)
