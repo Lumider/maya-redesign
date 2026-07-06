@@ -6,8 +6,12 @@ import PackageDescription
 // el ejecutable YanbalCampanas es la capa SwiftUI. build.sh empaqueta el .app.
 let package = Package(
   name: "YanbalCampanas",
+  // iOS se añade para que el widget/app de iPhone (carpeta ios/) pueda depender
+  // de la librería CampaignKit. El ejecutable de menú (YanbalCampanas) usa AppKit
+  // y solo se compila en macOS; en iOS únicamente se usa el producto CampaignKit.
   platforms: [
     .macOS(.v13),
+    .iOS(.v17),
   ],
   targets: [
     .target(
