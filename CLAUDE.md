@@ -55,7 +55,7 @@ Assets de `public/` se referencian desde la raíz: `/icons/check.png`, `/brand/l
 - **Signals**, no decoradores: `input()` / `input.required()`, `signal()`, `inject()` en vez de constructor injection.
 - **Control flow moderno**: `@if` / `@for` / `@switch` (nunca `*ngIf`/`*ngFor`).
 - **Rutas lazy**: `loadComponent: () => import(...)`.
-- **Comentarios y JSDoc en español**, explican el *porqué* de las decisiones de UX/negocio (ver `nueva/negocio.ts` como referencia de estilo).
+- **Comentarios y JSDoc en español**, explican el _porqué_ de las decisiones de UX/negocio (ver `nueva/negocio.ts` como referencia de estilo).
 - **Datos solo desde `data/mock.ts`** — tipados con interfaces exportadas.
 - Formato: Prettier (printWidth 100, singleQuote), indentación 2 espacios. Sin tests por schematic (`skipTests: true`).
 
@@ -79,9 +79,10 @@ Ruta oculta `/ui` (`pages/ui-kit.ts`): muestra todos los tokens, badges, botones
 
 ### Primitives FrYDA (fuente de color)
 
-`design-tokens/Primitives.json` (export de Figma Variables) → `scripts/fryda-primitives.py` → `src/fryda-primitives.scss` (230 vars `--fry-familia-tono`, 23 familias × tonos 10–100). **Los componentes FrYDA (botón, badge, card) y TODOS los tokens del redesign (`:root` de styles.scss: marca, neutros, estados) referencian primitives, nunca hex.** Familias semánticas: marca=yanbal-orange, neutros de texto/línea=yanbal-black, lienzo=bone, success=mint, warning=marigold, danger=crimson, info=blue, teal=aegean, violet=wine. En oscuro todo se deriva de los mismos primitives (tonos pastel 30–60 para texto + `color-mix()` para fondos/superficies); los ratios AA medidos están comentados junto a cada bloque. Si el equipo de diseño actualiza los primitives: reemplazar el JSON y correr el script. Galería completa y personalizador en vivo en `/ui`.
+**Librería oficial adoptada** (estado y bloqueos en `docs/fryda-adopcion.md`): `index.html` carga los tokens CSS oficiales versionados desde `https://frydacdn.yanbal.com/styles/1.2.0/` (foundation → semantic → component → variables; nunca `/latest/`). `design-tokens/Primitives.json` (export de Figma Variables) → `scripts/fryda-primitives.py` → `src/fryda-primitives.scss` (230 vars `--fry-familia-tono`, 23 familias × tonos 10–100), cada una referenciando su oficial `--fry-p-color-*` con el hex como fallback. **Los componentes FrYDA (botón, badge, card) y TODOS los tokens del redesign (`:root` de styles.scss: marca, neutros, estados) referencian primitives, nunca hex.** Familias semánticas: marca=yanbal-orange, neutros de texto/línea=yanbal-black, lienzo=bone, success=mint, warning=marigold, danger=crimson, info=blue, teal=aegean, violet=wine. En oscuro todo se deriva de los mismos primitives (tonos pastel 30–60 para texto + `color-mix()` para fondos/superficies); los ratios AA medidos están comentados junto a cada bloque. Si el equipo de diseño actualiza los primitives: reemplazar el JSON y correr el script. Galería completa y personalizador en vivo en `/ui`.
 
 Reglas de migración de componentes (proceso FrYDA):
+
 1. Un componente nuevo/candidato entra primero SOLO al UI Kit — nunca directo a la app.
 2. El reemplazo en la app se aplica únicamente cuando Giovanni lo pide explícitamente.
 3. Al migrar, la versión anterior NO se elimina: se conserva en `/ui` como referencia ("Anterior"), renderizada con los tokens aún vivos del sistema.

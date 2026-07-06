@@ -34,6 +34,17 @@ import { Breadcrumb } from '../shared/breadcrumb';
           color: se copia el hex y el cambio se aplica al instante en todo el proyecto (solo en esta
           pestaña — para hacerlo oficial, pídelo).
         </p>
+        <p class="tiny" style="margin:0 0 12px">
+          🔗 Librería oficial adoptada: tokens servidos versionados desde el CDN FrYDA (v 1.2.0,
+          <code>--fry-p-color-*</code> con fallback local) — referencia visual en el
+          <a
+            class="link"
+            href="https://delightful-water-0fd3e730f.2.azurestaticapps.net/"
+            target="_blank"
+            rel="noopener"
+            >Storybook PROD ↗</a
+          >. Estado del checklist en <code>docs/fryda-adopcion.md</code>.
+        </p>
 
         <div class="perso">
           <label class="perso__campo">
