@@ -24,13 +24,15 @@ Sin icono en el Dock, sin ventana: solo la barra de menú.
 Desde la raíz del proyecto:
 
 ```bash
-./build.sh          # compila y arma "build/Campañas Yanbal.app"
+./build.sh          # compila y arma "build/Campanas Yanbal.app"
 ./build.sh --open   # además la abre al terminar
 ```
 
 Verás `C7 · S3` (o la campaña que corresponda a hoy) en la barra de menú.
+En Finder la app se muestra como **Campañas Yanbal** (nombre del `Info.plist`);
+el archivo en disco es `Campanas Yanbal.app` (sin ñ, por compatibilidad del script).
 
-Para dejarla instalada: arrastra `build/Campañas Yanbal.app` a `/Applications`.
+Para dejarla instalada: arrastra `build/Campanas Yanbal.app` a `/Applications`.
 Para que arranque sola al iniciar sesión: **Ajustes del Sistema → General →
 Ítems de inicio → +** y elige la app.
 

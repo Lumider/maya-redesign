@@ -1,36 +1,39 @@
 #!/usr/bin/env bash
 #
-# Compila la app y ensambla YanbalCampanas.app (bundle de barra de menú).
+# Compila la app y ensambla "Campanas Yanbal.app" (bundle de barra de menu).
 # Requiere macOS 13+ y las Command Line Tools de Xcode (o Xcode).
 #
-#   ./build.sh          → compila en release y arma el .app en ./build/
-#   ./build.sh --open   → además abre la app al terminar
+#   ./build.sh          Compila en release y arma el .app en ./build/
+#   ./build.sh --open   Ademas abre la app al terminar
 #
+# Nota: mensajes en ASCII puro a proposito; el bash 3.2 de macOS se atraganta
+# con caracteres multibyte (flechas, elipsis) pegados a una variable.
 set -euo pipefail
 
 cd "$(dirname "$0")"
 
 APP_NAME="YanbalCampanas"
-APP_DISPLAY="Campañas Yanbal"
+APP_DISPLAY="Campanas Yanbal"
 BUILD_DIR="build"
-APP_BUNDLE="$BUILD_DIR/$APP_DISPLAY.app"
+APP_BUNDLE="${BUILD_DIR}/${APP_DISPLAY}.app"
 
-echo "→ Compilando en release…"
+echo "==> Compilando en release..."
 swift build -c release
 
-BIN_PATH="$(swift build -c release --show-bin-path)/$APP_NAME"
+BIN_DIR="$(swift build -c release --show-bin-path)"
+BIN_PATH="${BIN_DIR}/${APP_NAME}"
 
-echo "→ Ensamblando $APP_BUNDLE…"
-rm -rf "$APP_BUNDLE"
-mkdir -p "$APP_BUNDLE/Contents/MacOS"
-mkdir -p "$APP_BUNDLE/Contents/Resources"
+echo "==> Ensamblando ${APP_BUNDLE}"
+rm -rf "${APP_BUNDLE}"
+mkdir -p "${APP_BUNDLE}/Contents/MacOS"
+mkdir -p "${APP_BUNDLE}/Contents/Resources"
 
-cp "$BIN_PATH" "$APP_BUNDLE/Contents/MacOS/$APP_NAME"
-cp "Resources/Info.plist" "$APP_BUNDLE/Contents/Info.plist"
+cp "${BIN_PATH}" "${APP_BUNDLE}/Contents/MacOS/${APP_NAME}"
+cp "Resources/Info.plist" "${APP_BUNDLE}/Contents/Info.plist"
 
-echo "✓ Listo: $APP_BUNDLE"
-echo "  Instálalo arrastrándolo a /Applications."
+echo "OK - Listo: ${APP_BUNDLE}"
+echo "     Instalalo arrastrandolo a /Applications."
 
 if [[ "${1:-}" == "--open" ]]; then
-  open "$APP_BUNDLE"
+  open "${APP_BUNDLE}"
 fi
