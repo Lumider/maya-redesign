@@ -6,7 +6,13 @@ import { Ring } from '../shared/ring';
 import { Reveal } from '../shared/reveal';
 import { Anchor } from '../shared/anchor';
 import { EstatusDirService } from '../shared/estatus';
-import { CAMPANA, PLAN_CAMPANA, CUADRANTE_HISTORIA, RECONOCIMIENTOS } from '../data/mock';
+import {
+  CAMPANA,
+  CAMPANAS_CERRADAS,
+  CUADRANTE_HISTORIA,
+  PLAN_CAMPANA,
+  RECONOCIMIENTOS,
+} from '../data/mock';
 import { PERFILES_DIR } from '../data/mock-dir';
 
 /**
@@ -14,6 +20,8 @@ import { PERFILES_DIR } from '../data/mock-dir';
  * Metas con capa de gamificación sobre recompensas REALES de Yanbal
  * (misión Cuadrante A, bono, racha, checkpoints, medalla) — nunca puntos inventados.
  * Cuadrante/IM/crédito viven en Mi negocio; el sueño PAR+ en Mi carrera: solo se enlazan.
+ * El selector de campaña permite revisar las 3 anteriores: una campaña cerrada
+ * ya no tiene acciones ni ritmo, así que muestra solo los resultados finales.
  */
 @Component({
   selector: 'app-campana-n',
@@ -23,388 +31,492 @@ import { PERFILES_DIR } from '../data/mock-dir';
     <div class="v2">
       <header class="v2-head" appReveal>
         <div>
-          <h1 class="v2-title">Mi campaña · {{ c.actual }}</h1>
-          <p class="v2-sub">¿Voy a tiempo y qué hago esta campaña?</p>
+          <h1 class="v2-title">Mi campaña · {{ sel() }}</h1>
+          <p class="v2-sub">
+            @if (esActual()) {
+              ¿Voy a tiempo y qué hago esta campaña?
+            } @else {
+              Campaña cerrada · {{ cerrada().fechas }} — resultados finales.
+            }
+          </p>
         </div>
-        <nav class="anchors" aria-label="Secciones">
-          <a class="anchor" appAnchor="plan">Mi plan</a>
-          <a class="anchor" appAnchor="mision">Misión</a>
-          <a class="anchor" appAnchor="progreso">Progreso</a>
-          <a class="anchor" appAnchor="acciones">Acciones</a>
-          <a class="anchor" appAnchor="ritmo">Ritmo</a>
-          <a class="anchor anchor--ext">Mis pedidos</a>
-        </nav>
+        <!-- Selector de campaña: la actual + las 3 anteriores -->
+        <div class="periodos" role="tablist" aria-label="Campaña">
+          @for (t of periodos; track t) {
+            <button
+              class="chip"
+              role="tab"
+              [class.chip--active]="sel() === t"
+              [attr.aria-selected]="sel() === t"
+              (click)="sel.set(t)"
+            >
+              {{ t }}{{ t === c.actual ? ' · actual' : '' }}
+            </button>
+          }
+        </div>
+        @if (esActual()) {
+          <nav class="anchors" aria-label="Secciones">
+            <a class="anchor" appAnchor="plan">Mi plan</a>
+            <a class="anchor" appAnchor="mision">Misión</a>
+            <a class="anchor" appAnchor="progreso">Progreso</a>
+            <a class="anchor" appAnchor="acciones">Acciones</a>
+            <a class="anchor" appAnchor="ritmo">Ritmo</a>
+            <a class="anchor anchor--ext">Mis pedidos</a>
+          </nav>
+        }
       </header>
 
-      <div class="v2-grid">
-        <main>
-          <!-- Mi plan · tu sueño (ancla; el plan completo se ejecuta aquí abajo) -->
-          <section
-            id="plan"
-            class="card pad plan v2-section"
-            [class.plan--ok]="plan.estado !== 'en-riesgo'"
-            appReveal
-          >
-            <div class="plan__week">
-              <div class="plan__wn">S{{ plan.semanaActual }}</div>
-              <div class="tiny">de {{ plan.totalSemanas }}</div>
+      @if (!esActual()) {
+        <!-- Campaña cerrada: veredicto + resultados finales, sin acciones -->
+        <section class="v2-section" appReveal>
+          <div class="card pad cierre" [class.cierre--ok]="cerrada().cuadrante === 'A'">
+            <div class="cierre__info">
+              <span
+                class="badge"
+                [class]="
+                  cerrada().cuadrante === 'A' ? 'badge badge--success' : 'badge badge--warning'
+                "
+                >Cuadrante {{ cerrada().cuadrante }}</span
+              >
+              <h2 class="cierre__t">Así cerraste la {{ cerrada().campana }}</h2>
+              <p class="muted">{{ cerrada().nota }}</p>
             </div>
-            <div class="plan__main">
-              <div class="row-between" style="margin-bottom:4px">
-                <strong>{{
-                  plan.estado === 'en-riesgo' ? 'Vas por debajo del ritmo' : '¡Vas en ritmo!'
-                }}</strong>
-                <span
-                  class="badge"
-                  [class]="
-                    plan.estado === 'en-riesgo' ? 'badge badge--warning' : 'badge badge--success'
-                  "
-                  >{{ plan.estado === 'en-riesgo' ? 'En riesgo' : 'En ritmo' }}</span
-                >
-              </div>
-              <p class="muted">
-                Tu sueño: <strong>"{{ plan.sueno }}"</strong> — necesita S/
-                {{ plan.gananciaObjetivo | number }} de ganancia.
-              </p>
-              <div class="progress" style="margin-top:10px">
-                <div class="progress__fill" [style.width.%]="gananciaPct"></div>
+            <div class="reward" [class.reward--locked]="cerrada().bono === 0">
+              <img class="reward__ill" src="icons/money-01.png" alt="" />
+              <div>
+                <div class="reward__val">S/ {{ cerrada().bono | number }}</div>
+                <div class="tiny">
+                  {{ cerrada().bono > 0 ? 'Bono de Desempeño cobrado' : 'Bono no logrado' }}
+                </div>
               </div>
             </div>
-            <div class="plan__gain">
-              <app-ring [pct]="gananciaPct" [size]="92" label="ganancia" [expected]="75" />
-              <span class="tiny">S/ {{ plan.gananciaProyectada | number }}</span>
+          </div>
+
+          <div class="cierre__kpis">
+            <div class="card pad ckpi">
+              <span class="tiny">Venta GP final</span>
+              <strong class="ckpi__v">S/ {{ cerrada().ventaGP.final | number }}</strong>
+              <div
+                class="progress"
+                [class.progress--success]="cerrada().ventaGP.final >= cerrada().ventaGP.meta"
+              >
+                <div
+                  class="progress__fill"
+                  [style.width.%]="pct(cerrada().ventaGP.final, cerrada().ventaGP.meta)"
+                ></div>
+              </div>
+              <span class="tiny">meta S/ {{ cerrada().ventaGP.meta | number }}</span>
             </div>
-          </section>
+            <div class="card pad ckpi">
+              <span class="tiny">Activas GP</span>
+              <strong class="ckpi__v"
+                >{{ cerrada().activas.final
+                }}<span class="muted">/{{ cerrada().activas.meta }}</span></strong
+              >
+              <span class="tiny">{{
+                cerrada().activas.final >= cerrada().activas.meta ? 'meta cumplida ✓' : 'bajo meta'
+              }}</span>
+            </div>
+            <div class="card pad ckpi">
+              <span class="tiny">Primeros pedidos</span>
+              <strong class="ckpi__v"
+                >{{ cerrada().pped.final
+                }}<span class="muted">/{{ cerrada().pped.meta }}</span></strong
+              >
+              <span class="tiny">{{
+                cerrada().pped.final >= cerrada().pped.meta ? 'requisito cumplido ✓' : 'incompleto'
+              }}</span>
+            </div>
+            <div class="card pad ckpi">
+              <span class="tiny">Ganancia de la campaña</span>
+              <strong class="ckpi__v">S/ {{ cerrada().ganancia | number }}</strong>
+              <span class="tiny">escala + red</span>
+            </div>
+          </div>
 
-          <!-- Metas gamificadas: la Misión de la campaña -->
-          <section id="mision" class="v2-section" appReveal>
-            <h2 class="v2-h">
-              <app-icon name="target" [size]="18" /> Misión de {{ c.actual }}
-              <span class="tiny" style="font-weight:500">recompensas reales, no puntos</span>
-            </h2>
-
-            <div class="card pad mission" [class.mission--won]="cuadranteListo()">
-              <!-- Objetivo + premio (el bono se muestra una sola vez, aquí) -->
-              <div class="mission__head">
-                <div>
+          <p class="tiny cierre__volver">
+            Estás viendo una campaña cerrada —
+            <button class="link link--btn" (click)="sel.set(c.actual)">
+              volver a la {{ c.actual }} actual</button
+            >.
+          </p>
+        </section>
+      } @else {
+        <div class="v2-grid">
+          <main>
+            <!-- Mi plan · tu sueño (ancla; el plan completo se ejecuta aquí abajo) -->
+            <section
+              id="plan"
+              class="card pad plan v2-section"
+              [class.plan--ok]="plan.estado !== 'en-riesgo'"
+              appReveal
+            >
+              <div class="plan__week">
+                <div class="plan__wn">S{{ plan.semanaActual }}</div>
+                <div class="tiny">de {{ plan.totalSemanas }}</div>
+              </div>
+              <div class="plan__main">
+                <div class="row-between" style="margin-bottom:4px">
+                  <strong>{{
+                    plan.estado === 'en-riesgo' ? 'Vas por debajo del ritmo' : '¡Vas en ritmo!'
+                  }}</strong>
                   <span
                     class="badge"
-                    [class]="cuadranteListo() ? 'badge badge--success' : 'badge badge--warning'"
-                    >{{ cuadranteListo() ? 'Premio desbloqueado' : 'Misión en curso' }}</span
+                    [class]="
+                      plan.estado === 'en-riesgo' ? 'badge badge--warning' : 'badge badge--success'
+                    "
+                    >{{ plan.estado === 'en-riesgo' ? 'En riesgo' : 'En ritmo' }}</span
                   >
-                  <h3 class="mission__title">Sube a Cuadrante A</h3>
-                  <p class="tiny">Cumple los 2 checkpoints y aseguras tu Bono de Desempeño.</p>
                 </div>
-                <div class="reward" [class.reward--locked]="!cuadranteListo()">
-                  <img class="reward__ill" src="icons/money-01.png" alt="" />
-                  <div>
-                    <div class="reward__val">S/ {{ n().bono | number }}</div>
-                    <div class="tiny">Bono de Desempeño</div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Racha (aversión a la pérdida, en tono de aliento) -->
-              <div class="streak">
-                <div class="streak__top">
-                  <strong
-                    ><app-icon name="trending" [size]="15" /> Racha: {{ rachaCumplidas }} campañas
-                    en Cuadrante A</strong
-                  >
-                  <span class="tiny streak__msg">{{
-                    cuadranteListo()
-                      ? '¡' + c.actual + ' asegurada — racha viva! 🎉'
-                      : c.actual + ' en riesgo — no la rompas 💪'
-                  }}</span>
-                </div>
-                <div
-                  class="streak__row"
-                  role="img"
-                  [attr.aria-label]="
-                    rachaCumplidas + ' campañas en Cuadrante A, ' + c.actual + ' pendiente'
-                  "
-                >
-                  @for (h of racha; track h.campana) {
-                    <span
-                      class="streak__dot"
-                      [class.streak__dot--on]="h.valor === 'A'"
-                      [class.streak__dot--risk]="h.campana === c.actual && h.valor !== 'A'"
-                      [title]="
-                        h.campana +
-                        ': ' +
-                        (h.valor === 'A'
-                          ? 'Cuadrante A'
-                          : h.campana === c.actual
-                            ? 'En riesgo'
-                            : h.valor)
-                      "
-                    >
-                      @if (h.valor === 'A') {
-                        <app-icon name="check" [size]="12" />
-                      } @else {
-                        {{ h.campana === c.actual ? '!' : h.valor }}
-                      }
-                      <small>{{ h.campana }}</small>
-                    </span>
-                  }
-                </div>
-              </div>
-
-              <!-- 2 checkpoints idénticos que desbloquean el bono -->
-              <div class="checks">
-                <!-- Checkpoint 1: Venta · MRM (una barra; la meta C6 va como texto secundario) -->
-                <div
-                  class="check"
-                  [class.check--ok]="ventaMrmPct() >= 100"
-                  [class.check--warn]="ventaMrmPct() < 100"
-                >
-                  <span class="check__ic"
-                    ><app-icon [name]="ventaMrmPct() >= 100 ? 'check' : 'trending'" [size]="15"
-                  /></span>
-                  <div class="check__body">
-                    <div class="row-between">
-                      <strong>Venta · MRM</strong>
-                      <span class="check__n"
-                        >{{ ventaMrmPct() }}%
-                        <span class="muted"
-                          >· {{ ventaMrmPct() >= 100 ? 'listo' : 'casi' }}</span
-                        ></span
-                      >
-                    </div>
-                    <div class="progress" [class.progress--success]="ventaMrmPct() >= 100">
-                      <div class="progress__fill" [style.width.%]="ventaMrmPct()"></div>
-                    </div>
-                    <div class="check__foot tiny">
-                      Mínimo para calificar (tu estatus): S/ {{ vara().venta | number }}
-                      @if (faltaVenta() > 0) {
-                        · faltan <strong>S/ {{ faltaVenta() | number }}</strong>
-                      } @else {
-                        · <strong>cumplido ✓</strong>
-                      }
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Checkpoint 2: Primeros pedidos (misma caja, mismo peso) -->
-                <div
-                  class="check"
-                  [class.check--ok]="ppedListo()"
-                  [class.check--bad]="!ppedListo()"
-                >
-                  <span class="check__ic"
-                    ><app-icon [name]="ppedListo() ? 'check' : 'box'" [size]="15"
-                  /></span>
-                  <div class="check__body">
-                    <div class="row-between">
-                      <strong>Primeros pedidos</strong>
-                      <span class="check__n"
-                        >{{ n().pped }}/{{ vara().pped }}
-                        <span class="muted">· {{ ppedListo() ? 'listo' : 'pendiente' }}</span></span
-                      >
-                    </div>
-                    <div class="progress" [class.progress--success]="ppedListo()">
-                      <div class="progress__fill" [style.width.%]="ppedPct()"></div>
-                    </div>
-                    <div class="check__foot tiny">
-                      Requisito de Cuadrante A
-                      @if (ppedFaltan() > 0) {
-                        · te faltan <strong>{{ ppedFaltan() }}</strong>
-                      } @else {
-                        · <strong>cumplido ✓</strong>
-                      }
-                    </div>
-                  </div>
-                </div>
-
-                <!-- Desbloqueo (sin repetir el monto ni doble candado) -->
-                <div class="check check--unlock" [class.check--ok]="cuadranteListo()">
-                  <span class="check__ic">{{ cuadranteListo() ? '🎉' : '🔒' }}</span>
-                  <div class="check__body">
-                    <strong>Cuadrante A</strong>
-                    <div class="tiny">
-                      {{
-                        cuadranteListo()
-                          ? '¡Lo lograste! Tu bono está asegurado.'
-                          : 'Al cumplir los 2 checkpoints.'
-                      }}
-                    </div>
-                  </div>
-                </div>
-              </div>
-
-              <!-- Ancla al sueño: cada campaña en A acerca el sueño -->
-              <a class="dream" routerLink="/n/carrera">
-                <img class="dream__ill" src="icons/airplane-01.png" alt="" />
-                <p>
-                  Cada campaña en Cuadrante A te acerca a tu sueño:
-                  <strong>{{ c.par.sueno }}</strong
-                  >. Míralo en Mi carrera.
+                <p class="muted">
+                  Tu sueño: <strong>"{{ plan.sueno }}"</strong> — necesita S/
+                  {{ plan.gananciaObjetivo | number }} de ganancia.
                 </p>
-                <app-icon name="arrow-right" [size]="16" />
-              </a>
-            </div>
-          </section>
-
-          <!-- Tu progreso del año (fuera de la Misión para no recargarla) -->
-          <section id="progreso" class="v2-section" appReveal>
-            <h2 class="v2-h"><app-icon name="sparkles" [size]="18" /> Tu progreso del año</h2>
-            <div class="progreso-grid">
-              <a class="card pad prog" appAnchor="acciones">
-                <app-ring [pct]="retoPct()" [size]="64" label="reto" [expected]="100" />
-                <div>
-                  <strong>Reto de la semana</strong>
-                  <div class="tiny">{{ hechas() }}/{{ plan.acciones.length }} acciones hechas</div>
-                </div>
-              </a>
-              <div class="card pad prog">
-                <img class="trophy" src="icons/medal-01.png" alt="" />
-                <div>
-                  <strong>Medalla Excelencia GP</strong>
-                  <div class="tiny">
-                    {{ recon.excelenciaGP.medalla }} · {{ recon.excelenciaGP.cumplidas }}/{{
-                      recon.excelenciaGP.de
-                    }}
-                    campañas del año
-                  </div>
+                <div class="progress" style="margin-top:10px">
+                  <div class="progress__fill" [style.width.%]="gananciaPct"></div>
                 </div>
               </div>
-            </div>
-          </section>
+              <div class="plan__gain">
+                <app-ring [pct]="gananciaPct" [size]="92" label="ganancia" [expected]="75" />
+                <span class="tiny">S/ {{ plan.gananciaProyectada | number }}</span>
+              </div>
+            </section>
 
-          <!-- Acciones de la semana -->
-          <section id="acciones" class="v2-section" appReveal>
-            <h2 class="v2-h">
-              <app-icon name="check" [size]="18" /> Acciones de la semana
-              <span class="tiny" style="font-weight:500"
-                >{{ hechas() }}/{{ plan.acciones.length }}</span
-              >
-            </h2>
-            <div class="card">
-              @for (a of plan.acciones; track a.id) {
-                <button class="acc" [class.acc--done]="done().has(a.id)" (click)="toggle(a.id)">
-                  <span class="acc__check">
-                    @if (done().has(a.id)) {
-                      <app-icon name="check" [size]="13" />
-                    }
-                  </span>
-                  <span class="acc__body"
-                    ><span class="acc__txt">{{ a.texto }}</span
-                    ><span class="tiny">{{ a.impacto }}</span></span
+            <!-- Metas gamificadas: la Misión de la campaña -->
+            <section id="mision" class="v2-section" appReveal>
+              <h2 class="v2-h">
+                <app-icon name="target" [size]="18" /> Misión de {{ c.actual }}
+                <span class="tiny" style="font-weight:500">recompensas reales, no puntos</span>
+              </h2>
+
+              <div class="card pad mission" [class.mission--won]="cuadranteListo()">
+                <!-- Objetivo + premio (el bono se muestra una sola vez, aquí) -->
+                <div class="mission__head">
+                  <div>
+                    <span
+                      class="badge"
+                      [class]="cuadranteListo() ? 'badge badge--success' : 'badge badge--warning'"
+                      >{{ cuadranteListo() ? 'Premio desbloqueado' : 'Misión en curso' }}</span
+                    >
+                    <h3 class="mission__title">Sube a Cuadrante A</h3>
+                    <p class="tiny">Cumple los 2 checkpoints y aseguras tu Bono de Desempeño.</p>
+                  </div>
+                  <div class="reward" [class.reward--locked]="!cuadranteListo()">
+                    <img class="reward__ill" src="icons/money-01.png" alt="" />
+                    <div>
+                      <div class="reward__val">S/ {{ n().bono | number }}</div>
+                      <div class="tiny">Bono de Desempeño</div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Racha (aversión a la pérdida, en tono de aliento) -->
+                <div class="streak">
+                  <div class="streak__top">
+                    <strong
+                      ><app-icon name="trending" [size]="15" /> Racha: {{ rachaCumplidas }} campañas
+                      en Cuadrante A</strong
+                    >
+                    <span class="tiny streak__msg">{{
+                      cuadranteListo()
+                        ? '¡' + c.actual + ' asegurada — racha viva! 🎉'
+                        : c.actual + ' en riesgo — no la rompas 💪'
+                    }}</span>
+                  </div>
+                  <div
+                    class="streak__row"
+                    role="img"
+                    [attr.aria-label]="
+                      rachaCumplidas + ' campañas en Cuadrante A, ' + c.actual + ' pendiente'
+                    "
                   >
-                </button>
-              }
-            </div>
-          </section>
-        </main>
-
-        <aside class="v2-aside">
-          <!-- Activas: única casa de retenidas/reactivadas/1ros pedidos -->
-          <div class="card pad" appReveal>
-            <h3 class="v2-h" style="font-size:15px">
-              <app-icon name="users" [size]="16" /> Activas · {{ c.activas.total }}/{{
-                c.activas.meta
-              }}
-            </h3>
-            <div class="trio">
-              <div class="trio__i">
-                <span class="tiny">Retenidas</span
-                ><strong
-                  >{{ c.retenidas.valor }}<span class="muted">/{{ c.retenidas.meta }}</span></strong
-                >
-                <div class="progress">
-                  <div
-                    class="progress__fill"
-                    [style.width.%]="pct(c.retenidas.valor, c.retenidas.meta)"
-                  ></div>
-                </div>
-              </div>
-              <div class="trio__i">
-                <span class="tiny">Reactivadas</span
-                ><strong
-                  >{{ c.reactivadas.valor
-                  }}<span class="muted">/{{ c.reactivadas.meta }}</span></strong
-                >
-                <div class="progress">
-                  <div
-                    class="progress__fill"
-                    [style.width.%]="pct(c.reactivadas.valor, c.reactivadas.meta)"
-                  ></div>
-                </div>
-              </div>
-              <div class="trio__i">
-                <span class="tiny">1ros pedidos</span
-                ><strong
-                  >{{ n().pped }}<span class="muted">/{{ vara().pped }}</span></strong
-                >
-                <div class="progress">
-                  <div class="progress__fill" [style.width.%]="ppedPct()"></div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div class="card pad" appReveal [revealDelay]="60">
-            <h3 class="v2-h" style="font-size:15px">🎁 Premios Ganamás</h3>
-            <div class="kv">
-              <span>Calificados (retener)</span><strong>{{ c.premios.calificados }}</strong>
-            </div>
-            <div class="kv">
-              <span>Cerca del premio</span><strong>{{ c.premios.cercaDelPremio }}</strong>
-            </div>
-            <div class="kv">
-              <span>Consultoras productivas</span
-              ><strong class="ok">{{ c.productivas.valor }} / {{ c.productivas.meta }}</strong>
-            </div>
-          </div>
-
-          <div id="ritmo" class="card pad" appReveal [revealDelay]="110">
-            <h3 class="v2-h" style="font-size:15px">
-              <app-icon name="chart" [size]="16" /> Ritmo semanal
-            </h3>
-            <div class="weeks">
-              @for (s of plan.semanas; track s.n) {
-                <div class="wk" [class.wk--cur]="s.n === plan.semanaActual">
-                  <div class="wk__bars">
-                    <span class="wk__plan" [style.height.%]="alto(s.plan)"></span
-                    ><span class="wk__real" [style.height.%]="alto(s.logrado)"></span>
+                    @for (h of racha; track h.campana) {
+                      <span
+                        class="streak__dot"
+                        [class.streak__dot--on]="h.valor === 'A'"
+                        [class.streak__dot--risk]="h.campana === c.actual && h.valor !== 'A'"
+                        [title]="
+                          h.campana +
+                          ': ' +
+                          (h.valor === 'A'
+                            ? 'Cuadrante A'
+                            : h.campana === c.actual
+                              ? 'En riesgo'
+                              : h.valor)
+                        "
+                      >
+                        @if (h.valor === 'A') {
+                          <app-icon name="check" [size]="12" />
+                        } @else {
+                          {{ h.campana === c.actual ? '!' : h.valor }}
+                        }
+                        <small>{{ h.campana }}</small>
+                      </span>
+                    }
                   </div>
-                  <span class="tiny">S{{ s.n }}</span>
-                  @if (s.logrado >= s.plan && s.logrado > 0) {
-                    <span class="wk__hit tiny">✓</span>
-                  }
                 </div>
-              }
+
+                <!-- 2 checkpoints idénticos que desbloquean el bono -->
+                <div class="checks">
+                  <!-- Checkpoint 1: Venta · MRM (una barra; la meta C6 va como texto secundario) -->
+                  <div
+                    class="check"
+                    [class.check--ok]="ventaMrmPct() >= 100"
+                    [class.check--warn]="ventaMrmPct() < 100"
+                  >
+                    <span class="check__ic"
+                      ><app-icon [name]="ventaMrmPct() >= 100 ? 'check' : 'trending'" [size]="15"
+                    /></span>
+                    <div class="check__body">
+                      <div class="row-between">
+                        <strong>Venta · MRM</strong>
+                        <span class="check__n"
+                          >{{ ventaMrmPct() }}%
+                          <span class="muted"
+                            >· {{ ventaMrmPct() >= 100 ? 'listo' : 'casi' }}</span
+                          ></span
+                        >
+                      </div>
+                      <div class="progress" [class.progress--success]="ventaMrmPct() >= 100">
+                        <div class="progress__fill" [style.width.%]="ventaMrmPct()"></div>
+                      </div>
+                      <div class="check__foot tiny">
+                        Mínimo para calificar (tu estatus): S/ {{ vara().venta | number }}
+                        @if (faltaVenta() > 0) {
+                          · faltan <strong>S/ {{ faltaVenta() | number }}</strong>
+                        } @else {
+                          · <strong>cumplido ✓</strong>
+                        }
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Checkpoint 2: Primeros pedidos (misma caja, mismo peso) -->
+                  <div
+                    class="check"
+                    [class.check--ok]="ppedListo()"
+                    [class.check--bad]="!ppedListo()"
+                  >
+                    <span class="check__ic"
+                      ><app-icon [name]="ppedListo() ? 'check' : 'box'" [size]="15"
+                    /></span>
+                    <div class="check__body">
+                      <div class="row-between">
+                        <strong>Primeros pedidos</strong>
+                        <span class="check__n"
+                          >{{ n().pped }}/{{ vara().pped }}
+                          <span class="muted"
+                            >· {{ ppedListo() ? 'listo' : 'pendiente' }}</span
+                          ></span
+                        >
+                      </div>
+                      <div class="progress" [class.progress--success]="ppedListo()">
+                        <div class="progress__fill" [style.width.%]="ppedPct()"></div>
+                      </div>
+                      <div class="check__foot tiny">
+                        Requisito de Cuadrante A
+                        @if (ppedFaltan() > 0) {
+                          · te faltan <strong>{{ ppedFaltan() }}</strong>
+                        } @else {
+                          · <strong>cumplido ✓</strong>
+                        }
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- Desbloqueo (sin repetir el monto ni doble candado) -->
+                  <div class="check check--unlock" [class.check--ok]="cuadranteListo()">
+                    <span class="check__ic">{{ cuadranteListo() ? '🎉' : '🔒' }}</span>
+                    <div class="check__body">
+                      <strong>Cuadrante A</strong>
+                      <div class="tiny">
+                        {{
+                          cuadranteListo()
+                            ? '¡Lo lograste! Tu bono está asegurado.'
+                            : 'Al cumplir los 2 checkpoints.'
+                        }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <!-- Ancla al sueño: cada campaña en A acerca el sueño -->
+                <a class="dream" routerLink="/n/carrera">
+                  <img class="dream__ill" src="icons/airplane-01.png" alt="" />
+                  <p>
+                    Cada campaña en Cuadrante A te acerca a tu sueño:
+                    <strong>{{ c.par.sueno }}</strong
+                    >. Míralo en Mi carrera.
+                  </p>
+                  <app-icon name="arrow-right" [size]="16" />
+                </a>
+              </div>
+            </section>
+
+            <!-- Tu progreso del año (fuera de la Misión para no recargarla) -->
+            <section id="progreso" class="v2-section" appReveal>
+              <h2 class="v2-h"><app-icon name="sparkles" [size]="18" /> Tu progreso del año</h2>
+              <div class="progreso-grid">
+                <a class="card pad prog" appAnchor="acciones">
+                  <app-ring [pct]="retoPct()" [size]="64" label="reto" [expected]="100" />
+                  <div>
+                    <strong>Reto de la semana</strong>
+                    <div class="tiny">
+                      {{ hechas() }}/{{ plan.acciones.length }} acciones hechas
+                    </div>
+                  </div>
+                </a>
+                <div class="card pad prog">
+                  <img class="trophy" src="icons/medal-01.png" alt="" />
+                  <div>
+                    <strong>Medalla Excelencia GP</strong>
+                    <div class="tiny">
+                      {{ recon.excelenciaGP.medalla }} · {{ recon.excelenciaGP.cumplidas }}/{{
+                        recon.excelenciaGP.de
+                      }}
+                      campañas del año
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </section>
+
+            <!-- Acciones de la semana -->
+            <section id="acciones" class="v2-section" appReveal>
+              <h2 class="v2-h">
+                <app-icon name="check" [size]="18" /> Acciones de la semana
+                <span class="tiny" style="font-weight:500"
+                  >{{ hechas() }}/{{ plan.acciones.length }}</span
+                >
+              </h2>
+              <div class="card">
+                @for (a of plan.acciones; track a.id) {
+                  <button class="acc" [class.acc--done]="done().has(a.id)" (click)="toggle(a.id)">
+                    <span class="acc__check">
+                      @if (done().has(a.id)) {
+                        <app-icon name="check" [size]="13" />
+                      }
+                    </span>
+                    <span class="acc__body"
+                      ><span class="acc__txt">{{ a.texto }}</span
+                      ><span class="tiny">{{ a.impacto }}</span></span
+                    >
+                  </button>
+                }
+              </div>
+            </section>
+          </main>
+
+          <aside class="v2-aside">
+            <!-- Activas: única casa de retenidas/reactivadas/1ros pedidos -->
+            <div class="card pad" appReveal>
+              <h3 class="v2-h" style="font-size:15px">
+                <app-icon name="users" [size]="16" /> Activas · {{ c.activas.total }}/{{
+                  c.activas.meta
+                }}
+              </h3>
+              <div class="trio">
+                <div class="trio__i">
+                  <span class="tiny">Retenidas</span
+                  ><strong
+                    >{{ c.retenidas.valor
+                    }}<span class="muted">/{{ c.retenidas.meta }}</span></strong
+                  >
+                  <div class="progress">
+                    <div
+                      class="progress__fill"
+                      [style.width.%]="pct(c.retenidas.valor, c.retenidas.meta)"
+                    ></div>
+                  </div>
+                </div>
+                <div class="trio__i">
+                  <span class="tiny">Reactivadas</span
+                  ><strong
+                    >{{ c.reactivadas.valor
+                    }}<span class="muted">/{{ c.reactivadas.meta }}</span></strong
+                  >
+                  <div class="progress">
+                    <div
+                      class="progress__fill"
+                      [style.width.%]="pct(c.reactivadas.valor, c.reactivadas.meta)"
+                    ></div>
+                  </div>
+                </div>
+                <div class="trio__i">
+                  <span class="tiny">1ros pedidos</span
+                  ><strong
+                    >{{ n().pped }}<span class="muted">/{{ vara().pped }}</span></strong
+                  >
+                  <div class="progress">
+                    <div class="progress__fill" [style.width.%]="ppedPct()"></div>
+                  </div>
+                </div>
+              </div>
             </div>
-          </div>
 
-          <!-- Relacionado: solo enlaces a la vista dueña -->
-          <div class="card pad" appReveal [revealDelay]="150">
-            <h3 class="v2-h" style="font-size:15px">Relacionado</h3>
-            <a class="rel" routerLink="/n/negocio">
-              <app-icon name="chart" [size]="16" />
-              <div>
-                <strong>Tu Cuadrante</strong>
-                <div class="tiny">Cuadrante, IM y crédito en Mi negocio</div>
+            <div class="card pad" appReveal [revealDelay]="60">
+              <h3 class="v2-h" style="font-size:15px">🎁 Premios Ganamás</h3>
+              <div class="kv">
+                <span>Calificados (retener)</span><strong>{{ c.premios.calificados }}</strong>
               </div>
-              <app-icon name="arrow-right" [size]="15" />
-            </a>
-            <a class="rel" routerLink="/n/carrera">
-              <app-icon name="star" [size]="16" />
-              <div>
-                <strong>Tu Sueño PAR+</strong>
-                <div class="tiny">Estrellas, viaje y medallas en Mi carrera</div>
+              <div class="kv">
+                <span>Cerca del premio</span><strong>{{ c.premios.cercaDelPremio }}</strong>
               </div>
-              <app-icon name="arrow-right" [size]="15" />
-            </a>
-          </div>
+              <div class="kv">
+                <span>Consultoras productivas</span
+                ><strong class="ok">{{ c.productivas.valor }} / {{ c.productivas.meta }}</strong>
+              </div>
+            </div>
 
-          <a class="card pad ext" appReveal [revealDelay]="190"
-            ><span class="badge badge--neutral">Externo</span
-            ><strong style="display:block;margin-top:6px">Mis pedidos</strong
-            ><span class="tiny">Realiza y revisa el estado de tus pedidos ↗</span></a
-          >
-        </aside>
-      </div>
+            <div id="ritmo" class="card pad" appReveal [revealDelay]="110">
+              <h3 class="v2-h" style="font-size:15px">
+                <app-icon name="chart" [size]="16" /> Ritmo semanal
+              </h3>
+              <div class="weeks">
+                @for (s of plan.semanas; track s.n) {
+                  <div class="wk" [class.wk--cur]="s.n === plan.semanaActual">
+                    <div class="wk__bars">
+                      <span class="wk__plan" [style.height.%]="alto(s.plan)"></span
+                      ><span class="wk__real" [style.height.%]="alto(s.logrado)"></span>
+                    </div>
+                    <span class="tiny">S{{ s.n }}</span>
+                    @if (s.logrado >= s.plan && s.logrado > 0) {
+                      <span class="wk__hit tiny">✓</span>
+                    }
+                  </div>
+                }
+              </div>
+            </div>
+
+            <!-- Relacionado: solo enlaces a la vista dueña -->
+            <div class="card pad" appReveal [revealDelay]="150">
+              <h3 class="v2-h" style="font-size:15px">Relacionado</h3>
+              <a class="rel" routerLink="/n/negocio">
+                <app-icon name="chart" [size]="16" />
+                <div>
+                  <strong>Tu Cuadrante</strong>
+                  <div class="tiny">Cuadrante, IM y crédito en Mi negocio</div>
+                </div>
+                <app-icon name="arrow-right" [size]="15" />
+              </a>
+              <a class="rel" routerLink="/n/carrera">
+                <app-icon name="star" [size]="16" />
+                <div>
+                  <strong>Tu Sueño PAR+</strong>
+                  <div class="tiny">Estrellas, viaje y medallas en Mi carrera</div>
+                </div>
+                <app-icon name="arrow-right" [size]="15" />
+              </a>
+            </div>
+
+            <a class="card pad ext" appReveal [revealDelay]="190"
+              ><span class="badge badge--neutral">Externo</span
+              ><strong style="display:block;margin-top:6px">Mis pedidos</strong
+              ><span class="tiny">Realiza y revisa el estado de tus pedidos ↗</span></a
+            >
+          </aside>
+        </div>
+      }
     </div>
   `,
   styles: [
@@ -418,6 +530,75 @@ import { PERFILES_DIR } from '../data/mock-dir';
       }
       .pad {
         padding: 18px 20px;
+      }
+      .periodos {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        margin: 12px 0 4px;
+      }
+
+      /* Campaña cerrada: veredicto + resultados finales */
+      .cierre {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        gap: 16px;
+        flex-wrap: wrap;
+        border-color: var(--warning);
+        margin-bottom: 16px;
+      }
+      .cierre--ok {
+        border-color: var(--success);
+      }
+      .cierre__info {
+        flex: 1;
+        min-width: 240px;
+      }
+      .cierre__t {
+        font-size: 20px;
+        margin: 8px 0 4px;
+      }
+      .cierre__info .muted {
+        margin: 0;
+        font-size: 13.5px;
+      }
+      .cierre__kpis {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 12px;
+      }
+      .ckpi {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+      }
+      .ckpi__v {
+        font-family: var(--font-display);
+        font-size: 24px;
+        font-weight: 800;
+      }
+      .ckpi .progress {
+        margin: 4px 0 2px;
+      }
+      .cierre__volver {
+        margin: 14px 0 0;
+      }
+      .link--btn {
+        border: 0;
+        background: none;
+        padding: 0;
+        font: inherit;
+        color: var(--brand-600);
+        font-weight: 700;
+        text-decoration: underline;
+        text-underline-offset: 2px;
+        cursor: pointer;
+      }
+      @media (max-width: 860px) {
+        .cierre__kpis {
+          grid-template-columns: 1fr 1fr;
+        }
       }
 
       /* Plan / sueño */
@@ -847,6 +1028,14 @@ export class CampanaN {
   protected readonly c = CAMPANA;
   protected readonly plan = PLAN_CAMPANA;
   protected readonly recon = RECONOCIMIENTOS;
+
+  /** Selector de campaña: la actual + las 3 cerradas anteriores. */
+  protected readonly periodos = [CAMPANA.actual, ...CAMPANAS_CERRADAS.map((x) => x.campana)];
+  protected readonly sel = signal(CAMPANA.actual);
+  protected readonly esActual = computed(() => this.sel() === CAMPANA.actual);
+  protected readonly cerrada = computed(
+    () => CAMPANAS_CERRADAS.find((x) => x.campana === this.sel()) ?? CAMPANAS_CERRADAS[0],
+  );
   protected readonly racha = CUADRANTE_HISTORIA.filter((h) => h.valor !== '-');
   protected readonly rachaCumplidas = this.racha.filter((h) => h.valor === 'A').length;
 

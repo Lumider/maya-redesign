@@ -100,6 +100,74 @@ export const CAMPANA_CES = {
   },
 };
 
+/**
+ * Resumen de una campaña ya cerrada de la Emprendedora, para el selector
+ * de campaña de Mi campaña. El título (CES) no se pierde: lo que varía
+ * campaña a campaña es la CALIFICACIÓN (CES o CNS).
+ */
+export interface CampanaCerradaCes {
+  campana: string;
+  /** Fechas reales del calendario campañal 2026 (docs/calendario-campanas.md). */
+  fechas: string;
+  calificacion: 'CES' | 'CNS';
+  ventaGP: { final: number; meta: number };
+  ventaPersonal: number;
+  nivelGanamas: string;
+  descuento: number;
+  ppedDirectos: { final: number; meta: number };
+  activasDirectas: { final: number; meta: number };
+  ganancia: number;
+  /** Resumen de una línea para la lista "Campañas anteriores" del aside. */
+  notaCorta: string;
+  nota: string;
+}
+
+/** Las 3 campañas anteriores a la actual (C7). */
+export const CAMPANAS_CERRADAS_CES: CampanaCerradaCes[] = [
+  {
+    campana: 'C6',
+    fechas: '23 may – 19 jun',
+    calificacion: 'CES',
+    ventaGP: { final: 6410, meta: 6000 },
+    ventaPersonal: 1620,
+    nivelGanamas: 'N3',
+    descuento: 35,
+    ppedDirectos: { final: 2, meta: 2 },
+    activasDirectas: { final: 5, meta: 5 },
+    ganancia: 567,
+    notaCorta: 'Calificaste CES · GP S/ 6,410',
+    nota: 'Calificaste CES: venta del grupo sobre la meta y tus 2 primeros pedidos directos a tiempo.',
+  },
+  {
+    campana: 'C5',
+    fechas: '25 abr – 22 may',
+    calificacion: 'CES',
+    ventaGP: { final: 6180, meta: 6000 },
+    ventaPersonal: 1478.5,
+    nivelGanamas: 'N3',
+    descuento: 35,
+    ppedDirectos: { final: 2, meta: 2 },
+    activasDirectas: { final: 5, meta: 5 },
+    ganancia: 517.5,
+    notaCorta: 'Calificaste CES · GP S/ 6,180',
+    nota: 'Calificaste CES por segunda campaña seguida — la venta del grupo cerró justo sobre la meta.',
+  },
+  {
+    campana: 'C4',
+    fechas: '28 mar – 24 abr',
+    calificacion: 'CNS',
+    ventaGP: { final: 6020, meta: 6000 },
+    ventaPersonal: 1390,
+    nivelGanamas: 'N2',
+    descuento: 30,
+    ppedDirectos: { final: 1, meta: 2 },
+    activasDirectas: { final: 5, meta: 5 },
+    ganancia: 417,
+    notaCorta: 'Sin 2 PPED directos',
+    nota: 'Te faltó 1 primer pedido directo, así que esa campaña calificaste (y cobraste) como CNS. Tu título CES no se pierde.',
+  },
+];
+
 /** Integrante del Grupo Personal de la CES (hijas y nietas: CNS/CEM, nunca directoras). */
 export interface IntegranteCes {
   nombre: string;

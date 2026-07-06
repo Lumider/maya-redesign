@@ -293,8 +293,8 @@ export const FRENTES_BDM = [
  *  → indicador principal → distribución/slider → enlace a la gestión). */
 export const CAMPANA_BDM = {
   campana: 'C6',
-  /** pestañas del selector de periodo (diseño: últimas 3 campañas) */
-  periodos: ['C6', 'C5', 'C4'],
+  /** pestañas del selector de periodo: la actual + las 3 campañas anteriores */
+  periodos: ['C6', 'C5', 'C4', 'C3'],
 
   delta: {
     banner: 'Te faltan 5 DIR en CA para un Prom. Trimestral de 65% y lograr tu bono del 20%.',
@@ -366,3 +366,66 @@ export const CAMPANA_BDM = {
     enlace: 'Ver Driver Tree',
   },
 };
+
+/**
+ * Cierre de una campaña anterior, para el selector de periodo de Mi campaña.
+ * Una campaña cerrada ya no tiene brechas que gestionar: se muestran solo
+ * los valores finales de los 6 indicadores.
+ */
+export interface CierreCampanaBdm {
+  campana: string;
+  /** Fechas reales del calendario campañal 2026 (docs/calendario-campanas.md). */
+  fechas: string;
+  /** % de DIR en Cuadrante A al cierre (Delta). */
+  deltaPct: number;
+  /** # de Directoras de la unidad al cierre (Capitalización). */
+  dir: number;
+  /** % de DIR con Nivel de Estrella 1 a más (PAR+). */
+  ne1Pct: number;
+  /** # de Líderes Poderosas. */
+  poderosas: number;
+  /** Cumplimiento de Venta Neta vs Business Plan. */
+  bpPct: number;
+  /** Venta Neta de la campaña en S/ (Driver Tree — valor de ejemplo del Figma). */
+  ventaNeta: number;
+  nota: string;
+}
+
+/** Las 3 campañas anteriores a la actual (C6). Coherentes con la card actual:
+ *  Prom. Trimestral 63% = (C6 60 + C5 67 + C4 62) / 3, y Venta Neta C5 tal que
+ *  el comparativo "+12.9% vs C5" del Driver Tree cuadre. */
+export const CIERRES_BDM: CierreCampanaBdm[] = [
+  {
+    campana: 'C5',
+    fechas: '25 abr – 22 may',
+    deltaPct: 67,
+    dir: 124,
+    ne1Pct: 38,
+    poderosas: 3,
+    bpPct: 101,
+    ventaNeta: 1571.0,
+    nota: 'Buen cierre: Delta sobre la vara del trimestre y venta sobre el Business Plan.',
+  },
+  {
+    campana: 'C4',
+    fechas: '28 mar – 24 abr',
+    deltaPct: 62,
+    dir: 122,
+    ne1Pct: 37,
+    poderosas: 4,
+    bpPct: 98,
+    ventaNeta: 1540.1,
+    nota: 'Cierre en línea con el plan; el Delta se sostuvo pese a 2 DIR que bajaron a B.',
+  },
+  {
+    campana: 'C3',
+    fechas: '28 feb – 27 mar',
+    deltaPct: 58,
+    dir: 121,
+    ne1Pct: 35,
+    poderosas: 4,
+    bpPct: 94,
+    ventaNeta: 1495.3,
+    nota: 'Campaña corta en venta: el BP quedó a 6 puntos y el Delta bajo la vara del bono.',
+  },
+];

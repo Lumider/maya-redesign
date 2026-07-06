@@ -738,3 +738,60 @@ export const CUADRANTE_HISTORIA = [
   { campana: 'C12', valor: '-' },
   { campana: 'C13', valor: '-' },
 ];
+
+/**
+ * Resumen de una campaña ya cerrada, para el selector de campaña de
+ * Mi campaña (vista nueva). Una campaña cerrada no tiene "acciones" ni
+ * ritmo: solo resultados finales, por eso es una estructura aparte.
+ */
+export interface CampanaCerradaDir {
+  campana: string;
+  /** Fechas reales del calendario campañal 2026 (docs/calendario-campanas.md). */
+  fechas: string;
+  cuadrante: 'A' | 'B' | 'C' | 'D';
+  /** Bono de Desempeño cobrado (0 si no calificó). */
+  bono: number;
+  ventaGP: { final: number; meta: number };
+  activas: { final: number; meta: number };
+  pped: { final: number; meta: number };
+  ganancia: number;
+  nota: string;
+}
+
+/** Las 3 campañas anteriores a la actual (C6), coherentes con
+ *  CUADRANTE_HISTORIA: C3–C5 cerraron en Cuadrante A. */
+export const CAMPANAS_CERRADAS: CampanaCerradaDir[] = [
+  {
+    campana: 'C5',
+    fechas: '25 abr – 22 may',
+    cuadrante: 'A',
+    bono: 2300,
+    ventaGP: { final: 289540, meta: 280000 },
+    activas: { final: 66, meta: 65 },
+    pped: { final: 5, meta: 4 },
+    ganancia: 20140,
+    nota: 'Quinta campaña seguida en Cuadrante A: cumpliste el MRM y los primeros pedidos, y cobraste tu Bono de Desempeño.',
+  },
+  {
+    campana: 'C4',
+    fechas: '28 mar – 24 abr',
+    cuadrante: 'A',
+    bono: 2300,
+    ventaGP: { final: 281730, meta: 272000 },
+    activas: { final: 64, meta: 62 },
+    pped: { final: 4, meta: 4 },
+    ganancia: 19420,
+    nota: 'Cerraste en Cuadrante A con los primeros pedidos justos: los aseguraste en la última semana.',
+  },
+  {
+    campana: 'C3',
+    fechas: '28 feb – 27 mar',
+    cuadrante: 'A',
+    bono: 2300,
+    ventaGP: { final: 274890, meta: 268000 },
+    activas: { final: 61, meta: 60 },
+    pped: { final: 4, meta: 4 },
+    ganancia: 18760,
+    nota: 'Cuadrante A con venta sobre la meta desde la semana 3 — tu mejor arranque del año.',
+  },
+];
