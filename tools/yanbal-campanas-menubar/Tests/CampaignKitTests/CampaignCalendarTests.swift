@@ -2,7 +2,7 @@ import XCTest
 
 @testable import CampaignKit
 
-/// Verifica el motor contra el calendario oficial (docs/calendario-campanas.md),
+/// Verifica el motor contra el calendario oficial (ver CALENDARIO.md),
 /// incluidos los bordes de año y la C13 extendida de 2024 (5 semanas).
 final class CampaignCalendarTests: XCTestCase {
   private func fecha(_ y: Int, _ m: Int, _ d: Int) -> Date {

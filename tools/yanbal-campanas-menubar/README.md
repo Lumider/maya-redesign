@@ -21,7 +21,7 @@ Sin icono en el Dock, sin ventana: solo la barra de menú.
 
 ## Compilar e instalar
 
-Desde esta carpeta (`tools/yanbal-campanas-menubar/`):
+Desde la raíz del proyecto:
 
 ```bash
 ./build.sh          # compila y arma "build/Campañas Yanbal.app"
@@ -53,7 +53,7 @@ años una **C13 de 5 semanas** reajusta el calendario.
 
 El motor (`Sources/CampaignKit/CampaignCalendar.swift`) parte de una **tabla de
 anclas**: la fecha de inicio de C01 por año, tomada del calendario oficial
-(`docs/calendario-campanas.md` del repo). De ahí deriva las 13 campañas por
+(ver [`CALENDARIO.md`](CALENDARIO.md)). De ahí deriva las 13 campañas por
 aritmética de fechas; la duración de C13 (28 o 35 días) sale sola entre dos anclas
 consecutivas.
 
@@ -81,4 +81,5 @@ Sources/YanbalCampanas/
 Tests/CampaignKitTests/               Pruebas del motor (bordes de año, C13 extendida)
 Resources/Info.plist                  LSUIElement (sin Dock), id y versión
 build.sh                              Compila y arma el .app
+CALENDARIO.md                         Reglas y fechas del calendario campañal Yanbal
 ```

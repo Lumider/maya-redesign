@@ -2,7 +2,7 @@ import Foundation
 
 /// Motor de cálculo del calendario campañal Yanbal.
 ///
-/// Regla de negocio (ver `docs/calendario-campanas.md` en el repo):
+/// Regla de negocio (ver `CALENDARIO.md`):
 /// - 13 campañas por año (C01–C13), contiguas y sin huecos.
 /// - Cada campaña dura 4 semanas (28 días), de sábado a viernes.
 /// - 13×28 = 364 días → un día menos que el año, por eso el arranque se corre y
@@ -50,7 +50,7 @@ public struct CampaignSnapshot {
 }
 
 public enum CampaignCalendar {
-  /// Anclas: año → inicio (sábado) de C01. Copiadas de docs/calendario-campanas.md.
+  /// Anclas: año → inicio (sábado) de C01. Copiadas de CALENDARIO.md.
   /// Al conocerse un año nuevo del calendario oficial, se añade aquí su C01 y la C13
   /// del año anterior se recalcula sola (28 vs 35 días) entre anclas consecutivas.
   private static let anclasC01: [Int: DateComponents] = [
@@ -152,7 +152,7 @@ public enum CampaignCalendar {
 
     let actual = todas[indiceActual]
 
-    // semana = ⌈(hoy − inicio + 1) / 7⌉  (docs/calendario-campanas.md).
+    // semana = ⌈(hoy − inicio + 1) / 7⌉  (ver CALENDARIO.md).
     let diasTranscurridos = diasEntre(actual.inicio, fechaConsulta) + 1
     let semana = Int((Double(diasTranscurridos) / 7.0).rounded(.up))
 
