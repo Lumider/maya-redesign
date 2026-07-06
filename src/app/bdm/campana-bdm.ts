@@ -179,7 +179,9 @@ import { CAMPANA_BDM, CIERRES_BDM, USUARIA_BDM } from '../data/mock-bdm';
                 </span>
               }
             </div>
-            <a class="link" routerLink="/n/directoras">{{ c.crecimiento.enlace }} ↗</a>
+            <a class="link" routerLink="/n/directoras" [queryParams]="{ frente: 'formaciones' }"
+              >{{ c.crecimiento.enlace }} ↗</a
+            >
           </section>
 
           <!-- 3 · PAR+: % de DIR con Nivel de Estrella → bono anual -->
@@ -203,18 +205,29 @@ import { CAMPANA_BDM, CIERRES_BDM, USUARIA_BDM } from '../data/mock-bdm';
               </div>
             </div>
             <span class="vs__label"># Directoras por Nivel de Estrella</span>
-            <div class="barras" role="img" aria-label="Distribución de Directoras por estrella">
+            <!-- Los % son clickeables (doc de la card): aterrizan en el tab
+                 de ese rango dentro del frente PAR+ de Mis Directoras -->
+            <div class="barras">
               @for (d of c.par.distribucion; track d.rango) {
-                <div class="barra">
+                <a
+                  class="barra"
+                  routerLink="/n/directoras"
+                  [queryParams]="{ frente: 'par', ne: d.tabNe }"
+                  [attr.aria-label]="
+                    'Ver Directoras en ' + d.rango + ': ' + d.pct + '% (' + d.n + ')'
+                  "
+                >
                   <div class="barra__col">
                     <div class="barra__fill" [style.height.%]="d.pct"></div>
                   </div>
                   <span class="barra__l">{{ d.rango }}</span>
-                  <span class="tiny">{{ d.pct }}% ({{ d.n }})</span>
-                </div>
+                  <span class="tiny barra__pct">{{ d.pct }}% ({{ d.n }})</span>
+                </a>
               }
             </div>
-            <a class="link" routerLink="/n/directoras">{{ c.par.enlace }} ↗</a>
+            <a class="link" routerLink="/n/directoras" [queryParams]="{ frente: 'par', ne: '0' }"
+              >{{ c.par.enlace }} ↗</a
+            >
           </section>
 
           <!-- 4 · Líderes Poderosas: con quién crece la BDM → bono anual -->
@@ -242,7 +255,9 @@ import { CAMPANA_BDM, CIERRES_BDM, USUARIA_BDM } from '../data/mock-bdm';
                 >
               </div>
             </div>
-            <a class="link" routerLink="/n/directoras">{{ c.poderosas.enlace }} ↗</a>
+            <a class="link" routerLink="/n/directoras" [queryParams]="{ frente: 'poderosas' }"
+              >{{ c.poderosas.enlace }} ↗</a
+            >
           </section>
 
           <!-- 5 · Cumplimiento Vta. Neta BP: avance del plan anual de venta -->
@@ -416,6 +431,18 @@ import { CAMPANA_BDM, CIERRES_BDM, USUARIA_BDM } from '../data/mock-bdm';
       .barra__l {
         font-weight: 800;
         font-size: 13px;
+      }
+      /* Barras de PAR+: enlaces al tab del rango — el % va subrayado (doc) */
+      a.barra {
+        color: inherit;
+      }
+      .barra__pct {
+        text-decoration: underline;
+        text-underline-offset: 2px;
+      }
+      a.barra:hover .barra__pct,
+      a.barra:hover .barra__l {
+        color: var(--brand-600);
       }
 
       /* Tramos de bono/meta: pastillas que se encienden al alcanzarse */

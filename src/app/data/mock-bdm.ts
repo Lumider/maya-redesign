@@ -48,12 +48,17 @@ export const INDICADORES_BDM: IndicadorBdm[] = [
   { seccion: 'driver', etiqueta: 'Venta Neta C6', valor: 'S/ 1,773.66', nota: 'Driver Tree' },
 ];
 
+/** Identificador de los 5 frentes de gestión de Mis Directoras. */
+export type FrenteId = 'cuadrante' | 'meta' | 'formaciones' | 'par' | 'poderosas';
+
 /** Tarjeta de "Gestión de tus Directoras": conteo de DIR en un estado que
  *  requiere acción; el frente destino es una de las 5 Cards del release 1. */
 export interface GestionBdm {
   etiqueta: string;
   valor: string;
   frente: 'Cuadrante' | 'Meta y Activas' | 'Formaciones' | 'PAR+' | 'Poderosas';
+  /** frente que se preselecciona al abrir Mis Directoras */
+  frenteId: FrenteId;
   /** true = estado bueno (celebrar); false = brecha (actuar) */
   positivo?: boolean;
   /** tab preseleccionado al abrir Mis Directoras (solo tiles de cuadrante) */
@@ -61,13 +66,32 @@ export interface GestionBdm {
 }
 
 export const GESTION_BDM: GestionBdm[] = [
-  { etiqueta: 'Cuadrante A', valor: '70%', frente: 'Cuadrante', positivo: true, cuad: 'A' },
-  { etiqueta: 'Cuadrante D', valor: '10%', frente: 'Cuadrante', cuad: 'D' },
-  { etiqueta: 'No cumple meta', valor: '50', frente: 'Meta y Activas' },
-  { etiqueta: 'Formadoras', valor: '28', frente: 'Formaciones', positivo: true },
-  { etiqueta: 'Con ASP', valor: '5', frente: 'Formaciones', positivo: true },
-  { etiqueta: 'Sin Estrella', valor: '60', frente: 'PAR+' },
-  { etiqueta: 'Poderosas', valor: '2', frente: 'Poderosas', positivo: true },
+  {
+    etiqueta: 'Cuadrante A',
+    valor: '70%',
+    frente: 'Cuadrante',
+    frenteId: 'cuadrante',
+    positivo: true,
+    cuad: 'A',
+  },
+  { etiqueta: 'Cuadrante D', valor: '10%', frente: 'Cuadrante', frenteId: 'cuadrante', cuad: 'D' },
+  { etiqueta: 'No cumple meta', valor: '50', frente: 'Meta y Activas', frenteId: 'meta' },
+  {
+    etiqueta: 'Formadoras',
+    valor: '28',
+    frente: 'Formaciones',
+    frenteId: 'formaciones',
+    positivo: true,
+  },
+  {
+    etiqueta: 'Con ASP',
+    valor: '5',
+    frente: 'Formaciones',
+    frenteId: 'formaciones',
+    positivo: true,
+  },
+  { etiqueta: 'Sin Estrella', valor: '60', frente: 'PAR+', frenteId: 'par' },
+  { etiqueta: 'Poderosas', valor: '2', frente: 'Poderosas', frenteId: 'poderosas', positivo: true },
 ];
 
 /** Quicklinks del Home (destinos dentro del prototipo). */
@@ -79,9 +103,10 @@ export const QUICKLINKS_BDM = [
 ];
 
 /* --------------------------------------------------------------------------
- * Gestión de Directoras — frente "Cuadrantes y Medallas"
- * (Vista BDM — Cuadrantes y Medallas, Figma 748:18331 — el único de los 5
- * frentes con spec completa en la base; los demás siguen "Pendiente").
+ * Gestión de Directoras — los 5 frentes de Mis Directoras.
+ * "Cuadrantes y Medallas" tiene spec completa (Figma 748:18331); los otros 4
+ * (Meta, Formaciones, PAR+, Poderosas) son propuesta del prototipo: sus
+ * fórmulas citan las cards de Mi Campaña y el glosario de la base.
  * -------------------------------------------------------------------------- */
 
 export type CuadranteLetra = 'A' | 'B' | 'C' | 'D';
@@ -105,6 +130,16 @@ export interface DirectoraBdm {
   hijasTotal: number;
   hijasCA: number;
   hijasCD: number;
+  /** activas del GP y su meta de campaña — frente Meta de Venta y Activas
+   *  (la meta es propia de cada DIR: sale de su Business Plan; ejemplos) */
+  activas: number;
+  activasMeta: number;
+  /** ASP (Aspirantes) de su GP en camino a DIR — insumo de Formaciones */
+  asps: number;
+  /** Nivel de Estrella PAR+ (★0–6); segmentos del diseño: ★0 · ★1–2 · ★3–6 */
+  ne: number;
+  /** hijas directas con NE 1+ — dimensión Liderazgo de Líder Poderosa */
+  hijasNE: number;
 }
 
 /** Cuadrante según la fórmula del doc: A = MRM ✔ y PPED ✔ · B = solo MRM ·
@@ -131,6 +166,43 @@ export function medallaGpDe(d: DirectoraBdm): 'Oro' | 'Plata' | 'Bronce' | null 
 /** Medalla de Liderazgo: elegible si ≥60% de las hijas directas están en CA. */
 export const MEDALLA_LIDERAZGO_UMBRAL = 60;
 
+/* --- Fórmulas de los frentes propuestos (sin spec Figma todavía) ------------
+ * Cada una cita su fuente en la base de conocimiento; lo que la base no
+ * define se marca (supuesto), igual que la Medalla de GP. */
+
+/** Vara de Capitalización del glosario: se forma una nueva DIR cuando el GP
+ *  de la formadora aguanta la división — 1.5× su MRM (JNR/SNR). */
+export const FORMADORA_FACTOR_MRM = 1.5;
+
+/** ¿Es Líder? En el glosario las dimensiones de Poderosa aplican a SSE+. */
+export function esLider(d: DirectoraBdm): boolean {
+  return d.estatus === 'SSE' || d.estatus === 'REG';
+}
+
+/** Potencial Formadora (supuesto del prototipo): venta ≥ 1.5× MRM (vara de
+ *  Capitalización del glosario) o DIR en CA con ASP en su GP por ascender. */
+export function esPotencialFormadora(d: DirectoraBdm): boolean {
+  return d.ventaGP >= d.mrm * FORMADORA_FACTOR_MRM || (cuadranteDe(d) === 'A' && d.asps > 0);
+}
+
+/** Dimensión Ejemplo (glosario): Medalla Oro de GP + Hito PAR+ 3 o más. */
+export function esEjemplo(d: DirectoraBdm): boolean {
+  return medallaGpDe(d) === 'Oro' && d.ne >= 3;
+}
+
+/** Dimensión Liderazgo (glosario): Medalla de Liderazgo (≥60% hijas en CA)
+ *  + ≥60% de hijas en PAR+ (leído como NE 1+ — supuesto). */
+export function esLiderazgo(d: DirectoraBdm): boolean {
+  const pctCa = d.hijasTotal ? (d.hijasCA / d.hijasTotal) * 100 : 0;
+  const pctNe = d.hijasTotal ? (d.hijasNE / d.hijasTotal) * 100 : 0;
+  return pctCa >= MEDALLA_LIDERAZGO_UMBRAL && pctNe >= MEDALLA_LIDERAZGO_UMBRAL;
+}
+
+/** Líder Poderosa (glosario): Líder SSE+ que cumple Ejemplo + Liderazgo. */
+export function esPoderosa(d: DirectoraBdm): boolean {
+  return esLider(d) && esEjemplo(d) && esLiderazgo(d);
+}
+
 export const DIRECTORAS_BDM: DirectoraBdm[] = [
   // ——— Cuadrante A: banner verde con medalla proyectada ———
   // El caso del doc: "Hijas en CA: 2 (20%) / Hijas en CD: 5 (50%)"
@@ -147,6 +219,11 @@ export const DIRECTORAS_BDM: DirectoraBdm[] = [
     hijasTotal: 10,
     hijasCA: 2,
     hijasCD: 5,
+    activas: 52,
+    activasMeta: 50,
+    asps: 2,
+    ne: 3,
+    hijasNE: 4,
   },
   {
     nombre: 'Milagros Quispe Flores',
@@ -161,6 +238,11 @@ export const DIRECTORAS_BDM: DirectoraBdm[] = [
     hijasTotal: 6,
     hijasCA: 4,
     hijasCD: 1,
+    activas: 38,
+    activasMeta: 40,
+    asps: 1,
+    ne: 1,
+    hijasNE: 4,
   },
   {
     nombre: 'Teresa Huamán Ccoa',
@@ -175,6 +257,11 @@ export const DIRECTORAS_BDM: DirectoraBdm[] = [
     hijasTotal: 4,
     hijasCA: 3,
     hijasCD: 0,
+    activas: 30,
+    activasMeta: 28,
+    asps: 0,
+    ne: 0,
+    hijasNE: 2,
   },
   {
     nombre: 'Ana Lucía Torres Vera',
@@ -189,6 +276,11 @@ export const DIRECTORAS_BDM: DirectoraBdm[] = [
     hijasTotal: 8,
     hijasCA: 6,
     hijasCD: 1,
+    activas: 61,
+    activasMeta: 58,
+    asps: 1,
+    ne: 4,
+    hijasNE: 5,
   },
   // ——— Cuadrante B: tiene venta, le faltan PPED (caso del doc: falta 1) ———
   {
@@ -204,6 +296,11 @@ export const DIRECTORAS_BDM: DirectoraBdm[] = [
     hijasTotal: 5,
     hijasCA: 2,
     hijasCD: 2,
+    activas: 33,
+    activasMeta: 40,
+    asps: 0,
+    ne: 0,
+    hijasNE: 2,
   },
   {
     nombre: 'Yolanda Paz Mamani',
@@ -218,6 +315,11 @@ export const DIRECTORAS_BDM: DirectoraBdm[] = [
     hijasTotal: 7,
     hijasCA: 3,
     hijasCD: 2,
+    activas: 47,
+    activasMeta: 50,
+    asps: 1,
+    ne: 2,
+    hijasNE: 3,
   },
   // ——— Cuadrante C: PPED ok, falta venta para el MRM ———
   {
@@ -233,6 +335,11 @@ export const DIRECTORAS_BDM: DirectoraBdm[] = [
     hijasTotal: 3,
     hijasCA: 1,
     hijasCD: 1,
+    activas: 24,
+    activasMeta: 28,
+    asps: 0,
+    ne: 0,
+    hijasNE: 1,
   },
   // ——— Cuadrante D: foco Delta (caso del doc: faltan S/ 8,200 y 3 PPED) ———
   {
@@ -248,6 +355,11 @@ export const DIRECTORAS_BDM: DirectoraBdm[] = [
     hijasTotal: 9,
     hijasCA: 1,
     hijasCD: 6,
+    activas: 39,
+    activasMeta: 50,
+    asps: 0,
+    ne: 0,
+    hijasNE: 2,
   },
   {
     nombre: 'Gladys Rojas Ninahuanca',
@@ -262,6 +374,11 @@ export const DIRECTORAS_BDM: DirectoraBdm[] = [
     hijasTotal: 2,
     hijasCA: 0,
     hijasCD: 2,
+    activas: 15,
+    activasMeta: 28,
+    asps: 0,
+    ne: 0,
+    hijasNE: 0,
   },
   {
     nombre: 'Norma Espino Cutipa',
@@ -276,17 +393,23 @@ export const DIRECTORAS_BDM: DirectoraBdm[] = [
     hijasTotal: 5,
     hijasCA: 1,
     hijasCD: 3,
+    activas: 27,
+    activasMeta: 40,
+    asps: 0,
+    ne: 0,
+    hijasNE: 1,
   },
 ];
 
 /** Los 5 frentes del release 1. Solo Cuadrante tiene spec completa en la base
- *  de conocimiento; el resto sigue "Pendiente (Figma)" y se muestra en diseño. */
-export const FRENTES_BDM = [
-  { id: 'cuadrante', etiqueta: 'Cuadrante y Medallas', disponible: true },
-  { id: 'meta', etiqueta: 'Meta de Venta y Activas', disponible: false },
-  { id: 'formaciones', etiqueta: 'Formaciones', disponible: false },
-  { id: 'par', etiqueta: 'PAR+', disponible: false },
-  { id: 'poderosas', etiqueta: 'Poderosas', disponible: false },
+ *  (Figma 748:18331); los otros 4 son PROPUESTA del prototipo, diseñados desde
+ *  las cards de Mi Campaña y el glosario — a validar cuando llegue su Figma. */
+export const FRENTES_BDM: { id: FrenteId; etiqueta: string; propuesta?: boolean }[] = [
+  { id: 'cuadrante', etiqueta: 'Cuadrante y Medallas' },
+  { id: 'meta', etiqueta: 'Meta de Venta y Activas', propuesta: true },
+  { id: 'formaciones', etiqueta: 'Formaciones', propuesta: true },
+  { id: 'par', etiqueta: 'PAR+', propuesta: true },
+  { id: 'poderosas', etiqueta: 'Poderosas', propuesta: true },
 ];
 
 /** Mi campaña BDM: las 6 cards de indicador (anatomía común: banner de brecha
@@ -335,11 +458,12 @@ export const CAMPANA_BDM = {
     banner: 'Te faltan 10 DIR en NE para alcanzar el 50% y lograr tu bono anual del 10%.',
     ne1: { pct: 40, n: 40, metaPct: 50, metaN: 50, noFormaron: 8 },
     ne3: { pct: 10, n: 10, metaPct: 30, metaN: 30, noFormaron: 8 },
-    /** distribución de Directoras por nivel de estrella */
+    /** distribución de Directoras por nivel de estrella; cada % es clickeable
+     *  y aterriza en el tab de ese rango en el frente PAR+ (doc de la card) */
     distribucion: [
-      { rango: '★0', pct: 60, n: 25 },
-      { rango: '★1–2', pct: 5, n: 5 },
-      { rango: '★3–6', pct: 4, n: 4 },
+      { rango: '★0', pct: 60, n: 25, tabNe: '0' },
+      { rango: '★1–2', pct: 5, n: 5, tabNe: '12' },
+      { rango: '★3–6', pct: 4, n: 4, tabNe: '36' },
     ],
     enlace: 'Ver DIR sin Estrella',
   },
