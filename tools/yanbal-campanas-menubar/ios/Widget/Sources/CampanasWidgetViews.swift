@@ -57,6 +57,9 @@ struct CampanasWidgetView: View {
         .font(.caption2).foregroundStyle(.secondary)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+    .overlay(alignment: .topTrailing) {
+      YanbalIso().fill(brand.opacity(0.85)).frame(width: 16, height: 15)
+    }
   }
 
   private func medium(_ s: CampaignSnapshot) -> some View {
@@ -92,6 +95,9 @@ struct CampanasWidgetView: View {
       Spacer(minLength: 0)
     }
     .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .leading)
+    .overlay(alignment: .topTrailing) {
+      YanbalIso().fill(brand.opacity(0.85)).frame(width: 18, height: 17)
+    }
   }
 
   private func cortoDias(_ d: Int) -> String {

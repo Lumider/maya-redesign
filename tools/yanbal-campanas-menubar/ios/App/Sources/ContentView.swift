@@ -13,9 +13,14 @@ struct ContentView: View {
         List {
           Section {
             VStack(alignment: .leading, spacing: 6) {
-              Text("Campaña \(s.campana.etiqueta)")
-                .font(.largeTitle).bold()
-                .foregroundStyle(brand)
+              HStack(spacing: 10) {
+                YanbalIso()
+                  .fill(brand)
+                  .frame(width: 28, height: 27)
+                Text("Campaña \(s.campana.etiqueta)")
+                  .font(.largeTitle).bold()
+                  .foregroundStyle(brand)
+              }
               Text("Semana \(s.semana) de \(s.campana.totalSemanas)")
                 .font(.title3)
               Text(CampaignCalendar.rango(s.campana))
