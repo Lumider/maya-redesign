@@ -84,11 +84,8 @@ Tests/CampaignKitTests/               Pruebas del motor (bordes de año, C13 ext
 Resources/Info.plist                  LSUIElement (sin Dock), id y versión
 build.sh                              Compila y arma el .app
 CALENDARIO.md                         Reglas y fechas del calendario campañal Yanbal
-ios/                                  Widget + app para iPhone (reusa CampaignKit) — ver ios/README.md
 ```
 
 ## Versión para iPhone (widget)
 
-En `ios/` hay un **widget** de pantalla de inicio y bloqueo (más una mini app) que
-muestra la misma info en el iPhone, reutilizando el motor `CampaignKit`. Instrucciones
-de compilación e instalación (Xcode + XcodeGen) en [`ios/README.md`](ios/README.md).
+El widget de iOS vive en un repositorio aparte: **`campanas-yanbal-ios`**.

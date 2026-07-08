@@ -1,11 +1,11 @@
 # Especificación del proyecto Xcode para iOS (widget + app), generado con XcodeGen.
 #
 #   brew install xcodegen      # una sola vez
-#   cd ios && xcodegen generate
+#   xcodegen generate
 #   open CampanasYanbal.xcodeproj
 #
-# Comparte el motor CampaignKit con el proyecto macOS a través del paquete Swift
-# de la carpeta superior (path: ..).
+# El motor de cálculo vive como paquete Swift local dentro de este mismo repo
+# (carpeta CampaignKit/), así que el proyecto es 100% autocontenido.
 name: CampanasYanbal
 
 options:
@@ -15,8 +15,7 @@ options:
 
 packages:
   CampaignKit:
-    # Reutiliza el mismo paquete que la app de macOS (Package.swift en la raíz del repo).
-    path: ..
+    path: CampaignKit
 
 targets:
   # --- App contenedora (necesaria para poder instalar el widget) ---
@@ -42,7 +41,6 @@ targets:
         MARKETING_VERSION: "1.0"
         CURRENT_PROJECT_VERSION: "1"
         GENERATE_INFOPLIST_FILE: NO
-        # Firma automática: en Xcode elige tu equipo (Apple ID) en Signing & Capabilities.
         CODE_SIGN_STYLE: Automatic
 
   # --- Extensión de widget (WidgetKit) ---
@@ -62,7 +60,6 @@ targets:
         product: CampaignKit
     settings:
       base:
-        # El id del widget DEBE tener como prefijo el id de la app.
         PRODUCT_BUNDLE_IDENTIFIER: com.gcharca.campanasyanbal.widget
         MARKETING_VERSION: "1.0"
         CURRENT_PROJECT_VERSION: "1"
