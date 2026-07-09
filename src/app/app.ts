@@ -227,6 +227,9 @@ const MENU_LINKS: MenuLink[] = [
                 <span class="hdr__actions-plus" aria-hidden="true">＋</span>
               </a>
             </div>
+            <!-- Yana (proyecto Clippy): vive en el header nav — presente en toda
+                 la vista nueva; burbuja y panel se despliegan bajo el header -->
+            <app-asistente modo="header" />
           } @else {
             <button
               class="vswitch"
@@ -399,8 +402,6 @@ const MENU_LINKS: MenuLink[] = [
     <!-- Conmutador global (demo): toda la carrera CNS → REG en la vista nueva -->
     @if (version.nueva()) {
       <app-estatus-switch-global />
-      <!-- Yana (proyecto Clippy): asistente contextual — solo si está activada -->
-      <app-asistente />
     }
   `,
   styles: [
@@ -910,6 +911,13 @@ const MENU_LINKS: MenuLink[] = [
           min-width: 44px;
           min-height: 44px;
           justify-content: center;
+        }
+
+        /* Con Yana activa, en móvil ella toma el lugar del buscador: el header
+           compacto no tiene sitio para ambos y la asistente es la prioridad
+           de la demo (la búsqueda sigue disponible en desktop). */
+        .hdr__right:has(.asis--header) .hdr__iconbtn--search {
+          display: none;
         }
 
         /* La fila de tabs superior se reemplaza por el bottom nav */

@@ -29,6 +29,13 @@ import { Mascota } from './mascota';
  *
  * La burbuja se auto-oculta y no repite el mismo consejo: acompaña sin
  * estorbar. "No molestar" la apaga del todo; la mascota permanece.
+ *
+ * Dos colocaciones (`modo`): 'header' (oficial) integra el ancla en el header
+ * nav del shell y despliega burbuja/panel como dropdown bajo él — Yana se
+ * siente parte del producto y no tapa contenido ni bottom-nav; 'flotante'
+ * (la colocación anterior, esquina inferior derecha) se conserva como
+ * referencia del proceso FrYDA. El alcance es el mismo en ambas: el widget
+ * vive en el shell y el cerebro es global.
  */
 @Component({
   selector: 'app-asistente',
@@ -36,13 +43,17 @@ import { Mascota } from './mascota';
   imports: [RouterLink, Mascota],
   template: `
     @if (estatico() || srv.visible()) {
-      <div class="asis" [class.asis--estatico]="estatico()">
+      <div class="asis" [class.asis--estatico]="estatico()" [class.asis--header]="enHeader()">
         <!-- Burbuja proactiva: una frase, un gancho. role=status para que los
              lectores anuncien el mensaje completo (span oculto) sin oír el
              goteo del efecto máquina de escribir, que es solo visual. -->
         <div role="status">
           @if (burbuja()) {
-            <button class="asis__burbuja card" (click)="abrir()">
+            <button
+              class="asis__burbuja card"
+              (click)="abrir()"
+              [style.top.px]="enHeader() ? topDrop() : null"
+            >
               <span class="sr-solo">{{ nombre }}: {{ burbujaTexto() }}</span>
               <span aria-hidden="true">
                 <strong>{{ nombre }}:</strong>
@@ -62,6 +73,7 @@ import { Mascota } from './mascota';
             role="dialog"
             [attr.aria-label]="'Consejo de ' + nombre"
             (keydown.escape)="cerrar()"
+            [style.top.px]="enHeader() ? topDrop() : null"
           >
             <header class="asis__head">
               <app-mascota
@@ -163,7 +175,7 @@ import { Mascota } from './mascota';
         >
           <app-mascota
             [expresion]="consejo()?.expresion ?? 'normal'"
-            [size]="42"
+            [size]="enHeader() ? 30 : 42"
             [animada]="!estatico()"
             [mirada]="mirada()"
           />
@@ -187,6 +199,35 @@ import { Mascota } from './mascota';
       .asis--estatico {
         position: static;
         align-items: flex-start;
+      }
+
+      /* Modo header: el ancla entra al flujo del header nav; burbuja y panel
+         se despliegan como dropdown bajo él (fixed — el header es sticky, así
+         que la posición medida del ancla es estable y no depende del scroll). */
+      .asis--header {
+        position: static;
+        display: inline-flex;
+        align-items: center;
+      }
+      .asis--header .asis__ancla {
+        width: 38px;
+        height: 38px;
+        box-shadow: none;
+        border-color: var(--line);
+        background: none;
+      }
+      .asis--header .asis__ancla:hover {
+        transform: none;
+        background: var(--sand);
+      }
+      .asis--header .asis__burbuja,
+      .asis--header .asis__panel {
+        position: fixed;
+        right: 12px;
+        z-index: 80;
+      }
+      .asis--header .asis__burbuja {
+        border-radius: 4px 14px 14px 14px;
       }
 
       .sr-solo {
@@ -503,6 +544,11 @@ export class AsistenteWidget {
 
   /** Modo galería (/ui): posición estática, panel abierto y sin burbuja automática. */
   readonly estatico = input(false);
+  /** Colocación: 'header' (ancla en el header nav, dropdown) o 'flotante' (anterior). */
+  readonly modo = input<'flotante' | 'header'>('flotante');
+  protected readonly enHeader = computed(() => this.modo() === 'header' && !this.estatico());
+  /** Borde superior del dropdown en modo header (bajo el ancla, medido). */
+  protected readonly topDrop = signal(64);
 
   protected readonly abierto = signal(false);
   protected readonly burbuja = signal(false);
@@ -597,6 +643,7 @@ export class AsistenteWidget {
    */
   private di(mensaje: string, visibleMs = 8000, luego?: () => void): void {
     this.pararTimers();
+    this.ajustaTop();
     this.burbujaTexto.set(mensaje);
     this.burbuja.set(true);
     this.salta.set(true);
@@ -646,8 +693,16 @@ export class AsistenteWidget {
     else this.abrir();
   }
 
+  /** Mide dónde termina el ancla para colgar el dropdown justo debajo. */
+  private ajustaTop(): void {
+    if (!this.enHeader()) return;
+    const r = this.anclaBtn()?.nativeElement.getBoundingClientRect();
+    if (r) this.topDrop.set(Math.round(r.bottom + 10));
+  }
+
   protected abrir(): void {
     this.pararTimers();
+    this.ajustaTop();
     this.burbuja.set(false);
     this.abierto.set(true);
     // El foco entra al panel (botón cerrar) cuando ya está en el DOM.

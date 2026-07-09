@@ -521,12 +521,15 @@ import { NOMBRE_ASISTENTE } from '../shared/asistente';
       <section class="card pad v2-section" appReveal>
         <h2 class="v2-h">🤖 Asistente contextual · {{ nombreAsistente }}</h2>
         <p class="tiny" style="margin:0 0 14px">
-          Mascota + burbuja proactiva + panel "qué hacer para llegar a tu meta". Vive en toda la
-          vista nueva (esquina inferior derecha) y se enciende con "Activar {{ nombreAsistente }}"
-          en el conmutador demo. El consejo cambia según ruta × audiencia × estatus
-          (shared/asistente-reglas). En la app la mascota está viva: respira, parpadea, sus pupilas
-          siguen al cursor (input <code>mirada</code>) y habla con efecto de escritura;
-          <code>animada=false</code> y prefers-reduced-motion la dejan quieta.
+          Mascota + burbuja proactiva + panel "qué hacer para llegar a tu meta". Vive en el
+          <strong>header nav</strong> de toda la vista nueva (<code>modo="header"</code>: ancla
+          junto a las acciones; burbuja y panel como dropdown bajo el header) y se enciende con
+          "Activar {{ nombreAsistente }}" en el conmutador demo. El consejo cambia según ruta ×
+          audiencia × estatus (shared/asistente-reglas). La mascota está viva: respira, parpadea,
+          sus pupilas siguen al cursor (input <code>mirada</code>) y habla con efecto de escritura;
+          <code>animada=false</code> y prefers-reduced-motion la dejan quieta. La colocación
+          anterior (<code>modo="flotante"</code>, esquina inferior derecha) se conserva en el
+          componente como referencia del proceso FrYDA.
         </p>
 
         <span class="vs__label">Expresiones de la mascota (vivas: respiran y parpadean)</span>
