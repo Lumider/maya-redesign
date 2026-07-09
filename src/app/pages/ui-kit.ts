@@ -524,10 +524,12 @@ import { NOMBRE_ASISTENTE } from '../shared/asistente';
           Mascota + burbuja proactiva + panel "qué hacer para llegar a tu meta". Vive en toda la
           vista nueva (esquina inferior derecha) y se enciende con "Activar {{ nombreAsistente }}"
           en el conmutador demo. El consejo cambia según ruta × audiencia × estatus
-          (shared/asistente-reglas).
+          (shared/asistente-reglas). En la app la mascota está viva: respira, parpadea, sus pupilas
+          siguen al cursor (input <code>mirada</code>) y habla con efecto de escritura;
+          <code>animada=false</code> y prefers-reduced-motion la dejan quieta.
         </p>
 
-        <span class="vs__label">Expresiones de la mascota</span>
+        <span class="vs__label">Expresiones de la mascota (vivas: respiran y parpadean)</span>
         <div class="fila" style="margin-top:8px">
           <span class="estado"
             ><app-mascota expresion="normal" [size]="72" /><code>normal</code></span
@@ -537,6 +539,11 @@ import { NOMBRE_ASISTENTE } from '../shared/asistente';
           >
           <span class="estado"
             ><app-mascota expresion="alerta" [size]="72" /><code>alerta</code></span
+          >
+          <span class="estado"
+            ><app-mascota expresion="normal" [size]="72" [animada]="false" /><code
+              >animada=false</code
+            ></span
           >
         </div>
 

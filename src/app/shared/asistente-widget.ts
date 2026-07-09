@@ -1,6 +1,7 @@
 import {
   ChangeDetectionStrategy,
   Component,
+  DestroyRef,
   ElementRef,
   computed,
   effect,
@@ -20,6 +21,12 @@ import { Mascota } from './mascota';
  * reacciona a cada navegación con el consejo del contexto, y el panel con el
  * detalle de "qué hacer para llegar a tu meta" (progreso, brechas y acciones).
  *
+ * La "vida" del personaje (referencia: cloudstudio.es) vive aquí, no en la
+ * mascota: este contenedor escucha el cursor (rAF-throttled, solo mientras el
+ * widget existe) y le entrega la mirada; escenifica la conversación con
+ * puntos de "escribiendo…", texto a máquina, un salto de atención al hablar
+ * y un saludo la primera vez que se activa. prefers-reduced-motion lo apaga.
+ *
  * La burbuja se auto-oculta y no repite el mismo consejo: acompaña sin
  * estorbar. "No molestar" la apaga del todo; la mascota permanece.
  */
@@ -31,11 +38,20 @@ import { Mascota } from './mascota';
     @if (estatico() || srv.visible()) {
       <div class="asis" [class.asis--estatico]="estatico()">
         <!-- Burbuja proactiva: una frase, un gancho. role=status para que los
-             lectores de pantalla la anuncien sin robar el foco. -->
+             lectores anuncien el mensaje completo (span oculto) sin oír el
+             goteo del efecto máquina de escribir, que es solo visual. -->
         <div role="status">
-          @if (burbuja() && consejo(); as c) {
+          @if (burbuja()) {
             <button class="asis__burbuja card" (click)="abrir()">
-              <strong>{{ nombre }}:</strong> {{ c.burbuja }}
+              <span class="sr-solo">{{ nombre }}: {{ burbujaTexto() }}</span>
+              <span aria-hidden="true">
+                <strong>{{ nombre }}:</strong>
+                @if (escribiendo()) {
+                  <span class="asis__dots"><i></i><i></i><i></i></span>
+                } @else {
+                  {{ texto() }}
+                }
+              </span>
             </button>
           }
         </div>
@@ -48,7 +64,12 @@ import { Mascota } from './mascota';
             (keydown.escape)="cerrar()"
           >
             <header class="asis__head">
-              <app-mascota [expresion]="c.expresion" [size]="40" />
+              <app-mascota
+                [expresion]="c.expresion"
+                [size]="40"
+                [animada]="!estatico()"
+                [mirada]="mirada()"
+              />
               <div class="asis__headtxt">
                 <span class="asis__kicker">{{ nombre }} te acompaña</span>
                 <h2 class="asis__titulo">{{ c.titulo }}</h2>
@@ -134,12 +155,18 @@ import { Mascota } from './mascota';
         <!-- Ancla: la mascota siempre presente. Abre/cierra el panel. -->
         <button
           class="asis__ancla"
+          [class.asis__ancla--salta]="salta()"
           #anclaBtn
           (click)="alternar()"
           [attr.aria-expanded]="abierto()"
           [attr.aria-label]="'Asistente ' + nombre"
         >
-          <app-mascota [expresion]="consejo()?.expresion ?? 'normal'" [size]="42" />
+          <app-mascota
+            [expresion]="consejo()?.expresion ?? 'normal'"
+            [size]="42"
+            [animada]="!estatico()"
+            [mirada]="mirada()"
+          />
         </button>
       </div>
     }
@@ -162,6 +189,15 @@ import { Mascota } from './mascota';
         align-items: flex-start;
       }
 
+      .sr-solo {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        overflow: hidden;
+        clip-path: inset(50%);
+        white-space: nowrap;
+      }
+
       .asis__ancla {
         width: 54px;
         height: 54px;
@@ -179,9 +215,14 @@ import { Mascota } from './mascota';
       .asis__ancla:hover {
         transform: translateY(-2px) scale(1.04);
       }
+      /* Salto de atención: la mascota "te llama" justo antes de hablar. */
+      .asis__ancla--salta {
+        animation: asis-salta 0.55s cubic-bezier(0.28, 1.6, 0.4, 1);
+      }
 
       .asis__burbuja {
         max-width: min(280px, calc(100vw - 96px));
+        min-width: 130px;
         padding: 10px 13px;
         font-size: 13px;
         line-height: 1.45;
@@ -194,6 +235,27 @@ import { Mascota } from './mascota';
       }
       .asis__burbuja strong {
         color: var(--brand-600);
+      }
+
+      /* "Escribiendo…": tres puntos que laten mientras Yana piensa. */
+      .asis__dots {
+        display: inline-flex;
+        gap: 4px;
+        margin-left: 4px;
+        vertical-align: middle;
+      }
+      .asis__dots i {
+        width: 6px;
+        height: 6px;
+        border-radius: 50%;
+        background: var(--ink-3);
+        animation: asis-dot 1s ease-in-out infinite;
+      }
+      .asis__dots i:nth-child(2) {
+        animation-delay: 0.15s;
+      }
+      .asis__dots i:nth-child(3) {
+        animation-delay: 0.3s;
       }
 
       .asis__panel {
@@ -385,6 +447,29 @@ import { Mascota } from './mascota';
           transform: none;
         }
       }
+      @keyframes asis-salta {
+        0%,
+        100% {
+          transform: translateY(0);
+        }
+        35% {
+          transform: translateY(-7px);
+        }
+        65% {
+          transform: translateY(1px);
+        }
+      }
+      @keyframes asis-dot {
+        0%,
+        100% {
+          opacity: 0.35;
+          transform: translateY(0);
+        }
+        40% {
+          opacity: 1;
+          transform: translateY(-2px);
+        }
+      }
 
       /* Móvil: por encima del bottom-nav fijo (mismo ajuste que el conmutador). */
       @media (max-width: 720px) {
@@ -398,7 +483,9 @@ import { Mascota } from './mascota';
 
       @media (prefers-reduced-motion: reduce) {
         .asis__burbuja,
-        .asis__panel {
+        .asis__panel,
+        .asis__ancla--salta,
+        .asis__dots i {
           animation: none;
         }
         .asis__ancla,
@@ -412,36 +499,146 @@ import { Mascota } from './mascota';
 export class AsistenteWidget {
   protected readonly srv = inject(AsistenteService);
   protected readonly nombre = NOMBRE_ASISTENTE;
+  private readonly destroyRef = inject(DestroyRef);
 
   /** Modo galería (/ui): posición estática, panel abierto y sin burbuja automática. */
   readonly estatico = input(false);
 
   protected readonly abierto = signal(false);
   protected readonly burbuja = signal(false);
+  /** Texto completo del mensaje vigente (para lectores de pantalla). */
+  protected readonly burbujaTexto = signal('');
+  /** Porción ya "escrita" del mensaje (efecto máquina, solo visual). */
+  protected readonly texto = signal('');
+  /** Fase de puntos "escribiendo…" previa al texto. */
+  protected readonly escribiendo = signal(false);
+  /** Salto de atención del ancla al anunciar un mensaje. */
+  protected readonly salta = signal(false);
+  /** Hacia dónde mira la mascota (vector normalizado ancla→cursor). */
+  protected readonly mirada = signal<{ x: number; y: number } | null>(null);
   protected readonly consejo = computed(() => this.srv.principal());
 
   private readonly cerrarBtn = viewChild<ElementRef<HTMLButtonElement>>('cerrarBtn');
   private readonly anclaBtn = viewChild<ElementRef<HTMLButtonElement>>('anclaBtn');
   /** Último consejo burbujeado: la misma navegación no insiste dos veces. */
   private ultimoId = '';
+  /** El saludo de activación se dice una sola vez por carga. */
+  private saludo = false;
+  /** El sistema pide quietud: sin typewriter, sin mirada, sin saltos. */
+  private readonly quieto =
+    typeof matchMedia !== 'undefined' && matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  private timers: ReturnType<typeof setTimeout>[] = [];
+  private tecleo?: ReturnType<typeof setInterval>;
 
   constructor() {
+    this.destroyRef.onDestroy(() => this.pararTimers());
+
     // La burbuja reacciona al cambio de consejo (ruta/audiencia/estatus nuevos).
-    // Vive en un effect con cleanup para no filtrar timers al navegar rápido.
-    effect((onCleanup) => {
+    // La primera vez que Yana existe, saluda antes del consejo contextual:
+    // escenifica la "revelación" de la demo.
+    effect(() => {
       const c = this.srv.principal();
       if (!c || this.estatico()) return;
       if (!this.srv.visible() || this.srv.silencio() || this.abierto()) return;
       if (c.id === this.ultimoId) return;
       this.ultimoId = c.id;
-      this.burbuja.set(true);
-      const timer = setTimeout(() => this.burbuja.set(false), 8000);
-      onCleanup(() => clearTimeout(timer));
+      if (!this.saludo) {
+        this.saludo = true;
+        this.di(`¡Hola! Soy ${this.nombre} 👋 Te acompaño a tu meta de campaña.`, 3800, () =>
+          this.di(c.burbuja),
+        );
+      } else {
+        this.di(c.burbuja);
+      }
     });
-    // En la galería el panel se muestra abierto de entrada.
-    effect(() => {
-      if (this.estatico()) this.abierto.set(true);
+
+    // Mirada al cursor: listener global SOLO mientras el widget flota visible.
+    // rAF-throttle (un cálculo por frame como máximo) y regreso al frente tras
+    // 2.5s de quietud. En táctil no hay pointermove sostenido: no aplica solo.
+    effect((onCleanup) => {
+      if (this.estatico() || !this.srv.visible() || this.quieto) {
+        this.mirada.set(null);
+        return;
+      }
+      let raf = 0;
+      let reposo: ReturnType<typeof setTimeout> | undefined;
+      const sigue = (e: PointerEvent) => {
+        if (raf) return;
+        raf = requestAnimationFrame(() => {
+          raf = 0;
+          const ancla = this.anclaBtn()?.nativeElement;
+          if (!ancla) return;
+          const r = ancla.getBoundingClientRect();
+          const cx = r.left + r.width / 2;
+          const cy = r.top + r.height / 2;
+          this.mirada.set({
+            x: Math.max(-1, Math.min(1, (e.clientX - cx) / 260)),
+            y: Math.max(-1, Math.min(1, (e.clientY - cy) / 260)),
+          });
+          clearTimeout(reposo);
+          reposo = setTimeout(() => this.mirada.set(null), 2500);
+        });
+      };
+      document.addEventListener('pointermove', sigue, { passive: true });
+      onCleanup(() => {
+        document.removeEventListener('pointermove', sigue);
+        cancelAnimationFrame(raf);
+        clearTimeout(reposo);
+      });
     });
+  }
+
+  /**
+   * Escenifica un mensaje: salto de atención → puntos de "escribiendo…" →
+   * texto a máquina → auto-ocultar (contado desde que TERMINA de escribir).
+   * Con prefers-reduced-motion todo es instantáneo. `luego` encadena el
+   * siguiente mensaje (saludo → consejo contextual).
+   */
+  private di(mensaje: string, visibleMs = 8000, luego?: () => void): void {
+    this.pararTimers();
+    this.burbujaTexto.set(mensaje);
+    this.burbuja.set(true);
+    this.salta.set(true);
+    this.timers.push(setTimeout(() => this.salta.set(false), 600));
+
+    const despedir = () =>
+      this.timers.push(
+        setTimeout(() => {
+          this.burbuja.set(false);
+          luego?.();
+        }, visibleMs),
+      );
+
+    if (this.quieto) {
+      this.escribiendo.set(false);
+      this.texto.set(mensaje);
+      despedir();
+      return;
+    }
+
+    this.texto.set('');
+    this.escribiendo.set(true);
+    this.timers.push(
+      setTimeout(() => {
+        this.escribiendo.set(false);
+        let i = 0;
+        this.tecleo = setInterval(() => {
+          i++;
+          this.texto.set(mensaje.slice(0, i));
+          if (i >= mensaje.length) {
+            clearInterval(this.tecleo);
+            despedir();
+          }
+        }, 16);
+      }, 400),
+    );
+  }
+
+  private pararTimers(): void {
+    this.timers.forEach(clearTimeout);
+    this.timers = [];
+    clearInterval(this.tecleo);
   }
 
   protected alternar(): void {
@@ -450,6 +647,7 @@ export class AsistenteWidget {
   }
 
   protected abrir(): void {
+    this.pararTimers();
     this.burbuja.set(false);
     this.abierto.set(true);
     // El foco entra al panel (botón cerrar) cuando ya está en el DOM.
