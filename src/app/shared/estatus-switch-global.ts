@@ -10,6 +10,7 @@ import {
   EstatusService,
   type Estatus,
 } from './estatus';
+import { AsistenteService, NOMBRE_ASISTENTE } from './asistente';
 
 /**
  * Conmutador global de la demo: toda la carrera Yanbal en un solo panel.
@@ -70,6 +71,20 @@ import {
             BDM
           </button>
         </div>
+
+        <span class="sw__grupo">Asistente (proyecto Clippy)</span>
+        <button
+          class="sw__yana"
+          [class.sw__yana--on]="asistente.activa()"
+          (click)="asistente.toggleActiva()"
+          [attr.aria-pressed]="asistente.activa()"
+        >
+          {{
+            asistente.activa()
+              ? '✨ ' + nombreAsistente + ' activada'
+              : 'Activar ' + nombreAsistente
+          }}
+        </button>
 
         <p class="sw__desc">{{ descripcion() }}</p>
       </div>
@@ -160,6 +175,30 @@ import {
         border-color: transparent;
         color: #fff;
       }
+      /* Interruptor de Yana: mismo lenguaje que los chips, a lo ancho. El estado
+         encendido usa el gradiente de marca para leerse "en vivo" en la demo. */
+      .sw__yana {
+        width: 100%;
+        margin-top: 5px;
+        padding: 7px 0;
+        border-radius: var(--radius-s);
+        font-size: 12px;
+        font-weight: 800;
+        border: 1.5px solid var(--line-strong);
+        background: var(--surface);
+        color: var(--ink-2);
+        transition: all 0.15s ease;
+      }
+      .sw__yana:hover {
+        border-color: var(--ink);
+        color: var(--ink);
+      }
+      .sw__yana--on {
+        background: var(--brand-grad-strong);
+        border-color: transparent;
+        color: #fff;
+      }
+
       .sw__desc {
         margin: 9px 0 0;
         font-size: 11.5px;
@@ -195,6 +234,8 @@ export class EstatusSwitchGlobal {
   protected readonly audiencia = inject(AudienciaService);
   protected readonly emp = inject(EstatusService);
   protected readonly dir = inject(EstatusDirService);
+  protected readonly asistente = inject(AsistenteService);
+  protected readonly nombreAsistente = NOMBRE_ASISTENTE;
 
   protected readonly ordenEmp = ESTATUS_ORDEN;
   protected readonly ordenDir = ESTATUS_DIR_ORDEN;

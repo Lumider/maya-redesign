@@ -18,6 +18,7 @@ import { AccesoService } from './shared/acceso';
 import { AccesoGate } from './shared/acceso-gate';
 import { AudienciaService, EstatusDirService, EstatusService } from './shared/estatus';
 import { EstatusSwitchGlobal } from './shared/estatus-switch-global';
+import { AsistenteWidget } from './shared/asistente-widget';
 import { USUARIA } from './data/mock';
 import { PERFILES, USUARIA_CES } from './data/mock-ces';
 import { PERFIL_BDM, USUARIA_BDM } from './data/mock-bdm';
@@ -130,6 +131,7 @@ const MENU_LINKS: MenuLink[] = [
     Breadcrumb,
     Loader,
     EstatusSwitchGlobal,
+    AsistenteWidget,
     AccesoGate,
   ],
   template: `
@@ -397,6 +399,8 @@ const MENU_LINKS: MenuLink[] = [
     <!-- Conmutador global (demo): toda la carrera CNS → REG en la vista nueva -->
     @if (version.nueva()) {
       <app-estatus-switch-global />
+      <!-- Yana (proyecto Clippy): asistente contextual — solo si está activada -->
+      <app-asistente />
     }
   `,
   styles: [

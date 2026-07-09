@@ -4,6 +4,9 @@ import { Icon3d } from '../shared/icon3d';
 import { Ring } from '../shared/ring';
 import { Reveal } from '../shared/reveal';
 import { Breadcrumb } from '../shared/breadcrumb';
+import { Mascota } from '../shared/mascota';
+import { AsistenteWidget } from '../shared/asistente-widget';
+import { NOMBRE_ASISTENTE } from '../shared/asistente';
 
 /**
  * UI Kit (styleguide viviente) — ruta oculta /ui, sin enlace en la navegación.
@@ -14,7 +17,7 @@ import { Breadcrumb } from '../shared/breadcrumb';
 @Component({
   selector: 'app-ui-kit',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [Icon, Icon3d, Ring, Reveal, Breadcrumb],
+  imports: [Icon, Icon3d, Ring, Reveal, Breadcrumb, Mascota, AsistenteWidget],
   template: `
     <div class="v2">
       <header class="v2-head" appReveal>
@@ -514,6 +517,35 @@ import { Breadcrumb } from '../shared/breadcrumb';
         </div>
       </section>
 
+      <!-- Asistente contextual (proyecto Clippy) -->
+      <section class="card pad v2-section" appReveal>
+        <h2 class="v2-h">🤖 Asistente contextual · {{ nombreAsistente }}</h2>
+        <p class="tiny" style="margin:0 0 14px">
+          Mascota + burbuja proactiva + panel "qué hacer para llegar a tu meta". Vive en toda la
+          vista nueva (esquina inferior derecha) y se enciende con "Activar {{ nombreAsistente }}"
+          en el conmutador demo. El consejo cambia según ruta × audiencia × estatus
+          (shared/asistente-reglas).
+        </p>
+
+        <span class="vs__label">Expresiones de la mascota</span>
+        <div class="fila" style="margin-top:8px">
+          <span class="estado"
+            ><app-mascota expresion="normal" [size]="72" /><code>normal</code></span
+          >
+          <span class="estado"
+            ><app-mascota expresion="celebra" [size]="72" /><code>celebra</code></span
+          >
+          <span class="estado"
+            ><app-mascota expresion="alerta" [size]="72" /><code>alerta</code></span
+          >
+        </div>
+
+        <span class="vs__label" style="margin-top:16px">Widget completo (panel abierto)</span>
+        <div style="margin-top:8px">
+          <app-asistente [estatico]="true" />
+        </div>
+      </section>
+
       <!-- Componentes mayores e inventario -->
       <section class="card pad v2-section" appReveal>
         <h2 class="v2-h">🧩 Componentes mayores y páginas</h2>
@@ -702,6 +734,8 @@ import { Breadcrumb } from '../shared/breadcrumb';
   ],
 })
 export class UiKitPage {
+  protected readonly nombreAsistente = NOMBRE_ASISTENTE;
+
   /** Personalizador en vivo: propiedades de componente que se pueden re-colorear
    *  con un clic en los primitives. Cada una es un token de :root, así que el
    *  override inline en <html> gana y el cambio se ve en toda la app abierta.
@@ -894,6 +928,11 @@ export class UiKitPage {
     {
       nombre: '<app-estatus-switch-global>',
       donde: 'shared/estatus-switch-global — conmutador CNS→REG',
+    },
+    { nombre: '<app-mascota>', donde: 'shared/mascota — la mascota del asistente (3 expresiones)' },
+    {
+      nombre: '<app-asistente>',
+      donde: 'shared/asistente-widget + asistente/asistente-reglas — asistente contextual (Clippy)',
     },
     {
       nombre: 'appReveal / appAnchor',
