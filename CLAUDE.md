@@ -69,9 +69,12 @@ Assets de `public/` se referencian desde la raíz: `/icons/check.png`, `/brand/l
 
 ## Conocimiento de negocio (en `docs/`)
 
+- `docs/yanbal-base-conocimiento-maestro.md` — **documento maestro de la fuerza de ventas**: glosario de siglas (CNS, CEM, ASP, JNR…EDI, MRM, PPED, FA…), las 3 audiencias, cuadrantes A–D, Gana Más, Grupo Personal vs. genealogía, plan de compensaciones LATAM, mecánica de pagos, barreras de movilización y datos clave. Consultarlo antes de inventar terminología o cifras de negocio.
+- `docs/par-plus-2026-peru.md` — bases oficiales del PAR+ 2026 Perú: medallas de excelencia, 6 Niveles de Estrellas (bonos/viajes/Cumbre), Directora Poderosa, rankings, ascensos y autos, con las metas por estatus.
+- `docs/playbook-bdm.md` — Playbook de Ventas Campo (rol BDM): roles del staff (GV/GR/BDM/BDT), técnicas de mentoría, compensación, metodología Asesoría de Negocio y los 6 Plays (BPLAN anual + gestión campañal, Delta, capitalización, segmentación de Líderes).
 - `docs/calendario-campanas.md` — cómo se dividen las campañas del año: 13 campañas × 4 semanas (sáb→vie), C13 cruza Año Nuevo y a veces dura 5 semanas. Fechas 2024–2026.
 - `docs/referencia-vista-ces.md` — levantamiento de la Maya real vista por una CES.
-- Vista BDM: la base de conocimiento vive fuera del repo, en el vault Obsidian `~/Library/CloudStorage/OneDrive-UNIQUEYANBAL/Yanbal - BDM/` (Home, Mi Campaña con 6 cards de indicador, 5 frentes de gestión, glosario). Los datos de `data/mock-bdm.ts` son los valores de ejemplo del Figma documentados ahí.
+- Vista BDM: la documentación de pantallas (Home, Mi Campaña con 6 cards de indicador, 5 frentes de gestión, glosario BDM) vive fuera del repo, en el vault Obsidian `~/Library/CloudStorage/OneDrive-UNIQUEYANBAL/Yanbal - BDM/`; el conocimiento base (documento maestro, PAR+ y playbook BDM) ya está versionado en `docs/`. Los datos de `data/mock-bdm.ts` son los valores de ejemplo del Figma documentados ahí.
 
 ## UI Kit (styleguide viviente)
 

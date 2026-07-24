@@ -2,7 +2,7 @@
 
 > Levantamiento hecho navegando `maya.yanbal.com` (Perú) el 02/07/2026 con una cuenta CES real
 > (Vaselisa Alcacer, campaña C7-S2). Base para construir la vista Consultora/Emprendedora del redesign.
-> Términos verificados contra `Yanbal_Base_Conocimiento_MAESTRO.md`.
+> Términos verificados contra [`yanbal-base-conocimiento-maestro.md`](./yanbal-base-conocimiento-maestro.md).
 
 ## Navegación real (menú hamburguesa)
 
