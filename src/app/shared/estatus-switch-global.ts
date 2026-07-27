@@ -289,6 +289,7 @@ export class EstatusSwitchGlobal {
       '/n/campana',
       ...(PERFILES_DIR[e].capacidades.equipo ? ['/n/equipo'] : []),
       '/n/carrera',
+      '/n/objetivos',
       '/n/herramientas',
     ]);
   }

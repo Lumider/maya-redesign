@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, inject } from '@angular/core';
 import { DecimalPipe } from '@angular/common';
+import { RouterLink } from '@angular/router';
 import { Icon } from '../shared/icon';
 import { Reveal } from '../shared/reveal';
 import { Anchor } from '../shared/anchor';
@@ -16,7 +17,7 @@ import { PERFILES_DIR } from '../data/mock-dir';
 @Component({
   selector: 'app-carrera',
   changeDetection: ChangeDetectionStrategy.OnPush,
-  imports: [DecimalPipe, Icon, Reveal, Anchor],
+  imports: [DecimalPipe, RouterLink, Icon, Reveal, Anchor],
   template: `
     <div class="v2">
       <header class="v2-head" appReveal>
@@ -30,6 +31,17 @@ import { PERFILES_DIR } from '../data/mock-dir';
           <a class="anchor" appAnchor="ascensos">Ascensos y autos</a>
         </nav>
       </header>
+
+      <!-- Puente a la propuesta en definición: el seguimiento unificado de objetivos
+           (docs/seguimiento-objetivos-lider.md). Vive aparte para poder compararlas. -->
+      <a class="propuesta card" routerLink="/n/objetivos" appReveal>
+        <img class="propuesta__ill" src="/icons/goals.png" alt="" aria-hidden="true" />
+        <p>
+          <strong>Propuesta · Mis objetivos:</strong> tu Business Plan con seguimiento anual y
+          recomendación por frente — PAR+, formaciones, medallas, autos y ascensos.
+        </p>
+        <app-icon name="arrow-right" [size]="18" />
+      </a>
 
       <div class="v2-grid">
         <main>
@@ -233,6 +245,39 @@ import { PERFILES_DIR } from '../data/mock-dir';
     `
       .pad {
         padding: 18px 20px;
+      }
+
+      /* ----- Banner puente a la propuesta Mis objetivos ----- */
+      .propuesta {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        margin-bottom: 22px;
+        padding: 12px 16px;
+        color: var(--ink);
+        border: 1.5px dashed var(--brand-500);
+        transition:
+          box-shadow 0.18s ease,
+          transform 0.18s ease;
+      }
+      .propuesta:hover {
+        box-shadow: var(--shadow);
+        transform: translateY(-2px);
+      }
+      .propuesta__ill {
+        width: 36px;
+        height: 36px;
+        object-fit: contain;
+        flex-shrink: 0;
+      }
+      .propuesta p {
+        margin: 0;
+        font-size: 13.5px;
+      }
+      .propuesta app-icon {
+        margin-left: auto;
+        flex-shrink: 0;
+        color: var(--brand-600);
       }
 
       /* ----- Hero del sueño (full-bleed, estilo editorial) ----- */

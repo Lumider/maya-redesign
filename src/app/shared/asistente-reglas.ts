@@ -1,6 +1,7 @@
 import { Injectable } from '@angular/core';
 import { CAMINO_CES, CAMPANA_CES, GANAMAS_NIVELES, PERFILES } from '../data/mock-ces';
 import { PERFILES_DIR, type EstatusDir, type PerfilDir } from '../data/mock-dir';
+import { OBJETIVOS_LIDER } from '../data/mock-objetivos';
 import {
   CAMPANA_BDM,
   DIRECTORAS_BDM,
@@ -169,6 +170,8 @@ export class MotorReglas implements CerebroAsistente {
         return this.dirEquipo(e);
       case '/n/carrera':
         return this.dirCarrera(e);
+      case '/n/objetivos':
+        return this.dirObjetivos(e);
       case '/n/campana':
       case '/n/pedidos':
         return this.dirCampana(e, ruta);
@@ -315,6 +318,63 @@ export class MotorReglas implements CerebroAsistente {
           texto: 'Asegura el Cuadrante A de esta campaña',
           impacto: 'Requisito PAR+ y bono campañal',
           ruta: '/n/negocio',
+        },
+      ],
+    };
+  }
+
+  /**
+   * En Mis objetivos (propuesta) Yana habla el idioma del plan 360: la burbuja es
+   * la reconciliación entre lo declarado en el BP y lo que exigen los frentes
+   * (docs/seguimiento-objetivos-lider.md §4.1), y la acción baja a la campaña.
+   */
+  private dirObjetivos(e: EstatusDir): Consejo {
+    const p = PERFILES_DIR[e];
+    const o = OBJETIVOS_LIDER[e];
+    const f = o.formaciones;
+    const alineado = f.requeridas <= f.plan;
+    return {
+      id: `dir-${e}-objetivos`,
+      burbuja: o.r360.resumen,
+      titulo: 'Tu plan, cruzado entre frentes',
+      tono: o.r360.tono,
+      expresion: o.r360.tono === 'success' ? 'celebra' : 'alerta',
+      meta: {
+        etiqueta: `Formaciones: declaradas vs. lo que pide tu plan`,
+        actual: f.enCurso + f.logradas,
+        objetivo: f.requeridas,
+      },
+      brechas: [
+        {
+          texto: `Formaciones del plan 360: ${f.requeridas}`,
+          actual: f.enCurso + f.logradas,
+          meta: f.requeridas,
+          cumple: alineado && f.enCurso + f.logradas >= f.requeridas,
+          detalle: alineado
+            ? `Declaraste ${f.plan} — plan alineado`
+            : `Declaraste ${f.plan}: tu estrella y tu ascenso piden ${f.requeridas}`,
+        },
+        {
+          texto: 'Ritmo de crecimiento GF de la campaña',
+          actual: o.par.crecimientoCampanal.logrado,
+          meta: o.par.crecimientoCampanal.requerido,
+          cumple: o.par.crecimientoCampanal.logrado >= o.par.crecimientoCampanal.requerido,
+          detalle: `Tu sueño pide ${soles(o.par.crecimientoCampanal.requerido)} por campaña`,
+        },
+      ],
+      acciones: [
+        {
+          emoji: '🌱',
+          texto: f.origen ?? f.campanal,
+          impacto: 'La palanca de tu estrella y tu ascenso',
+          ruta: p.capacidades.equipo ? '/n/equipo' : '/n/objetivos',
+          urgente: !!f.origen,
+        },
+        {
+          emoji: '📈',
+          texto: 'Asegura el Cuadrante A de esta campaña',
+          impacto: 'Suma a tus dos medallas a la vez',
+          ruta: '/n/campana',
         },
       ],
     };

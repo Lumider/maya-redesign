@@ -80,6 +80,7 @@ const ROUTE_LABELS: Record<string, string> = {
   '/n/campana': 'Mi campaña',
   '/n/equipo': 'Mi equipo',
   '/n/carrera': 'Mi carrera',
+  '/n/objetivos': 'Mis objetivos',
   '/n/grupo': 'Mi grupo',
   '/n/incorpora': 'Incorpora y Gana',
   '/n/camino': 'Mi camino',

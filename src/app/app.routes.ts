@@ -39,6 +39,12 @@ export const routes: Routes = [
   { path: 'n/pedidos', loadComponent: () => import('./nueva/pedidos').then((m) => m.Pedidos) },
   { path: 'n/equipo', loadComponent: () => import('./nueva/equipo').then((m) => m.Equipo) },
   { path: 'n/carrera', loadComponent: () => import('./nueva/carrera').then((m) => m.Carrera) },
+  // Propuesta en definición (docs/seguimiento-objetivos-lider.md): se llega desde
+  // Mi carrera, no desde la nav — dónde vive esta sección es una pregunta abierta.
+  {
+    path: 'n/objetivos',
+    loadComponent: () => import('./nueva/objetivos').then((m) => m.Objetivos),
+  },
   // — Audiencia Emprendedoras (CNS → ASP)
   { path: 'n/grupo', loadComponent: () => import('./ces/grupo-ces').then((m) => m.GrupoCes) },
   {
