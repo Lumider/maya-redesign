@@ -164,6 +164,11 @@ Detalle fiel al tablero "Gestión de Liderazgo" (julio 2026), enriquecido con la
 - **La info no debe vivir duplicada.** Vale el principio del prototipo ("cada cifra vive en
   un solo lugar"): si Medallas ya se muestra aquí con vista anual, Mi campaña no repite los
   chips por campaña — enlaza.
+- **Convivencia con la Mi Campaña real, módulo por módulo:** ver
+  [`referencia-mi-campana-dir.md`](./referencia-mi-campana-dir.md) §3 — levantamiento de la
+  pantalla de producción (DIR SSE, México) y las 4 bisagras (meta derivada del BP, cuadrante→
+  medalla, composición GP→cadena de formación, sueño como puerta), implementadas en
+  `nueva/campana-n.ts`.
 
 ## 6. Conocimiento nuevo capturado en la reunión
 

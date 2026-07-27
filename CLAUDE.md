@@ -75,6 +75,7 @@ Assets de `public/` se referencian desde la raíz: `/icons/check.png`, `/brand/l
 - `docs/seguimiento-objetivos-lider.md` — **propuesta en definición**: seguimiento unificado de objetivos anuales de la Líder (5 frentes: PAR+, Formaciones, Medallas, Autos, Ascensos; progreso + recomendación, plan 360, toggle campañal↔anual). Insumo del rediseño de Mi carrera/Mi campaña; incluye conocimiento nuevo (semillero, 3 morosidades, composición del GF) y preguntas abiertas.
 - `docs/calendario-campanas.md` — cómo se dividen las campañas del año: 13 campañas × 4 semanas (sáb→vie), C13 cruza Año Nuevo y a veces dura 5 semanas. Fechas 2024–2026.
 - `docs/referencia-vista-ces.md` — levantamiento de la Maya real vista por una CES.
+- `docs/referencia-mi-campana-dir.md` — levantamiento de Mi Campaña de la Maya real vista por una Directora (SSE, México) + tabla de convivencia con la propuesta de objetivos (4 bisagras, cifras MX, semántica IM Riesgoso/Saludable).
 - Vista BDM: la documentación de pantallas (Home, Mi Campaña con 6 cards de indicador, 5 frentes de gestión, glosario BDM) vive fuera del repo, en el vault Obsidian `~/Library/CloudStorage/OneDrive-UNIQUEYANBAL/Yanbal - BDM/`; el conocimiento base (documento maestro, PAR+ y playbook BDM) ya está versionado en `docs/`. Los datos de `data/mock-bdm.ts` son los valores de ejemplo del Figma documentados ahí.
 
 ## UI Kit (styleguide viviente)

@@ -175,6 +175,13 @@ import { PERFILES_DIR } from '../data/mock-dir';
                 <div class="progress" style="margin-top:10px">
                   <div class="progress__fill" [style.width.%]="gananciaPct"></div>
                 </div>
+                <!-- Bisagra con el plan anual: la meta campañal no es un número suelto,
+                     es la fase de esta campaña dentro del BP (convivencia documentada
+                     en docs/referencia-mi-campana-dir.md §3). -->
+                <a class="plan__origen tiny" routerLink="/n/objetivos">
+                  Esta meta es la fase {{ c.actual }} de tu plan anual · Mis objetivos
+                  <app-icon name="arrow-right" [size]="13" />
+                </a>
               </div>
               <div class="plan__gain">
                 <app-ring [pct]="gananciaPct" [size]="92" label="ganancia" [expected]="75" />
@@ -340,13 +347,14 @@ import { PERFILES_DIR } from '../data/mock-dir';
                   </div>
                 </div>
 
-                <!-- Ancla al sueño: cada campaña en A acerca el sueño -->
-                <a class="dream" routerLink="/n/carrera">
+                <!-- Ancla al sueño: la card del sueño deja de ser decorativa y se vuelve
+                     la puerta al seguimiento de objetivos (bisagra 4 de la convivencia). -->
+                <a class="dream" routerLink="/n/objetivos">
                   <img class="dream__ill" src="icons/airplane-01.png" alt="" />
                   <p>
                     Cada campaña en Cuadrante A te acerca a tu sueño:
                     <strong>{{ c.par.sueno }}</strong
-                    >. Míralo en Mi carrera.
+                    >. Sigue tu plan completo en Mis objetivos.
                   </p>
                   <app-icon name="arrow-right" [size]="16" />
                 </a>
@@ -366,7 +374,9 @@ import { PERFILES_DIR } from '../data/mock-dir';
                     </div>
                   </div>
                 </a>
-                <div class="card pad prog">
+                <!-- Bisagra cuadrante→medalla: el corte campañal es dueño esta página;
+                     la acumulación y el margen viven en Mis objetivos. -->
+                <a class="card pad prog" routerLink="/n/objetivos">
                   <img class="trophy" src="icons/medal-01.png" alt="" />
                   <div>
                     <strong>Medalla Excelencia GP</strong>
@@ -376,8 +386,9 @@ import { PERFILES_DIR } from '../data/mock-dir';
                       }}
                       campañas del año
                     </div>
+                    <div class="tiny prog__link">Proyección y margen en Mis objetivos →</div>
                   </div>
-                </div>
+                </a>
               </div>
             </section>
 
@@ -451,6 +462,14 @@ import { PERFILES_DIR } from '../data/mock-dir';
                     <div class="progress__fill" [style.width.%]="ppedPct()"></div>
                   </div>
                 </div>
+              </div>
+              <!-- Composición del GP por estatus (chips de la Maya real): el espejo
+                   campañal de la cadena de formación del plan anual. -->
+              <div class="tuberia">
+                <span class="tiny muted">{{ c.activas.estatus }}</span>
+                <a class="tiny" routerLink="/n/objetivos">
+                  Tu cadena de formación <app-icon name="chevron-right" [size]="12" />
+                </a>
               </div>
             </div>
 
@@ -882,6 +901,38 @@ import { PERFILES_DIR } from '../data/mock-dir';
       .dream app-icon {
         margin-left: auto;
         color: var(--brand-700);
+      }
+
+      /* Bisagras con Mis objetivos (convivencia campañal ↔ anual) */
+      .plan__origen {
+        display: inline-flex;
+        align-items: center;
+        gap: 6px;
+        margin-top: 10px;
+        font-weight: 700;
+        color: var(--brand-600);
+      }
+      .prog__link {
+        margin-top: 2px;
+        font-weight: 600;
+        color: var(--brand-600);
+      }
+      .tuberia {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+        margin-top: 12px;
+        padding-top: 10px;
+        border-top: 1px solid var(--line);
+      }
+      .tuberia a {
+        display: inline-flex;
+        align-items: center;
+        gap: 4px;
+        font-weight: 700;
+        color: var(--brand-600);
       }
 
       /* Acciones */
