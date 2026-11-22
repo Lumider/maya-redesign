@@ -69,6 +69,21 @@ export const routes: Routes = [
   { path: 'e/incorpora', redirectTo: 'n/incorpora' },
   { path: 'e/camino', redirectTo: 'n/camino' },
 
+  // Simulador (microsite fuera de Maya): pantalla propia SIN el shell
+  // (app.ts lo oculta para /sim/**). Se llega por deep link desde Maya o por
+  // link directo compartido; los query params precargan el contexto.
+  {
+    path: 'sim/carrera',
+    title: 'Simulador de carrera · Yanbal',
+    loadComponent: () => import('./sim/carrera-sim').then((m) => m.CarreraSim),
+  },
+  {
+    path: 'sim/formacion',
+    title: 'Simulador de formación · Yanbal',
+    loadComponent: () => import('./sim/formacion-sim').then((m) => m.FormacionSim),
+  },
+  { path: 'sim', pathMatch: 'full', redirectTo: 'sim/carrera' },
+
   // UI Kit (styleguide viviente) — ruta oculta, sin enlace en la navegación
   { path: 'ui', loadComponent: () => import('./pages/ui-kit').then((m) => m.UiKitPage) },
 

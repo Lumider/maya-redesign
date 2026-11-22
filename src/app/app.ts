@@ -140,235 +140,238 @@ const MENU_LINKS: MenuLink[] = [
          arranca recién al autorizar para no perder su animación de entrada -->
     @if (!acceso.autorizado()) {
       <app-acceso-gate />
-    } @else if (!entered()) {
+    } @else if (!entered() && !esSim()) {
       <app-loader (done)="entered.set(true)" />
     }
 
-    <header class="hdr">
-      <div class="hdr__inner" [class.hdr__inner--new]="moderna()">
-        <a class="brand" [routerLink]="homeRoute()" aria-label="Yanbal Maya — inicio">
-          <!-- Logotipo Yanbal (desktop) -->
-          <svg
-            class="brand__logo"
-            viewBox="21 53 321 54"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M64.02 53.7839H74.3706L52.104 85.7722V106.221H43.4543L43.5948 85.7722L21.3333 53.7839H31.9698L47.9949 77.3816L64.02 53.7839ZM99.1909 53.3334L125.215 106.216H115.286L110.465 95.806H86.6377L81.8162 106.216H72.173L98.1925 53.3334H99.1909ZM106.636 87.5638L98.624 70.4115H98.4835L90.4709 87.5638H106.636ZM168.891 53.7839H177.54V106.667H176.406L145.706 73.4805V106.216H137.056V53.3334H138.19L168.891 86.5196V53.7839ZM235.329 91.3854C235.329 100.227 228.877 106.216 218.1 106.216H199.024V53.7839H217.176C226.89 53.7839 233.698 58.8777 233.698 67.7188C233.698 73.0352 230.864 76.7827 226.609 78.9558C232.068 81.129 235.329 85.3959 235.329 91.3907V91.3854ZM207.323 61.5703V75.2031H216.825C221.436 75.2031 224.697 73.4063 224.697 68.3867C224.697 63.3672 221.436 61.5703 216.825 61.5703H207.323ZM217.462 98.4245C223.277 98.4245 226.398 96.1029 226.398 90.8607C226.398 85.6185 223.277 83.2969 217.462 83.2969H207.323V98.4298H217.462V98.4245ZM270.214 53.3334H271.207L297.232 106.216H287.303L282.481 95.806H258.659L253.838 106.216H244.194L270.214 53.3334ZM278.653 87.5638L270.64 70.4115H270.5L262.487 87.5638H278.653ZM319.709 97.6771H341.333L338.213 106.216H311.054V53.7839H319.704V97.6824L319.709 97.6771Z"
-              fill="currentColor"
-            />
-          </svg>
-          <!-- Isotipo Yanbal (móvil) -->
-          <svg
-            class="brand__iso"
-            viewBox="51 52.5 58 55"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-          >
-            <path
-              d="M51.4287 53.3195H62.8272L84.409 83.7679V107.143H75.1397L75.2902 86.1511L51.4287 53.3195ZM87.7479 81.4608C87.2909 79.6163 87.065 77.614 87.065 75.6171C87.065 63.7773 94.5869 52.8571 106.292 52.8571C106.975 52.8571 108.19 52.9332 108.572 53.0094L87.7532 81.4608H87.7479Z"
-              fill="currentColor"
-            />
-          </svg>
-          <span class="brand__sub">maya</span>
-        </a>
+    <!-- El microsite /sim (simulador) vive fuera de Maya: sin header ni nav -->
+    @if (!esSim()) {
+      <header class="hdr">
+        <div class="hdr__inner" [class.hdr__inner--new]="moderna()">
+          <a class="brand" [routerLink]="homeRoute()" aria-label="Yanbal Maya — inicio">
+            <!-- Logotipo Yanbal (desktop) -->
+            <svg
+              class="brand__logo"
+              viewBox="21 53 321 54"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M64.02 53.7839H74.3706L52.104 85.7722V106.221H43.4543L43.5948 85.7722L21.3333 53.7839H31.9698L47.9949 77.3816L64.02 53.7839ZM99.1909 53.3334L125.215 106.216H115.286L110.465 95.806H86.6377L81.8162 106.216H72.173L98.1925 53.3334H99.1909ZM106.636 87.5638L98.624 70.4115H98.4835L90.4709 87.5638H106.636ZM168.891 53.7839H177.54V106.667H176.406L145.706 73.4805V106.216H137.056V53.3334H138.19L168.891 86.5196V53.7839ZM235.329 91.3854C235.329 100.227 228.877 106.216 218.1 106.216H199.024V53.7839H217.176C226.89 53.7839 233.698 58.8777 233.698 67.7188C233.698 73.0352 230.864 76.7827 226.609 78.9558C232.068 81.129 235.329 85.3959 235.329 91.3907V91.3854ZM207.323 61.5703V75.2031H216.825C221.436 75.2031 224.697 73.4063 224.697 68.3867C224.697 63.3672 221.436 61.5703 216.825 61.5703H207.323ZM217.462 98.4245C223.277 98.4245 226.398 96.1029 226.398 90.8607C226.398 85.6185 223.277 83.2969 217.462 83.2969H207.323V98.4298H217.462V98.4245ZM270.214 53.3334H271.207L297.232 106.216H287.303L282.481 95.806H258.659L253.838 106.216H244.194L270.214 53.3334ZM278.653 87.5638L270.64 70.4115H270.5L262.487 87.5638H278.653ZM319.709 97.6771H341.333L338.213 106.216H311.054V53.7839H319.704V97.6824L319.709 97.6771Z"
+                fill="currentColor"
+              />
+            </svg>
+            <!-- Isotipo Yanbal (móvil) -->
+            <svg
+              class="brand__iso"
+              viewBox="51 52.5 58 55"
+              fill="none"
+              xmlns="http://www.w3.org/2000/svg"
+            >
+              <path
+                d="M51.4287 53.3195H62.8272L84.409 83.7679V107.143H75.1397L75.2902 86.1511L51.4287 53.3195ZM87.7479 81.4608C87.2909 79.6163 87.065 77.614 87.065 75.6171C87.065 63.7773 94.5869 52.8571 106.292 52.8571C106.975 52.8571 108.19 52.9332 108.572 53.0094L87.7532 81.4608H87.7479Z"
+                fill="currentColor"
+              />
+            </svg>
+            <span class="brand__sub">maya</span>
+          </a>
 
-        <!-- Identidad + contexto (izquierda) -->
-        @if (moderna()) {
-          <span class="ctxpill" aria-label="Contexto de campaña">
-            <app-icon name="target" [size]="14" /> Campaña {{ u().campana }}
-            <span class="ctxpill__div"></span> Semana {{ u().semana }}
-            <span class="ctxpill__div"></span>
-            <span class="ctxpill__rol">{{ rolCorto() }}</span>
-          </span>
-        } @else {
-          <button class="searchpill" aria-label="Buscar en Maya">
-            <span class="searchpill__seg">Campaña {{ u().campana }}</span>
-            <span class="searchpill__div"></span>
-            <span class="searchpill__seg">Semana {{ u().semana }}</span>
-            <span class="searchpill__div"></span>
-            <span class="searchpill__seg searchpill__seg--muted">Buscar en Maya</span>
-            <span class="searchpill__btn"><app-icon name="search" [size]="14" /></span>
-          </button>
-        }
-
-        <div class="hdr__right">
+          <!-- Identidad + contexto (izquierda) -->
           @if (moderna()) {
-            <!-- Utilidades: buscar + carrito (el carrito se oculta en móvil) -->
-            <button class="hdr__iconbtn hdr__iconbtn--search" aria-label="Buscar en Maya">
-              <app-icon name="search" [size]="18" />
-            </button>
-            <a
-              class="hdr__iconbtn hdr__iconbtn--cart"
-              routerLink="/n/pedidos"
-              aria-label="Ver mi bolsa"
-            >
-              <app-icon name="cart" [size]="18" />
-              <span class="count">{{ u().carrito }}</span>
-            </a>
-            <!-- Acciones: Realizar pedido (primario) · Incorporar (secundario) -->
-            <div class="hdr__actions">
-              <a
-                class="btn btn--primary btn--sm"
-                routerLink="/n/pedidos"
-                aria-label="Realizar pedido"
-              >
-                <app-icon name="cart" [size]="16" />
-                <span class="hdr__actions-l">Realizar pedido</span>
-                <span class="hdr__actions-s">Pedido</span>
-              </a>
-              <a
-                class="btn btn--ghost btn--sm hdr__inc"
-                [routerLink]="esEmp() ? '/n/incorpora' : '/n/equipo'"
-                aria-label="Incorporar"
-              >
-                <app-icon name="heart-plus" [size]="16" />
-                <span class="hdr__actions-l">Incorporar</span>
-                <span class="hdr__actions-plus" aria-hidden="true">＋</span>
-              </a>
-            </div>
-            <!-- Yana (proyecto Clippy): vive en el header nav — presente en toda
-                 la vista nueva; burbuja y panel se despliegan bajo el header -->
-            <app-asistente modo="header" />
+            <span class="ctxpill" aria-label="Contexto de campaña">
+              <app-icon name="target" [size]="14" /> Campaña {{ u().campana }}
+              <span class="ctxpill__div"></span> Semana {{ u().semana }}
+              <span class="ctxpill__div"></span>
+              <span class="ctxpill__rol">{{ rolCorto() }}</span>
+            </span>
           } @else {
-            <button
-              class="vswitch"
-              type="button"
-              role="switch"
-              [attr.aria-checked]="version.nueva()"
-              (click)="toggleVersion()"
-              title="Alterna entre la versión actual y la nueva"
-            >
-              <span class="vswitch__label"
-                >Vista nueva <span class="vswitch__beta">beta</span></span
-              >
-              <span class="vswitch__track" [class.vswitch__track--on]="version.nueva()"
-                ><span class="vswitch__knob"></span
-              ></span>
-            </button>
-            <button
-              class="hdr__iconbtn"
-              (click)="theme.toggle()"
-              [attr.aria-label]="
-                theme.theme() === 'dark' ? 'Activar modo claro' : 'Activar modo oscuro'
-              "
-              [attr.aria-pressed]="theme.theme() === 'dark'"
-            >
-              <app-icon [name]="theme.theme() === 'dark' ? 'sun' : 'moon'" [size]="18" />
-            </button>
-            <button class="hdr__iconbtn" aria-label="Carrito">
-              <app-icon name="cart" [size]="18" />
-              <span class="count">{{ u().carrito }}</span>
+            <button class="searchpill" aria-label="Buscar en Maya">
+              <span class="searchpill__seg">Campaña {{ u().campana }}</span>
+              <span class="searchpill__div"></span>
+              <span class="searchpill__seg">Semana {{ u().semana }}</span>
+              <span class="searchpill__div"></span>
+              <span class="searchpill__seg searchpill__seg--muted">Buscar en Maya</span>
+              <span class="searchpill__btn"><app-icon name="search" [size]="14" /></span>
             </button>
           }
 
-          <!-- Cuenta -->
-          <div class="usermenu">
-            <button
-              class="userpill"
-              (click)="menuOpen.set(!menuOpen())"
-              aria-label="Menú de usuario"
-            >
-              <app-icon name="menu" [size]="16" />
-              <span class="avatar">{{ u().iniciales }}</span>
-            </button>
+          <div class="hdr__right">
+            @if (moderna()) {
+              <!-- Utilidades: buscar + carrito (el carrito se oculta en móvil) -->
+              <button class="hdr__iconbtn hdr__iconbtn--search" aria-label="Buscar en Maya">
+                <app-icon name="search" [size]="18" />
+              </button>
+              <a
+                class="hdr__iconbtn hdr__iconbtn--cart"
+                routerLink="/n/pedidos"
+                aria-label="Ver mi bolsa"
+              >
+                <app-icon name="cart" [size]="18" />
+                <span class="count">{{ u().carrito }}</span>
+              </a>
+              <!-- Acciones: Realizar pedido (primario) · Incorporar (secundario) -->
+              <div class="hdr__actions">
+                <a
+                  class="btn btn--primary btn--sm"
+                  routerLink="/n/pedidos"
+                  aria-label="Realizar pedido"
+                >
+                  <app-icon name="cart" [size]="16" />
+                  <span class="hdr__actions-l">Realizar pedido</span>
+                  <span class="hdr__actions-s">Pedido</span>
+                </a>
+                <a
+                  class="btn btn--ghost btn--sm hdr__inc"
+                  [routerLink]="esEmp() ? '/n/incorpora' : '/n/equipo'"
+                  aria-label="Incorporar"
+                >
+                  <app-icon name="heart-plus" [size]="16" />
+                  <span class="hdr__actions-l">Incorporar</span>
+                  <span class="hdr__actions-plus" aria-hidden="true">＋</span>
+                </a>
+              </div>
+              <!-- Yana (proyecto Clippy): vive en el header nav — presente en toda
+                 la vista nueva; burbuja y panel se despliegan bajo el header -->
+              <app-asistente modo="header" />
+            } @else {
+              <button
+                class="vswitch"
+                type="button"
+                role="switch"
+                [attr.aria-checked]="version.nueva()"
+                (click)="toggleVersion()"
+                title="Alterna entre la versión actual y la nueva"
+              >
+                <span class="vswitch__label"
+                  >Vista nueva <span class="vswitch__beta">beta</span></span
+                >
+                <span class="vswitch__track" [class.vswitch__track--on]="version.nueva()"
+                  ><span class="vswitch__knob"></span
+                ></span>
+              </button>
+              <button
+                class="hdr__iconbtn"
+                (click)="theme.toggle()"
+                [attr.aria-label]="
+                  theme.theme() === 'dark' ? 'Activar modo claro' : 'Activar modo oscuro'
+                "
+                [attr.aria-pressed]="theme.theme() === 'dark'"
+              >
+                <app-icon [name]="theme.theme() === 'dark' ? 'sun' : 'moon'" [size]="18" />
+              </button>
+              <button class="hdr__iconbtn" aria-label="Carrito">
+                <app-icon name="cart" [size]="18" />
+                <span class="count">{{ u().carrito }}</span>
+              </button>
+            }
 
-            @if (menuOpen()) {
-              <div class="dropdown card">
-                <div class="dropdown__user">
-                  <strong>{{ u().nombre }}</strong>
-                  <span class="tiny">Cód. {{ u().codigo }} · {{ u().rol }}</span>
-                </div>
-                @if (moderna()) {
-                  <!-- Ajustes (no acciones frecuentes): BETA arriba del todo + tema -->
-                  <div class="dropdown__sep"></div>
-                  <button
-                    class="dropdown__toggle"
-                    (click)="toggleVersion()"
-                    role="switch"
-                    aria-checked="true"
-                  >
-                    <span class="dropdown__toggle-l"
-                      >Vista nueva <span class="vswitch__beta">beta</span></span
+            <!-- Cuenta -->
+            <div class="usermenu">
+              <button
+                class="userpill"
+                (click)="menuOpen.set(!menuOpen())"
+                aria-label="Menú de usuario"
+              >
+                <app-icon name="menu" [size]="16" />
+                <span class="avatar">{{ u().iniciales }}</span>
+              </button>
+
+              @if (menuOpen()) {
+                <div class="dropdown card">
+                  <div class="dropdown__user">
+                    <strong>{{ u().nombre }}</strong>
+                    <span class="tiny">Cód. {{ u().codigo }} · {{ u().rol }}</span>
+                  </div>
+                  @if (moderna()) {
+                    <!-- Ajustes (no acciones frecuentes): BETA arriba del todo + tema -->
+                    <div class="dropdown__sep"></div>
+                    <button
+                      class="dropdown__toggle"
+                      (click)="toggleVersion()"
+                      role="switch"
+                      aria-checked="true"
                     >
-                    <span class="vswitch__track vswitch__track--on"
-                      ><span class="vswitch__knob"></span
-                    ></span>
-                  </button>
-                  <button
-                    class="dropdown__toggle"
-                    (click)="theme.toggle()"
-                    [attr.aria-pressed]="theme.theme() === 'dark'"
-                  >
-                    <span class="dropdown__toggle-l"
-                      ><app-icon [name]="theme.theme() === 'dark' ? 'sun' : 'moon'" [size]="16" />
-                      Modo {{ theme.theme() === 'dark' ? 'claro' : 'oscuro' }}</span
+                      <span class="dropdown__toggle-l"
+                        >Vista nueva <span class="vswitch__beta">beta</span></span
+                      >
+                      <span class="vswitch__track vswitch__track--on"
+                        ><span class="vswitch__knob"></span
+                      ></span>
+                    </button>
+                    <button
+                      class="dropdown__toggle"
+                      (click)="theme.toggle()"
+                      [attr.aria-pressed]="theme.theme() === 'dark'"
                     >
-                  </button>
-                  <div class="dropdown__sep"></div>
-                  <a class="dropdown__item" (click)="menuOpen.set(false)">Mi perfil</a>
-                  <a class="dropdown__item" (click)="menuOpen.set(false)">Ajustes</a>
-                  <a class="dropdown__item" (click)="menuOpen.set(false)">Notificaciones</a>
-                  <div class="dropdown__sep"></div>
-                  @if (!esEmp()) {
-                    <a
-                      class="dropdown__item dropdown__item--bold"
-                      routerLink="/n/herramientas"
-                      (click)="menuOpen.set(false)"
-                      >Herramientas</a
-                    >
-                  }
-                  <a
-                    class="dropdown__item"
-                    routerLink="/externa/cursos"
-                    (click)="menuOpen.set(false)"
-                    >Mis Cursos</a
-                  >
-                  <a
-                    class="dropdown__item"
-                    routerLink="/externa/reportes"
-                    (click)="menuOpen.set(false)"
-                    >Reportes</a
-                  >
-                } @else {
-                  <div class="dropdown__sep"></div>
-                  @for (l of menuLinks; track l.label) {
+                      <span class="dropdown__toggle-l"
+                        ><app-icon [name]="theme.theme() === 'dark' ? 'sun' : 'moon'" [size]="16" />
+                        Modo {{ theme.theme() === 'dark' ? 'claro' : 'oscuro' }}</span
+                      >
+                    </button>
+                    <div class="dropdown__sep"></div>
+                    <a class="dropdown__item" (click)="menuOpen.set(false)">Mi perfil</a>
+                    <a class="dropdown__item" (click)="menuOpen.set(false)">Ajustes</a>
+                    <a class="dropdown__item" (click)="menuOpen.set(false)">Notificaciones</a>
+                    <div class="dropdown__sep"></div>
+                    @if (!esEmp()) {
+                      <a
+                        class="dropdown__item dropdown__item--bold"
+                        routerLink="/n/herramientas"
+                        (click)="menuOpen.set(false)"
+                        >Herramientas</a
+                      >
+                    }
                     <a
                       class="dropdown__item"
-                      [class.dropdown__item--bold]="l.bold"
-                      [routerLink]="l.route"
+                      routerLink="/externa/cursos"
                       (click)="menuOpen.set(false)"
+                      >Mis Cursos</a
                     >
-                      {{ l.label }}
-                    </a>
+                    <a
+                      class="dropdown__item"
+                      routerLink="/externa/reportes"
+                      (click)="menuOpen.set(false)"
+                      >Reportes</a
+                    >
+                  } @else {
+                    <div class="dropdown__sep"></div>
+                    @for (l of menuLinks; track l.label) {
+                      <a
+                        class="dropdown__item"
+                        [class.dropdown__item--bold]="l.bold"
+                        [routerLink]="l.route"
+                        (click)="menuOpen.set(false)"
+                      >
+                        {{ l.label }}
+                      </a>
+                    }
                   }
-                }
-                <div class="dropdown__sep"></div>
-                <a class="dropdown__item" (click)="menuOpen.set(false)">Cerrar sesión</a>
-              </div>
-            }
+                  <div class="dropdown__sep"></div>
+                  <a class="dropdown__item" (click)="menuOpen.set(false)">Cerrar sesión</a>
+                </div>
+              }
+            </div>
           </div>
         </div>
-      </div>
 
-      <!-- Barra de categorías (cambia según la vista activa: actual · nueva · CES) -->
-      <nav class="cats" [class.cats--new]="moderna()" aria-label="Categorías">
-        <div class="cats__inner">
-          @for (c of activeCats(); track c.label) {
-            <a
-              class="cat"
-              [routerLink]="c.route"
-              routerLinkActive="cat--active"
-              (click)="menuOpen.set(false)"
-            >
-              <app-icon [name]="c.icon" [size]="22" />
-              <span>{{ c.label }}</span>
-            </a>
-          }
-        </div>
-      </nav>
-    </header>
+        <!-- Barra de categorías (cambia según la vista activa: actual · nueva · CES) -->
+        <nav class="cats" [class.cats--new]="moderna()" aria-label="Categorías">
+          <div class="cats__inner">
+            @for (c of activeCats(); track c.label) {
+              <a
+                class="cat"
+                [routerLink]="c.route"
+                routerLinkActive="cat--active"
+                (click)="menuOpen.set(false)"
+              >
+                <app-icon [name]="c.icon" [size]="22" />
+                <span>{{ c.label }}</span>
+              </a>
+            }
+          </div>
+        </nav>
+      </header>
+    }
 
     @if (menuOpen()) {
       <div class="scrim" (click)="menuOpen.set(false)"></div>
@@ -384,7 +387,7 @@ const MENU_LINKS: MenuLink[] = [
     </main>
 
     <!-- Bottom nav (vistas nueva y CES; visible únicamente en móvil vía CSS) -->
-    @if (moderna()) {
+    @if (moderna() && !esSim()) {
       <nav class="botnav" aria-label="Navegación principal">
         @for (c of activeCats(); track c.label) {
           <a
@@ -401,7 +404,7 @@ const MENU_LINKS: MenuLink[] = [
     }
 
     <!-- Conmutador global (demo): toda la carrera CNS → REG en la vista nueva -->
-    @if (version.nueva()) {
+    @if (version.nueva() && !esSim()) {
       <app-estatus-switch-global />
     }
   `,
@@ -1026,6 +1029,15 @@ export class App implements OnInit {
   });
   protected readonly homeRoute = computed(() => (this.version.nueva() ? '/n/inicio' : '/inicio'));
 
+  /** Rutas /sim/** (microsite simulador): pantalla propia, sin el shell de Maya.
+   *  Durante el bootstrap router.url aún puede ser '/', así que se cae a
+   *  location.pathname para no pintar (ni parpadear) header/loader en el deep link. */
+  protected readonly esSim = computed(() => {
+    const u = this.url();
+    if (u !== '/') return u.startsWith('/sim');
+    return typeof location !== 'undefined' && location.pathname.includes('/sim');
+  });
+
   /** URL actual como signal (reacciona a cada navegación). */
   private readonly url = toSignal(
     this.router.events.pipe(
@@ -1056,7 +1068,7 @@ export class App implements OnInit {
     // router.url aún puede ser '/'), así un deep-link a /n/<vista> se respeta.
     const path = typeof location !== 'undefined' ? location.pathname : '';
     // Rutas neutrales (fuera de ambas versiones): no se sincronizan.
-    if (path.includes('/ui') || path.includes('/externa/')) return;
+    if (path.includes('/ui') || path.includes('/externa/') || path.includes('/sim')) return;
     const onNew = path.includes('/n/') || path.includes('/e/');
     if (this.version.nueva() && !onNew) {
       this.router.navigateByUrl('/n/inicio');
